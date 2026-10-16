@@ -6,15 +6,19 @@ Usage:
 """
 import argparse
 import datetime as dt
+import re
 import time
 
 import desk as D
 
 
 def et_date(ts):
+    """Alpaca timestamps carry up to 9 fractional digits; Python < 3.11 only parses 3 or 6. Trim to 6."""
     if not ts:
         return D.today_str()
-    return dt.datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(D.ET).date().isoformat()
+    s = re.sub(r"(\.\d{6})\d+", r"\1", ts.replace("Z", "+00:00"))
+    s = re.sub(r"\.(\d{1,5})(?=[+-])", lambda m: "." + m.group(1).ljust(6, "0"), s)
+    return dt.datetime.fromisoformat(s).astimezone(D.ET).date().isoformat()
 
 
 def record_exit(t, price, reason, when):
