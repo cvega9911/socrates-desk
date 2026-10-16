@@ -267,16 +267,25 @@ try:
     place.place("ZZZZ", "a real thesis here", "a real invalidation", "a real dissent line", 0.4)
 except SystemExit as e:
     ok("not in today's plan" in str(e), "refuses symbol not in plan")
+base0 = 1 / (1 + c0["rr"])
+for bad in (round(base0 + 0.20, 2), round(max(0.06, base0 - 0.20), 2), 0.5 if abs(0.5 - base0) > 0.15 else 0.9):
+    try:
+        place.place(c0["symbol"], "Strong trend and regime support", "Daily close below the stop level",
+                    "Fails if the sector reverses on macro news", bad, earnings_checked=True)
+        ok(False, f"should refuse p_target {bad}")
+    except SystemExit as e:
+        ok("outside the allowed range" in str(e), f"refuses p_target {bad} (base rate {base0:.2f}, allowed +/-0.15)")
 for c in plan:
     place.place(c["symbol"], "Strong trend and regime support", "Daily close below the stop level",
-                "Fails if the sector reverses on macro news", 0.42, earnings_checked=True)
+                "Fails if the sector reverses on macro news", round(1 / (1 + c["rr"]) + 0.05, 2), earnings_checked=True)
 trades = D.read_jsonl(D.TRADES)
 ok(len(trades) == len(plan) and all(t["status"] == "pending" for t in trades), "all placed and logged pending")
 try:
     place.place(c0["symbol"], "Strong trend and regime support", "Daily close below the stop level",
-                "Fails if the sector reverses on macro news", 0.42, earnings_checked=True)
+                "Fails if the sector reverses on macro news", round(base0 + 0.05, 2), earnings_checked=True)
 except SystemExit as e:
     ok("already has an open" in str(e), "refuses duplicate placement")
+ok(all("p_base" in t and abs(t["p_base"] - 1 / (1 + c["rr"])) < 0.001 for t, c in zip(D.read_jsonl(D.TRADES), plan)), "p_base logged on every trade")
 
 # rerun decision: symbols now busy, should not re-plan them
 r2 = score.run("decision")
@@ -387,7 +396,8 @@ for i, day in enumerate(fr.days[-35:-12]):
         d = "short" if s == "TLT" else "long"
         stop, tgt = (px * 0.98, px * 1.04) if d == "long" else (px * 1.02, px * 0.96)
         cand_rows.append({"date": day.isoformat(), "run": "decision", "rules_version": "v1.0", "symbol": s, "direction": d,
-                          "score": score_, "entry": px, "stop": stop, "target": tgt, "rr": 2.0, "tier": "A", "action": act})
+                          "score": score_, "entry": px, "stop": stop, "target": tgt, "rr": 2.0, "tier": "A", "action": act,
+                          "breakdown": {"trend": 2, "rs": 1, "regime": 1 + (i % 2), "rr": 2, "momentum": 1, "volume": 1}})
 for i in range(25):
     win = i % 3 == 0
     trade_rows.append({"trade_id": f"t{i}", "order_id": f"o{i}", "rules_version": "v1.0", "date_open": fr.days[-35 + i // 2].isoformat(),
@@ -406,9 +416,12 @@ rep = review.run()
 print(rep)
 ok("Win rate 36.0%" in rep, "win rate computed (9/25)")
 ok("+0.08R" in rep, "expectancy computed ((9*2-16)/25 = +0.08R)")
-ok("5b. Random baseline" in rep and "Random controls: 80 resolved" in rep, "random baseline section reports controls")
+ok("5b. Random baseline" in rep and "Random controls (all resolved): 80" in rep, "random baseline section reports controls")
 ok("beats" in rep and "Verdict:" in rep, "baseline verdict shown once 20 real + 50 controls exist")
-ok("Brier score" in rep, "calibration reported")
+ok("Brier score" in rep and "Brier skill" in rep and "neutral base rate" in rep, "calibration reported with the base-rate anchor check")
+ok("5c. Does the score predict forward R" in rep and "matured candidate-trades" in rep, "score study section reports matured candidates")
+ok("Factor regime:" in rep and "Score 7:" in rep and "Significance test withheld" in rep, "score buckets and factor lines shown; significance withheld on small samples")
+ok("Matured cohorts (25 real vs 80 controls)" in rep, "baseline verdict uses matured cohorts only")
 ok("planned: " in rep and "resolved" in rep, "shadow book simulated")
 ok("Sample too small" not in rep, "no small-sample warning at 25 trades")
 ok("planned but never placed" in rep, "flags planned-but-not-placed candidates")
@@ -417,6 +430,16 @@ D.write_jsonl(D.CONTROL, D.read_jsonl(D.CONTROL)[:10])
 rep_off = review.run(offline=True)
 ok("Skipped" in rep_off, "offline mode works without Alpaca")
 ok("Verdict withheld" in rep_off, "verdict withheld when there are too few controls")
+rr_ = __import__("random").Random(11)
+pos = [{"date": f"d{d}", "score": sc, "R": (sc - 5) * 0.3 + rr_.gauss(0, 0.5)} for d in range(30) for sc in range(3, 9)]
+neg = [{"date": f"d{d}", "score": sc, "R": rr_.gauss(0, 1.0)} for d in range(30) for sc in range(3, 9)]
+r1, p1 = review.within_day_perm_p(pos, 500)
+r2, p2 = review.within_day_perm_p(neg, 500)
+ok(r1 > 0.5 and p1 < 0.01, f"permutation test detects a real score->R relationship (r={r1:.2f}, p={p1:.3f})")
+ok(abs(r2) < 0.3 and p2 > 0.01, f"permutation test stays quiet on noise (r={r2:.2f}, p={p2:.3f})")
+young = [{"date": str(TODAY - dt.timedelta(days=3)), "symbol": "SPY", "direction": "long", "score": 8, "entry": 100.0,
+          "stop": 1.0, "target": 100.01, "breakdown": {}}]
+ok(review.score_study(young, {"SPY": D.bars_to_df(fr.bars["SPY"])}) == [], "candidates younger than 10 trading days are excluded (no early-exit bias)")
 pc_hi = control.percentile_vs_random(5.0, [-1.0, 2.0, -1.0], 25)
 pc_lo = control.percentile_vs_random(-5.0, [-1.0, 2.0, -1.0], 25)
 ok(pc_hi > 0.99 and pc_lo < 0.01, "percentile function separates clearly better / worse than random")

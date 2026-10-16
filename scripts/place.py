@@ -57,6 +57,11 @@ def place(symbol, thesis, invalidation, dissent, p_target, earnings_checked=Fals
         sys.exit(f"REFUSED: {symbol} is not in today's plan. Only planned orders can be placed.")
     if not (0.0 < p_target < 1.0):
         sys.exit("REFUSED: --p-target must be between 0 and 1 (exclusive).")
+    base = 1.0 / (1.0 + c["rr"])              # hit-the-target probability in a zero-edge market
+    lo, hi = max(0.05, base - 0.15), min(0.95, base + 0.15)
+    if not (lo <= p_target <= hi):
+        sys.exit(f"REFUSED: --p-target {p_target} is outside the allowed range {lo:.2f}-{hi:.2f}. The neutral-market base rate for "
+                 f"R:R {c['rr']} is {base:.2f}. Start there and adjust by at most 15 points for reasons you can name.")
     for name, val in (("thesis", thesis), ("invalidation", invalidation), ("dissent", dissent)):
         if not val or len(val.strip()) < 10:
             sys.exit(f"REFUSED: --{name} must be a real sentence.")
@@ -86,7 +91,7 @@ def place(symbol, thesis, invalidation, dissent, p_target, earnings_checked=Fals
         "score": c["score"], "breakdown": c["breakdown"], "planned_entry": c["entry"],
         "entry_fill": float(got["filled_avg_price"]) if filled and got.get("filled_avg_price") else None,
         "date_fill": today if filled else None, "stop": c["stop"], "target": c["target"], "shares": c["shares"],
-        "risk_dollars": c["risk_dollars"], "p_target": p_target, "thesis": thesis, "invalidation": invalidation,
+        "risk_dollars": c["risk_dollars"], "p_target": p_target, "p_base": round(base, 3), "thesis": thesis, "invalidation": invalidation,
         "dissent": dissent, "status": "open" if filled else "pending", "date_close": None, "exit_price": None,
         "exit_reason": None, "result_R": None, "pnl": None}])
     print(f"PLACED {symbol} {c['direction'].upper()} tier {c['tier']} | {c['shares']} sh | entry {c['entry']} "

@@ -56,7 +56,7 @@ Each run begins with "RUN MODE: X". Do only that mode.
    - thesis: one sentence, why this trade, citing the score factors.
    - invalidation: a specific price or event that proves it wrong.
    - dissent: a specific, falsifiable way it fails ("fails if XLE closes below 92.10 on oil reversal"). General fear is not allowed.
-   - p_target: your honest probability (0–1) that target is hit before stop. It is scored for calibration; don't default to 0.5.
+   - p_target: probability that the target is hit before the stop. Start from the neutral-market base rate, 1 ÷ (1 + R:R) (about 0.33 for a 2R target, 0.30 for 2.3R), and adjust by at most 15 points up or down, for reasons you can name. place.py refuses values outside that range. You are scored against the base rate, so staying at the base rate is a fine answer; defaulting to 0.5 is not.
    - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, add `--earnings-checked`. If not, do not place it and report why.
 5. Write the trade report (format below). If the plan says NO TRADE, copy that line and add "Would trade if: [specific price, level or event]."
 6. Run: `bash scripts/commit.sh`

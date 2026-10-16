@@ -7,6 +7,7 @@ Usage:
 import argparse
 import datetime as dt
 import json
+import random
 
 import pandas as pd
 
@@ -29,6 +30,59 @@ def stats_r(rs):
     if not rs:
         return None
     return {"n": len(rs), "win_rate": sum(r > 0 for r in rs) / len(rs), "avg_R": sum(rs) / len(rs)}
+
+
+def corr(xs, ys):
+    n = len(xs)
+    if n < 3:
+        return 0.0
+    mx, my = sum(xs) / n, sum(ys) / n
+    sx = sum((x - mx) ** 2 for x in xs) ** 0.5
+    sy = sum((y - my) ** 2 for y in ys) ** 0.5
+    if sx == 0 or sy == 0:
+        return 0.0
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy)
+
+
+def within_day_perm_p(rows, n_perm=2000, seed=0):
+    """Does the score predict forward R beyond what the market did that day?
+    Correlation of score vs R, with a p-value from shuffling scores among the candidates of the SAME day."""
+    scores, rs = [r["score"] for r in rows], [r["R"] for r in rows]
+    obs = corr(scores, rs)
+    by_day = {}
+    for i, r in enumerate(rows):
+        by_day.setdefault(r["date"], []).append(i)
+    rng = random.Random(seed)
+    ge = 0
+    for _ in range(n_perm):
+        sh = scores[:]
+        for idx in by_day.values():
+            vals = [sh[i] for i in idx]
+            rng.shuffle(vals)
+            for i, v in zip(idx, vals):
+                sh[i] = v
+        if corr(sh, rs) >= obs:
+            ge += 1
+    return obs, ge / n_perm
+
+
+def score_study(cands, bars):
+    """Simulate EVERY scored candidate (not just the traded ones) forward 10 days. Only candidates that have had
+    their full 10 trading days count, so early stop/target exits can't skew the sample."""
+    out, seen = [], set()
+    for c in cands:
+        key = (c["date"], c["symbol"])
+        if key in seen or c["symbol"] not in bars:
+            continue
+        seen.add(key)
+        df = bars[c["symbol"]]
+        d0 = dt.date.fromisoformat(c["date"])
+        if len(df[df["date"] > d0]) < D.TIME_STOP_DAYS:
+            continue
+        res = D.simulate_path(df, c["direction"], c["entry"], c["stop"], c["target"], d0)
+        if res is not None:
+            out.append({"date": c["date"], "score": c["score"], "breakdown": c.get("breakdown") or {}, "R": res[0]})
+    return out
 
 
 def max_drawdown(closed, start_equity):
@@ -121,8 +175,10 @@ def run(offline=False):
             if key in seen or c["symbol"] not in bars or c["action"] not in groups:
                 continue
             seen.add(key)
-            out = D.simulate_path(bars[c["symbol"]], c["direction"], c["entry"], c["stop"], c["target"],
-                                  dt.date.fromisoformat(c["date"]))
+            d0 = dt.date.fromisoformat(c["date"])
+            if len(bars[c["symbol"]][bars[c["symbol"]]["date"] > d0]) < D.TIME_STOP_DAYS:
+                continue          # not matured: early exits would bias the sample
+            out = D.simulate_path(bars[c["symbol"]], c["direction"], c["entry"], c["stop"], c["target"], d0)
             if out is not None:
                 groups[c["action"]].append(out[0])
         for g, rs in groups.items():
@@ -135,42 +191,98 @@ def run(offline=False):
     else:
         L.append("- Skipped (needs Alpaca data).")
 
-    # 5b. Random baseline
+    # 5b. Random baseline. Verdict uses MATURED cohorts only (opened 15+ days ago, so every member has had its full
+    # 10 trading days); otherwise fast stops/targets resolve first and skew both sides.
+    cutoff = (today_d - dt.timedelta(days=15)).isoformat()
     L.append("\n### 5b. Random baseline (control group)")
     ctrl = [c for c in D.read_jsonl(D.CONTROL) if c.get("rules_version", rv) == rv]
-    ctrl_res = [c["result_R"] for c in ctrl if c.get("status") == "resolved" and c.get("result_R") is not None]
-    L.append(f"- Control entries logged: {len(ctrl)} ({len(ctrl_res)} resolved, {len(ctrl) - len(ctrl_res)} still open). "
+    ctrl_ok = [c for c in ctrl if c.get("status") == "resolved" and c.get("result_R") is not None]
+    ctrl_mat = [c["result_R"] for c in ctrl_ok if c["date"] <= cutoff]
+    real_all = [t["result_R"] for t in closed if t.get("result_R") is not None]
+    real_mat = [t["result_R"] for t in closed if t.get("result_R") is not None and t["date_open"] <= cutoff]
+    L.append(f"- Control entries logged: {len(ctrl)} ({len(ctrl_ok)} resolved, {len(ctrl) - len(ctrl_ok)} still open). "
              "Same universe, entry, stop/target rules, 10-day exit and hard gates as the real trades; random symbol and direction; score ignored.")
-    cs = stats_r(ctrl_res)
-    real_rs = [t["result_R"] for t in closed if t.get("result_R") is not None]
-    rs_ = stats_r(real_rs)
+    cs, rs_ = stats_r([c["result_R"] for c in ctrl_ok]), stats_r(real_all)
     if cs:
-        L.append(f"- Random controls: {cs['n']} resolved, {cs['avg_R']:+.2f}R avg, win {cs['win_rate']:.0%}")
+        L.append(f"- Random controls (all resolved): {cs['n']}, {cs['avg_R']:+.2f}R avg, win {cs['win_rate']:.0%}")
     if rs_:
-        L.append(f"- Real trades (actual fills): {rs_['n']} closed, {rs_['avg_R']:+.2f}R avg, win {rs_['win_rate']:.0%}")
-    if rs_ and rs_["n"] >= C.MIN_REAL and len(ctrl_res) >= C.MIN_CONTROL:
-        pc = C.percentile_vs_random(rs_["avg_R"], ctrl_res, rs_["n"])
-        L.append(f"- Real average R beats {pc:.0%} of random draws of the same size. Verdict: {C.verdict(pc)}")
+        L.append(f"- Real trades (all closed, actual fills): {rs_['n']}, {rs_['avg_R']:+.2f}R avg, win {rs_['win_rate']:.0%}")
+    if len(real_mat) >= C.MIN_REAL and len(ctrl_mat) >= C.MIN_CONTROL:
+        m = sum(real_mat) / len(real_mat)
+        pc = C.percentile_vs_random(m, ctrl_mat, len(real_mat))
+        L.append(f"- Matured cohorts ({len(real_mat)} real vs {len(ctrl_mat)} controls): real average {m:+.2f}R beats {pc:.0%} of "
+                 f"random draws of the same size. Verdict: {C.verdict(pc)}")
     else:
-        L.append(f"- Verdict withheld: needs {C.MIN_REAL}+ closed real trades (have {len(real_rs)}) and "
-                 f"{C.MIN_CONTROL}+ resolved controls (have {len(ctrl_res)}). Numbers above are for tracking only.")
+        L.append(f"- Verdict withheld. Only trades and controls opened 15+ days ago count. Matured so far: {len(real_mat)} real "
+                 f"(need {C.MIN_REAL}) and {len(ctrl_mat)} controls (need {C.MIN_CONTROL}). Numbers above are for tracking only.")
     pl = groups["planned"]
-    if len(pl) >= C.MIN_REAL and len(ctrl_res) >= C.MIN_CONTROL:
-        pc2 = C.percentile_vs_random(sum(pl) / len(pl), ctrl_res, len(pl))
+    if len(pl) >= C.MIN_REAL and len(ctrl_mat) >= C.MIN_CONTROL:
+        pc2 = C.percentile_vs_random(sum(pl) / len(pl), ctrl_mat, len(pl))
         L.append(f"- Larger-sample check (all planned candidates, simulated like the controls): {sum(pl)/len(pl):+.2f}R avg "
                  f"beats {pc2:.0%} of random draws. Verdict: {C.verdict(pc2)}")
     L.append("- Caveats: controls assume a fill at the logged entry and exit on the first stop/target touch in daily bars "
              "(gaps fill at the open); real trades enter intraday; one stretch of market is not every regime; "
              "a pass here is evidence, not proof.")
 
+    # 5c. Does the score predict forward results? Every scored candidate, not just traded ones.
+    L.append("\n### 5c. Does the score predict forward R? (all scored candidates, matured only)")
+    study = score_study(cands, bars) if bars else []
+    if not bars:
+        L.append("- Skipped (needs Alpaca data).")
+    elif not study:
+        L.append(f"- No matured candidates yet (each needs {D.TIME_STOP_DAYS} trading days of data after the decision).")
+    else:
+        days = len({r["date"] for r in study})
+        L.append(f"- {len(study)} matured candidate-trades across {days} decision days "
+                 f"({len({(c['date'], c['symbol']) for c in cands}) - len(study)} not matured yet).")
+        for label, lo, hi in (("10", 10, 10), ("9", 9, 9), ("8", 8, 8), ("7", 7, 7), ("5-6", 5, 6), ("4 or less", 0, 4)):
+            b_ = [r["R"] for r in study if lo <= r["score"] <= hi]
+            L.append(f"- Score {label}: " + (f"{len(b_)} trades, {sum(b_)/len(b_):+.2f}R avg, win {sum(r > 0 for r in b_)/len(b_):.0%}" if b_ else "none"))
+        for factor, pts in (("trend", (0, 1, 2)), ("rs", (0, 1, 2)), ("regime", (0, 1, 2)), ("rr", (0, 1, 2)), ("momentum", (0, 1)), ("volume", (0, 1))):
+            parts = []
+            for v in pts:
+                b_ = [r["R"] for r in study if r["breakdown"].get(factor) == v]
+                if b_:
+                    parts.append(f"{v} -> {sum(b_)/len(b_):+.2f}R (n={len(b_)})")
+            if parts:
+                L.append(f"- Factor {factor}: " + "; ".join(parts))
+        if len(study) >= 200 and days >= 10:
+            r_obs, p_val = within_day_perm_p(study)
+            L.append(f"- Score vs R correlation {r_obs:+.3f}; within-day permutation p = {p_val:.3f} "
+                     f"({'the score predicts forward R beyond the day\'s market move' if p_val < 0.05 and r_obs > 0 else 'no reliable predictive power shown yet'}).")
+        else:
+            L.append(f"- Significance test withheld: needs 200+ matured candidate-trades over 10+ decision days (have {len(study)} over {days}).")
+        L.append("- Caveats: candidates on consecutive days overlap in time, so the effective sample is much smaller than the row "
+                 "count and the p-value is optimistic; the rr factor changes the size of winning R by construction; "
+                 "the regime rows test Socrates' macro research (regime 2 vs 1 vs 0).")
+
     # 6. Calibration
-    L.append("\n### 6. Calibration of p_target")
-    cal = [(t["p_target"], 1 if t["exit_reason"] == "target" else 0) for t in closed if t.get("p_target") is not None]
+    L.append("\n### 6. Calibration of p_target (anchored to the neutral base rate 1 / (1 + R:R))")
+    cal = []
+    for t in closed:
+        if t.get("p_target") is None:
+            continue
+        base = t.get("p_base")
+        if base is None:
+            try:
+                base = 1.0 / (1.0 + abs(t["target"] - t["entry_fill"]) / abs(t["entry_fill"] - t["stop"]))
+            except Exception:
+                base = None
+        cal.append((t["p_target"], base, 1 if t["exit_reason"] == "target" else 0))
     if cal:
-        brier = sum((p - o) ** 2 for p, o in cal) / len(cal)
+        brier = sum((p - o) ** 2 for p, b, o in cal) / len(cal)
         L.append(f"- Brier score {brier:.3f} on {len(cal)} trades (0.25 = coin-flip guessing; lower is better)")
+        wb = [(p, b, o) for p, b, o in cal if b is not None]
+        if wb:
+            bb = sum((b - o) ** 2 for p, b, o in wb) / len(wb)
+            bs = sum((p - o) ** 2 for p, b, o in wb) / len(wb)
+            skill = (1 - bs / bb) if bb > 0 else 0.0
+            L.append(f"- Anchor check: average p_target {sum(p for p, b, o in wb)/len(wb):.2f} vs neutral base rate "
+                     f"{sum(b for p, b, o in wb)/len(wb):.2f}; actual target-hit rate {sum(o for p, b, o in wb)/len(wb):.0%}. "
+                     f"Brier skill vs just using the base rate: {skill:+.2f} (positive = his adjustments added information; "
+                     f"meaningless under ~20 trades)")
         for name, lo, hi in (("<0.40", 0, 0.4), ("0.40-0.55", 0.4, 0.55), (">0.55", 0.55, 1.01)):
-            b_ = [o for p, o in cal if lo <= p < hi]
+            b_ = [o for p, b, o in cal if lo <= p < hi]
             L.append(f"- p_target {name}: " + (f"{len(b_)} trades, hit target {sum(b_)/len(b_):.0%}" if b_ else "none"))
     else:
         L.append("- No closed trades with p_target yet.")
