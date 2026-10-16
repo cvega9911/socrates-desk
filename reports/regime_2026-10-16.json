@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-16",
+  "themes": {
+    "broad": {
+      "long": 0,
+      "short": 2,
+      "why": "SPY -1.18%, QQQ -1.88% on 10/16 (Bloomberg/Yahoo 10/16); rotation out of tech into defensives, rising 10Y yield pressuring growth valuations"
+    },
+    "tech": {
+      "long": 0,
+      "short": 2,
+      "why": "QQQ -1.88% on 10/16 (Bloomberg 10/16); chipmaker weakness and rate-hike odds ahead of CPI; 10Y 5.09% near 24-yr high crushing long-duration growth (TradingEconomics 10/16)"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "Mixed: XLY defensive subsectors holding but consumer growth in tech-linked names under pressure; no decisive signal today"
+    },
+    "energy": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent $105.92, WTI $97.79 (FT 10/16); XLE eyes fresh highs on geopolitical tensions, oil up +0.84% intraday (OilPrice 10/16)"
+    },
+    "financials": {
+      "long": 2,
+      "short": 0,
+      "why": "XLF +1.38% Oct 15→16 (SSGA sector tracker 10/16); rising 10Y yield directly supports Net Interest Margin expansion; XLF leading sector rotation"
+    },
+    "defensive": {
+      "long": 2,
+      "short": 0,
+      "why": "XLV +1.86% on 10/16 (stockanalysis.com); capital rotating into health care and staples as rate expectations rise; defensive sectors are the clear winner in today's rotation"
+    },
+    "cyclicals": {
+      "long": 0,
+      "short": 1,
+      "why": "Rising yields + rate-hike odds are headwinds for cyclicals; no positive catalyst yet, but not a breakdown — neutral-to-negative"
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.09% near 24-yr high (TradingEconomics 10/16); TLT/IEF bearish as long-duration bonds sell off on rising rates; yield at multi-year extreme is a strong short-bond signal"
+    },
+    "metals": {
+      "long": 2,
+      "short": 0,
+      "why": "Gold $4,165-4,190/oz up ~1.5% on 10/16 (Kitco/CNBC 10/16); strong dollar usually a headwind for gold but geopolitical tensions and inflation fears are dominating — net bullish near-term"
+    },
+    "dollar": {
+      "long": 2,
+      "short": 0,
+      "why": "DXY 102.00 at 18-month high (Macromicro 10/15); strong dollar supports UUP long; rate expectations higher globally"
+    }
+  },
+  "symbols": {
+    "UUP": {
+      "long": 2,
+      "short": 0,
+      "why": "DXY 102.00 at 18-month high (Macromicro 10/15); dollar strength driven by rate-hike expectations and geopolitical safe-haven bid"
+    },
+    "XLV": {
+      "long": 2,
+      "short": 0,
+      "why": "XLV +1.86% on 10/16 (stockanalysis.com); defensive rotation with health care leading; regime supports long in rising-yield environment"
+    },
+    "XLE": {
+      "long": 2,
+      "short": 0,
+      "why": "XLE eyes fresh highs as oil rises to Brent $105.92 (OilPrice/Fxempire 10/16); geopolitical tensions and rising yields support energy longs"
+    },
+    "GLD": {
+      "long": 2,
+      "short": 0,
+      "why": "Gold $4,165-4,190/oz, up ~1.5% today (Kitco/CNBC 10/16); geopolitical tensions + inflation fears outweighing dollar strength near-term"
+    },
+    "TLT": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.09% near 24-yr high (TradingEconomics 10/16); TLT/long-bond bearish; strong short signal as yields continue to grind higher"
+    }
+  },
+  "catcalysts": [
+    "FOMC Decision + Press Conference: Wed Oct 28, 2:00 PM ET (Fed Calendar)"
+  ]
+}
