@@ -3,6 +3,7 @@
 Usage:
   python scripts/score.py --mode briefing            # 08:45 ET: score on yesterday's closes, no orders, no logging
   python scripts/score.py --mode decision            # 10:15 ET: live prices, risk limits, writes the plan + logs candidates
+  python scripts/score.py --mode controls            # backfill today's random control entries only (no plan, no orders)
 Options:
   --regime FILE      regime scores Socrates wrote (default: reports/regime_<today>.json if present)
   --exclude A,B      symbols to skip today (e.g. earnings Socrates found himself)
@@ -16,6 +17,7 @@ import sys
 
 import requests
 
+import control as C
 import desk as D
 
 
@@ -82,7 +84,7 @@ def ensure_start_file(spy_close, equity, today):
 def run(mode, regime_path=None, exclude=()):
     b = D.broker()
     today = D.today_str()
-    live = mode == "decision"
+    live = mode in ("decision", "controls")
     warnings = []
 
     acct = b.account()
@@ -103,7 +105,7 @@ def run(mode, regime_path=None, exclude=()):
         raise SystemExit("SPY bars unavailable; cannot score. Check Alpaca data access.")
     spy_ret20 = D.ret(frames["SPY"], 20)
 
-    if live:
+    if mode == "decision":
         ensure_start_file(float(frames["SPY"]["close"].iloc[-1]), equity, today)
 
     reg, reg_file = load_regime(regime_path or str(D.REPORTS / f"regime_{today}.json"))
@@ -117,6 +119,7 @@ def run(mode, regime_path=None, exclude=()):
     prices = b.latest_prices(list(frames)) if live else {}
 
     cands = []
+    both = {}
     for s, df in frames.items():
         f = D.factors(df, spy_ret20)
         best = None
@@ -128,6 +131,7 @@ def run(mode, regime_path=None, exclude=()):
             c = {"symbol": s, "direction": d, "score": total, "breakdown": br, "entry": e, "stop": stop,
                  "target": target, "rr": rr, "tier": D.tier_for(total, rr), "theme": D.THEME_OF.get(s),
                  "regime_why": why, "atr": round(f["atr"], 2), "close": round(f["close"], 2)}
+            both.setdefault(s, {})[d] = c
             if best is None or (c["score"], c["rr"]) > (best["score"], best["rr"]):
                 best = c
         if s in D.STOCKS:
@@ -137,6 +141,12 @@ def run(mode, regime_path=None, exclude=()):
 
     result = {"date": today, "mode": mode, "rules_version": D.rules_version(), "equity": equity,
               "spy_ret20": round(spy_ret20, 4), "regime_file": reg_file, "warnings": warnings}
+
+    if mode == "controls":
+        crows, cnote = C.draw(both, blackout, b, today, verified, backfill=True)
+        result.update({"controls": crows, "controls_drawn": len(crows), "controls_note": cnote})
+        _save(result, f"controls_{today}.json")
+        return result
 
     if not live:
         result["top"] = cands[:5]
@@ -243,6 +253,12 @@ def run(mode, regime_path=None, exclude=()):
         "target": c["target"], "rr": c["rr"], "tier": c["tier"], "quota": c.get("quota", False),
         "action": c["action"], "block_reason": c.get("block_reason"), "p_target": None} for c in cands])
 
+    try:   # the control group must never be able to block trading
+        crows, cnote = C.draw(both, blackout, b, today, verified)
+    except Exception as e:
+        crows, cnote = [], f"control draw failed: {e}"
+    result.update({"controls_drawn": len(crows), "controls_note": cnote})
+
     result.update({"day_pnl_pct": round(day_pnl, 4), "halted": halted, "open_positions": len(busy) - len(plan),
                    "open_risk_dollars": round(open_risk, 2), "plan": plan,
                    "blocked": [c for c in cands if c["action"] == "blocked"][:5],
@@ -266,6 +282,11 @@ def line(c):
 def summary(r):
     out = [f"SCORE {r['mode'].upper()} {r['date']} | rules {r['rules_version']} | equity ${r['equity']:,.2f}"]
     out += [f"WARNING: {w}" for w in r["warnings"]]
+    if r["mode"] == "controls":
+        out.append(f"CONTROL BASELINE (backfill): drew {r['controls_drawn']} random control entries. {r['controls_note']}")
+        out += [f"  {x['symbol']} {x['direction'].upper()} entry {x['entry']} stop {x['stop']} target {x['target']} R:R {x['rr']}"
+                for x in r["controls"]]
+        return "\n".join(out)
     if r["mode"] == "briefing":
         out.append("TOP 5 CANDIDATES:")
         out += ["  " + line(c) for c in r["top"]]
@@ -287,12 +308,13 @@ def summary(r):
         out += [f"  {line(c)} -> {c['block_reason']}" for c in r["blocked"]]
     out.append("SHADOW BOOK:")
     out += ["  " + line(c) for c in r["shadow_top"]]
+    out.append(f"CONTROL BASELINE: {r.get('controls_drawn', 0)} random control entries logged automatically. {r.get('controls_note', '')}")
     return "\n".join(out)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["briefing", "decision"], required=True)
+    ap.add_argument("--mode", choices=["briefing", "decision", "controls"], required=True)
     ap.add_argument("--regime")
     ap.add_argument("--exclude", default="")
     ap.add_argument("--json", action="store_true")

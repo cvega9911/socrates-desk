@@ -9,6 +9,7 @@ import datetime as dt
 import re
 import time
 
+import control as C
 import desk as D
 
 
@@ -129,6 +130,12 @@ def run(close_mode=False):
                   f"{r}R unrealized | days held {t.get('days_held', '?')}")
     if not any_open:
         print("  none")
+    try:
+        done = C.resolve(b, today)
+        if done:
+            print(f"CONTROL: resolved {len(done)} random control entries (logged to journal/control.jsonl)")
+    except Exception as e:      # never let the control group break the real bookkeeping
+        print(f"CONTROL: could not update controls ({e})")
     closed_today = [t for t in trades if t.get("status") == "closed" and t.get("date_close") == today]
     if closed_today:
         print("CLOSED TODAY (write a one-sentence lesson for each):")

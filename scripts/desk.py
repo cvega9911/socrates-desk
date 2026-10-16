@@ -14,6 +14,7 @@ JOURNAL = ROOT / "journal"
 REPORTS = ROOT / "reports"
 CANDIDATES = JOURNAL / "candidates.jsonl"
 TRADES = JOURNAL / "trades.jsonl"
+CONTROL = JOURNAL / "control.jsonl"
 WEEKLY = JOURNAL / "weekly.md"
 START_FILE = ROOT / "start_date.txt"
 
@@ -246,3 +247,24 @@ def r_multiple(direction, entry, stop, exit_price):
         return 0.0
     move = (exit_price - entry) if direction == "long" else (entry - exit_price)
     return round(move / risk, 3)
+
+
+def simulate_path(df, direction, entry, stop, target, start_date, horizon=TIME_STOP_DAYS):
+    """Walk completed daily bars AFTER start_date. Returns (R, reason) or None if still unresolved.
+    Same-day target+stop counts as a stop; a gap through the stop fills at the open (can be worse than -1R);
+    no target/stop within `horizon` bars exits at the last close (time stop)."""
+    path = df[df["date"] > start_date].head(horizon)
+    for _, bar in path.iterrows():
+        if direction == "long":
+            hit_stop, hit_tgt = bar["low"] <= stop, bar["high"] >= target
+            stop_fill = float(bar["open"]) if bar["open"] <= stop else stop
+        else:
+            hit_stop, hit_tgt = bar["high"] >= stop, bar["low"] <= target
+            stop_fill = float(bar["open"]) if bar["open"] >= stop else stop
+        if hit_stop:
+            return r_multiple(direction, entry, stop, stop_fill), "stop"
+        if hit_tgt:
+            return r_multiple(direction, entry, stop, target), "target"
+    if len(path) < horizon:
+        return None
+    return r_multiple(direction, entry, stop, float(path["close"].iloc[-1])), "time"

@@ -47,7 +47,7 @@ Make sure Socrates runs Python from that `.venv` (or tell him to run `source .ve
 ## 2. Test before going live
 
 ```bash
-python tests/test_desk.py                 # should end: ALL 48 CHECKS PASSED
+python tests/test_desk.py                 # should end: ALL 74 CHECKS PASSED
 python scripts/place.py --smoke-test      # places a 1-share SPY order far below market, confirms, cancels
 python scripts/score.py --mode briefing   # scores the universe with real data
 ```
@@ -87,6 +87,12 @@ gh repo create socrates-desk --private --source=. --push
 
 On mobile the Git plugin needs a GitHub personal access token (GitHub → Settings → Developer settings → Fine-grained tokens, read access to the socrates-desk repo) and is experimental. If it's flaky, Obsidian Sync (paid) or simply reading the files in the GitHub app is more reliable.
 
-## 6. Rules about the rules
+## 6. The random control group (automatic)
+
+Every DECISION run also draws 5 random trades (random symbol and direction, same entry/stop/target rules, same hard gates, score ignored) into `journal/control.jsonl`. They are never traded. `sync.py` resolves them on daily bars as they hit a target, a stop, or the 10-day time stop. The Friday review compares your real trades against them in section 5b and gives a verdict once there are 20+ closed real trades and 50+ resolved controls. The draw is seeded by date and rules version, so it can't be cherry-picked. Nothing to run; Socrates' prompt doesn't change.
+
+To draw controls for a day where DECISION already ran without them (only while the market is open): `.venv/bin/python scripts/score.py --mode controls`
+
+## 7. Rules about the rules
 
 No rule changes until 40 closed A+B trades. A change means: edit the prompt, bump `rules_version.txt` (v1.1), commit. The review script compares only trades from the current version.
