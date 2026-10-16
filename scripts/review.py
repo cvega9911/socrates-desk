@@ -248,8 +248,9 @@ def run(offline=False):
                 L.append(f"- Factor {factor}: " + "; ".join(parts))
         if len(study) >= 200 and days >= 10:
             r_obs, p_val = within_day_perm_p(study)
-            L.append(f"- Score vs R correlation {r_obs:+.3f}; within-day permutation p = {p_val:.3f} "
-                     f"({'the score predicts forward R beyond the day\'s market move' if p_val < 0.05 and r_obs > 0 else 'no reliable predictive power shown yet'}).")
+            verdict_txt = ("the score predicts forward R beyond the day's market move"
+                           if p_val < 0.05 and r_obs > 0 else "no reliable predictive power shown yet")
+            L.append(f"- Score vs R correlation {r_obs:+.3f}; within-day permutation p = {p_val:.3f} ({verdict_txt}).")
         else:
             L.append(f"- Significance test withheld: needs 200+ matured candidate-trades over 10+ decision days (have {len(study)} over {days}).")
         L.append("- Caveats: candidates on consecutive days overlap in time, so the effective sample is much smaller than the row "
