@@ -1,1 +1,1 @@
-PENDING
+{"date": "2026-10-16", "spy_close": 771.79, "equity": 99998.23}
