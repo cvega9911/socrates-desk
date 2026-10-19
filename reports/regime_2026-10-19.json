@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-19",
+  "themes": {
+    "broad": {
+      "long": 0,
+      "short": 2,
+      "why": "Broad/tech sold off hard week ending 10/17: SPY -1.97% w/w to 763.25, QQQ -5.52% to 709.80, IWM -3.05% to 270.44; DOW outperformed (Moby Tick Trading 10/19) — regime is risk-off, against risk-asset longs"
+    },
+    "tech": {
+      "long": 0,
+      "short": 2,
+      "why": "QQQ -5.52% w/w to 709.80 on AI-debt skepticism (Vittarthi 10/17); 10Y 5.10% near 24-yr high (CNBC 10/19) presses long-duration growth valuations"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "Mixed: staples hold but discretionary/tech-linked names dragged the broad tape; no decisive regime signal (Moby Tick 10/19)"
+    },
+    "energy": {
+      "long": 1,
+      "short": 0,
+      "why": "Brent $107.23, -2.39% on the day but +6.87% over 30d (TradingEconomics 10/19); multi-week uptrend intact, so neutral-positive — but NOT a full long: EIA STEO expects prices to FALL from the early-Oct peak (Brent -> $87 by 2Q27), and today is a -2% pullback"
+    },
+    "financials": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y 5.10% near 24-yr high (CNBC 10/19) supports NIM expansion; value/financials leading as Dow beat the S&P (-0.25%) on 10/17 (WSJ 10/17)"
+    },
+    "defensive": {
+      "long": 2,
+      "short": 0,
+      "why": "Risk-off week rotates capital into health care/staples — continuation of the 10/16 defensive bid (XLV +1.86% on 10/16, stockanalysis.com)"
+    },
+    "cyclicals": {
+      "long": 0,
+      "short": 1,
+      "why": "Rising yields + risk-off tape = headwind; no positive catalyst yet but not a breakdown (carried from 10/16)"
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.10% near 24-yr high (CNBC 10/19); TLT/IEF bearish — long-duration selling on rising rates is the strongest regime-aligned short this week"
+    },
+    "metals": {
+      "long": 0,
+      "short": 1,
+      "why": "REVERSAL of 10/16 metals-long: gold $4,173 at a ~two-month low, -3.91% over the past month (TradingEconomics 10/19; MarketWatch 10/19 'flirts with two-month low'); strong dollar (DXY ~101.9) weighs on gold/silver"
+    },
+    "dollar": {
+      "long": 2,
+      "short": 0,
+      "why": "DXY 101.84-101.96, just off the 18-month high of 102.00 (Yahoo/MarketWatch 10/19); rate-hike expectations keep the dollar firm — supports UUP long"
+    }
+  },
+  "symbols": {
+    "UUP": {
+      "long": 2,
+      "short": 0,
+      "why": "DXY ~101.9, near 18-month high (Yahoo 10/19) — dollar strength from rate expectations"
+    },
+    "XLE": {
+      "long": 1,
+      "short": 0,
+      "why": "Brent +6.87% 30d keeps the uptrend alive (TradingEconomics 10/19) but today's -2.39% and the EIA bearish path cap the long at neutral"
+    },
+    "USO": {
+      "long": 1,
+      "short": 0,
+      "why": "Same energy read as XLE: intact uptrend, today's pullback + EIA expected decline keep it neutral, not a 2"
+    },
+    "GLD": {
+      "long": 0,
+      "short": 1,
+      "why": "Gold ~$4,173 at a two-month low, -3.91% MoM (TradingEconomics/MarketWatch 10/19) — regime has turned bearish on metals vs the 10/16 long"
+    },
+    "SLV": {
+      "long": 0,
+      "short": 1,
+      "why": "Silver tracks the metals roll-over with gold; same two-month-low / strong-dollar headwind"
+    },
+    "GDX": {
+      "long": 0,
+      "short": 1,
+      "why": "Gold-miner names ride the same metals weakness as GLD/SLV this week"
+    },
+    "TLT": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.10% near 24-yr high (CNBC 10/19) — clean long-bond short"
+    },
+    "XLV": {
+      "long": 2,
+      "short": 0,
+      "why": "Defensive rotation leader this risk-off week (continuation of 10/16 XLV +1.86%)"
+    },
+    "JPM": {
+      "long": 2,
+      "short": 0,
+      "why": "NIM beneficiary of 5.10% 10Y; financials leading the value rotation (WSJ 10/17)"
+    },
+    "NVDA": {
+      "long": 0,
+      "short": 2,
+      "why": "Tech weakness: QQQ -5.52% w/w, AI-debt skepticism (Vittarthi 10/17); NVDA Q4 earnings 11/17 (>10 trading days out, so tradeable at decision with --earnings-checked)"
+    }
+  },
+  "catalysts": [
+    "No US tier-1 event this week (Oct 19-23): no CPI/PPI/FOMC/NFP/PCE. Light week -> regime trades are the live setup, no event lock needed at 10:15.",
+    "FOMC decision 14:00 ET + press conference 14:30 ET: Wed Oct 28 (TradingEconomics).",
+    "PCE headline/core: Thu Oct 29, 08:30 ET (TradingEconomics / Guggenheim calendar).",
+    "NFP: Fri Nov 6, 08:30 ET; CPI: Thu Nov 10 (Guggenheim 2026 calendar).",
+    "Watch: Michigan Consumer Sentiment Final incl. inflation expectations, Fri Oct 23, 10:00 ET; Initial Jobless Claims Wed Oct 21, 08:30 ET.",
+    "EARNINGS GATE: GOOGL Q3 10/28 is ~9 trading days out (WITHIN 10-day gate -> BLACKED at decision). MSFT/META/AMZN/AAPL Q3 Oct dates UNVERIFIED -> check at decision. NVDA Q4 11/17 is far out (tradeable with --earnings-checked)."
+  ]
+}
