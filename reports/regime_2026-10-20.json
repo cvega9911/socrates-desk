@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-20",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "Rebound after weekly selloff: Monday 10/19 Nasdaq +1.1%, S&P 500 +0.4%, Dow -0.1% (WSJ 10/19); but 10Y 5.14% near 24-yr high caps broad upside (TradingEconomics 10/19)"
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "Tech rebounded Monday as Nasdaq +1.1% and semiconductor/AI names bounced (WSJ 10/19, Yahoo QQQ 10/20 premarket); 10Y 5.14% near 24-yr high is a structural cap on long-duration growth (TradingEconomics 10/19)"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No decisive signal today; no tier-1 catalyst 10/20, no fresh consumer print (MarketWatch calendar 10/20)"
+    },
+    "energy": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent $109.51, +9.14% over past month, up ~78% YTD; WTI ~$103.32 (TradingEconomics 10/20, FT 10/20) — strong multi-week uptrend even as both soft ~0.3% intraday today"
+    },
+    "financials": {
+      "long": 2,
+      "short": 0,
+      "why": "Rising 10Y (5.14%) + hawkish Fed (targets raised to 3.75-4% in Sept) expands NIM; no fresh XLF print but regime structurally supportive (TradingEconomics 10/19, Fed calendar)"
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y 5.14% near 24-yr high structurally supports health care/staples, but Monday tech rebound pulled back the rotation; no fresh 10/19-20 defensive print to confirm (TradingEconomics 10/19)"
+    },
+    "cyclicals": {
+      "long": 0,
+      "short": 1,
+      "why": "Hawkish Fed + 10Y 5.14% near 24-yr high is a headwind for rate-sensitive cyclicals; energy strength the only bright spot, no positive broad catalyst (TradingEconomics 10/19)"
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.14% near 24-yr high, hawkish Fed holding 3.75-4%; long-duration bonds bearish (TradingEconomics 10/19)"
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold $4,163.61/oz 10/19, down 0.04% over 24h, consolidating after a strong YTD run; DXY ~101.8 near 52-wk high is a headwind, inflation fears a tailwind (Forbes 10/19, CNBC 10/20)"
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.77-101.72 on 10/20, down ~0.25%, near 52-wk high 102.95 — structurally strong on rate expectations but rolling over intraday (MarketWatch 10/20, CNBC 10/20)"
+    }
+  },
+  "symbols": {
+    "UUP": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.77-101.72 on 10/20, near 52-wk high 102.95 but softening ~0.25% intraday; rate-expectation-driven strength intact but rolling over (MarketWatch/CNBC 10/20)"
+    },
+    "XLE": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent $109.51 +9.14% over past month, up ~78% YTD; XLE +41.6% 1yr; strong uptrend intact despite ~0.3% intraday soft today (TradingEconomics 10/20, SSGA 10/19)"
+    },
+    "XOM": {
+      "long": 2,
+      "short": 0,
+      "why": "Top XLE holding (23.7% weight); energy uptrend on Brent $109.51 +9.14% 30d supports majors (TradingEconomics 10/20, SSGA 10/19)"
+    },
+    "TLT": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.14% near 24-yr high + hawkish Fed; long-bond bearish (TradingEconomics 10/19)"
+    },
+    "GLD": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold $4,163.61/oz 10/19, down 0.04% 24h, consolidating; DXY headwind vs inflation-fear tailwind (Forbes 10/19, CNBC 10/20)"
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "Monday rebound helped small caps, but 10Y 5.14% near 24-yr high pressures rate-sensitive small-cap equity; no decisive signal (TradingEconomics 10/19)"
+    },
+    "XLK": {
+      "long": 1,
+      "short": 1,
+      "why": "Tech rebounded Monday (Nasdaq +1.1%) but 10Y 5.14% near 24-yr high caps semis/AI long duration (WSJ 10/19, TradingEconomics 10/19)"
+    },
+    "NVDA": {
+      "long": 1,
+      "short": 1,
+      "why": "AI/chip rebound Monday, but high 10Y yield is a structural cap; mixed (WSJ 10/19, TradingEconomics 10/19)"
+    }
+  },
+  "catalysts": [
+    "NO tier-1 catalyst on 10/20 (TradingEconomics + MarketWatch calendar): no CPI, PPI, FOMC, NFP today",
+    "FOMC two-day meeting begins Mon Oct 27; DECISION + press conf (Chair Warsh) Wed Oct 28, 2:00 PM / 2:30 PM ET — current target 3.75-4% (Fed calendar)"
+  ]
+}
