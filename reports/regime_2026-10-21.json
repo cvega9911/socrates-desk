@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-21",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "Tuesday 10/20 close positive: Dow +1.02% to 52,497.42, S&P 500 +0.28% to 7,712.75, but Nasdaq 100 −0.13% to 29,490.28 (StreetStats close 10/20) — breadth positive, tech lagging; 10Y 5.13% in 24-yr-high region caps upside (TradingEconomics 10/21)"
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "Nasdaq 100 −0.13% Tuesday while Dow led +1.02% (StreetStats 10/20) — rotation OUT of tech into cyclicals/financials; 10Y 5.13% (TradingEconomics 10/21) near 24-yr high remains a structural cap on long-duration growth"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No decisive signal today; no US tier-1 catalyst 10/21, no fresh consumer print (BLS calendar 10/21 shows only 'Usual Weekly Earnings 10:00 ET', a tertiary series)"
+    },
+    "energy": {
+      "long": 1,
+      "short": 1,
+      "why": "Brent $108.13/bbl −1.57% 24h, WTI $100.41/bbl −0.97% 24h (Forbes 10/21 08:27 ET) — both slipped Tuesday; still +74.87% YTD WTI / +77.70% Brent so multi-week/multi-year uptrend intact, but today's dip softens the intraday read to neutral vs the 2/0 long of 10/20"
+    },
+    "financials": {
+      "long": 2,
+      "short": 0,
+      "why": "Dow +1.02% Tuesday leading the tape (StreetStats 10/20) + 10Y 5.13% near 24-yr high (TradingEconomics 10/21) expands net interest margins; hawkish Fed holding 3.75-4% (target raised Sept) structurally supports financials"
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y 5.13% near 24-yr high supports health care/staples, but Tuesday's rotation was INTO cyclicals (Dow +1.02%) not defensives; no fresh 10/21 defensive print to confirm (TradingEconomics 10/21)"
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Dow +1.02% Tuesday (StreetStats 10/20) shows cyclicals leading the rotation, but 10Y 5.13% near 24-yr high is a structural headwind for rate-sensitive cyclicals — net neutral, mixed signals"
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.13% (TradingEconomics 10/21, +0.02pt on the day) in 24-yr-high region + hawkish Fed holding 3.75-4%; long-duration bonds structurally bearish"
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold $4,125.80/oz +$1.70 on the day (Kitco 10/21 08:45 ET), consolidating near $4,130 after a strong YTD run; DXY 101.69 is a mild headwind but inflation fears are the dominant tailwind"
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.6894 (TradingEconomics 10/21, −0.01% on the day), +1.08% MoM, near 52-wk high 102.95 — rate-expectation-driven strength intact but flat on the day"
+    }
+  },
+  "symbols": {
+    "UUP": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.6894 on 10/21, −0.01% on the day, near 52-wk high 102.95 — structurally firm on rate expectations but flat intraday (TradingEconomics 10/21)"
+    },
+    "XLE": {
+      "long": 1,
+      "short": 1,
+      "why": "Brent $108.13 −1.57% 24h, WTI $100.41 −0.97% 24h (Forbes 10/21) — both slipped Tuesday; still +74.87% YTD WTI / +77.70% Brent so uptrend intact but today's dip neutralizes the 2/0 long of 10/20"
+    },
+    "XOM": {
+      "long": 1,
+      "short": 1,
+      "why": "Top XLE holding; oil dip to Brent $108.13 / WTI $100.41 (Forbes 10/21) is a short-term headwind even though the multi-week uptrend (+74.87% YTD WTI) remains intact"
+    },
+    "TLT": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y 5.13% in 24-yr-high region + hawkish Fed holding 3.75-4%; long-bond bearish (TradingEconomics 10/21)"
+    },
+    "GLD": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold $4,125.80/oz +$1.70 (Kitco 10/21 08:45 ET), consolidating near $4,130 after strong YTD run; DXY headwind vs inflation-fear tailwind — net neutral"
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "S&P SmallCap 600 +1.34% Tuesday (StreetStats 10/20) shows small-cap participation, but 10Y 5.13% in 24-yr-high region pressures rate-sensitive small caps — net neutral"
+    },
+    "XLK": {
+      "long": 0,
+      "short": 1,
+      "why": "Nasdaq 100 −0.13% Tuesday (StreetStats 10/20) lags Dow +1.02% — rotation OUT of tech; 10Y 5.13% near 24-yr high caps long-duration growth — regime against a tech long, mildly supportive of a tech short"
+    },
+    "NVDA": {
+      "long": 0,
+      "short": 1,
+      "why": "Tech sector lagging Tuesday (Nasdaq 100 −0.13% vs Dow +1.02%, StreetStats 10/20); 10Y 5.13% in 24-yr-high region caps semis/AI — regime against a long, mildly supportive of a short"
+    }
+  },
+  "catalysts": [
+    "NO US tier-1 catalyst on 10/21/2026 — no CPI, PPI, FOMC, NFP, or PCE (BLS schedule: only 'Usual Weekly Earnings 10:00 AM ET'; TradingEconomics calendar: 00:15 ECB Lane Speech, 02:00 GB inflation releases only — neither is US tier-1)",
+    "FOMC two-day meeting begins Mon 10/27; DECISION + press conf (Chair Warsh) Wed 10/28, 14:00 / 14:30 ET — current target 3.75-4% (Fed calendar)",
+    "PCE headline/core Thu 10/29, 08:30 ET; NFP Fri 11/6, 08:30 ET; CPI Thu 11/10, 08:30 ET",
+    "META Q3 earnings reportedly Wed 10/21 (Yahoo Finance headline) — inside the 10-trading-day blackout for META stock, so META is blacked in the 10:15 Decision run; no other large-cap Q3 earnings gate flagged on the calendar this week"
+  ]
+}
