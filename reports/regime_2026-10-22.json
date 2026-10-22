@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-22",
+  "themes": {
+    "broad": {
+      "long": 2,
+      "short": 0,
+      "why": "Risk-on at records: S&P 500 closed 7,757.17 (prev 7,712.57, +0.58%) within 1% of all-time high, Nasdaq +1.1% best day in two weeks, Dow near record on a broad bounce (MarketWatch 10/21) — decisive uptrend; 10Y ~5.07% in 24-yr-high region is the lone structural headwind"
+    },
+    "tech": {
+      "long": 2,
+      "short": 0,
+      "why": "Flipped to tech-leading: Nasdaq +1.1% Wednesday, 'best day in two weeks' as AI/tech plays rallied (MarketWatch 10/21 livecoverage) — reverses the 10/20-21 rotation OUT of tech; 10Y ~5.07% near 24-yr high remains a cap on long-duration growth (dissent, not regime signal)"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No fresh US consumer print 10/22; Michigan Consumer Sentiment final was the Oct 10 cycle (TradingEconomics 10/22 calendar) — no decisive signal, neutral"
+    },
+    "energy": {
+      "long": 2,
+      "short": 0,
+      "why": "Strongest trend in the system: Brent rose to $111.79/bbl, +2.73% on the day, +8.45% MTD, +71.22% YTD; WTI ~$98.67 +1.56% (TradingEconomics/FT 10/22) — decisive multi-month uptrend confirmed by today's move"
+    },
+    "financials": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y ~5.07% in 24-yr-high region (TradingEconomics 10/22) expands net interest margins + Dow near an all-time high on 10/21 (MarketWatch 10/21) — regime supports a financials long"
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-on tape (S&P/Nasdaq at records, 10/21) means defensives lag on rotation; high 10Y still supports health/staples as income, but no decisive 10/22 defensive print (TradingEconomics 10/22) — neutral"
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Record-breadth uptrend (S&P 7,757, 10/21) supports cyclicals, but 10Y ~5.07% near 24-yr high pressures rate-sensitive industrials (TradingEconomics 10/22) — mixed, net neutral"
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y ~5.07% in 24-yr-high region (intraday off 5.13% prev close but still extreme; 52-wk high 5.37%) + hawkish Fed holding 4.0% target — long-duration structurally bearish; today's mild yield ebb is noise vs the structural high (TradingEconomics/MarketWatch 10/22)"
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold ~$4,126/oz +0.31%, consolidating after a strong YTD run (slipped off the $4,201 10/10 high); DXY 101.50 a mild headwind vs inflation-fear tailwind — net neutral (150currency/Kitco 10/22)"
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.50, down ~0.27% on the day (off 52-wk high 102.95) as yields eased intraday — still structurally firm on rate expectations but slipping today, net neutral (MarketWatch/TradingEconomics 10/22)"
+    }
+  },
+  "symbols": {
+    "XLE": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent $111.79 +2.73% on the day, +8.45% MTD, +71.22% YTD (TradingEconomics 10/22) — energy is the cleanest confirmed uptrend in the universe; regime strongly supports a long"
+    },
+    "XOM": {
+      "long": 2,
+      "short": 0,
+      "why": "Top XLE holding; Brent $111.79 +2.73% day / +71% YTD (TradingEconomics 10/22) — multi-month uptrend intact and accelerating today, regime supports the long"
+    },
+    "TLT": {
+      "long": 0,
+      "short": 2,
+      "why": "10Y ~5.07% in 24-yr-high region + hawkish Fed 4.0% target — long-bond structurally bearish; intraday yield ebb from 5.13% is noise vs the extreme level (TradingEconomics/MarketWatch 10/22)"
+    },
+    "GLD": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold ~$4,126/oz +0.31%, consolidating under the $4,130 area after the $4,201 10/10 high; DXY slipping but inflation-fear tailwind — neutral (150currency 10/22)"
+    },
+    "UUP": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.50, -0.27% on the day, just off 52-wk high 102.95 — rate-expectation strength intact but slipping today as yields fell, net neutral (MarketWatch/TradingEconomics 10/22)"
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "S&P 500 at a record (7,757, 10/21) shows broad participation, but 10Y ~5.07% in 24-yr-high region pressures rate-sensitive small caps (TradingEconomics 10/22) — net neutral"
+    },
+    "XLK": {
+      "long": 2,
+      "short": 0,
+      "why": "Flipped to tech-leading: Nasdaq +1.1% 'best day in two weeks' on an AI rally (MarketWatch 10/21) — regime now supports a tech long; 10Y ~5.07% is the dissent, not the regime signal"
+    },
+    "NVDA": {
+      "long": 2,
+      "short": 0,
+      "why": "Tech leading the 10/21 tape (Nasdaq +1.1%, AI plays rallying, MarketWatch 10/21) — regime now supports a long; persistent 10Y ~5.07% in 24-yr-high region is the structural cap (dissent)"
+    }
+  },
+  "catalysts": [
+    "NO US tier-1 catalyst on Thursday 10/22/2026 — no CPI, PPI, FOMC, NFP, or PCE. US releases today are all tertiary: Initial/Continuing Jobless Claims (08:30 ET, prior 199K/1710K), CB Leading Index MoM (10:00), EIA Natural Gas Stocks (10:30), Kansas Fed Indices (11:00) — none move regime (TradingEconomics 10/22 calendar)",
+    "FOMC two-day meeting begins Tue 10/27; DECISION + press conference (Chair Warsh) Wed 10/28, 14:00 / 14:30 ET — current target 4.0% (FedRateCalc + TradingEconomics consensus 4.0%; fedratecalc fed calendar)",
+    "PCE headline + core Thu 10/29, 08:30 ET (SEP, prior headline 0.3% MoM / core 3.0% YoY, TradingEconomics 10/22) — first US tier-1 catalyst this week",
+    "NFP Fri 11/6, 08:30 ET (BLS empsit schedule + FedRateCalc, confirmed); CPI Tue 11/10 08:30 ET (BLS schedule); PPI Fri 11/13 08:30 ET (BLS ppi schedule)",
+    "Q3 earnings season is live (META reportedly reported ~10/21 per prior regime). Any universe stock reporting within 10 trading days is gated in the 10:15 DECISION run via --exclude / --earnings-checked; none newly flagged for the 10/22 briefing window"
+  ]
+}
