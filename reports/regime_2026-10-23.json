@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-23",
+  "themes": {
+    "broad": {
+      "long": 0,
+      "short": 1,
+      "why": "Broad RISK-OFF open: S&P 500 fell 1.20% to 7,663.39, Nasdaq -2.6% to 26,008.86 (StreetStats 10/22) on a tech/AI selloff — 'AI angst returns' (MarketWatch 10/22). Only the Dow held (+0.02%, 52,867) and small caps (+0.65%, StreetStats 10/22). Regime is against a broad long; net neutral-leaning-short"
+    },
+    "tech": {
+      "long": 0,
+      "short": 2,
+      "why": "Tech is the WORST-performing sector (MarketWatch 10/22): Nasdaq -2.6%, chip stocks 'post big drop,' CoreWeave -10%, Meta -6.98% post-earnings (Yahoo 10/22). Direct reversal of the 10/21 tech-leading tape (Nasdaq had +1.1%). 10Y yield dropping to 4.97% is a haven signal, not growth support. Regime strongly supports a tech short"
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No US consumer data Fri 10/23 (NEVER in this window); retail sales is next Tue 10/27 (TradingEconomics calendar). No decisive consumer print — neutral"
+    },
+    "energy": {
+      "long": 2,
+      "short": 0,
+      "why": "Strongest confirmed trend: Brent surging to $113.21/bbl 5-month high, WTI ~$99-100, +2.39% day on Iran-US escalation + deadly Saudi attack (Forbes/Fortune/Barchart/Yahoo 10/22). 'Investors flocked to bonds as oil surged to 5-month high' (Yahoo 10/22). Decisive multi-month uptrend accelerating today"
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "Banks mixed: high 10Y still supports NIM, but Blackstone +8.38% on 'upcoming investment sales' outlook despite elevated borrowing costs (Yahoo 10/22) offsets a rate-sensitive equity selloff. Net neutral"
+    },
+    "defensive": {
+      "long": 2,
+      "short": 0,
+      "why": "Textbook risk-off flight-to-safety: VIX 'fear gauge jumps' (MarketWatch 10/22) + yields dropping + tech selloff bid defensives (small caps +0.65% while mega-cap tech led the fall) — regime supports a defensive long"
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Dow +0.02% (resilient vs Nasdaq) shows some cyclical resilience, but the tape is risk-off (S&P -1.2%, Nasdaq -2.6%) — cyclicals broadly pressured by the rotation out of beta. Net neutral"
+    },
+    "bonds": {
+      "long": 1,
+      "short": 1,
+      "why": "Flight-to-safety: 10Y yield DOWN 0.16pt to ~4.97%, 'biggest drop since 2025' (MarketWatch 10/22) — supports a bonds-long TODAY. But the 4.97% level is still extreme (52-wk high 5.37%) + hawkish Fed 4.0% keeps the medium-term regime bond-short. Today's drop is an event, not a regime flip — net neutral, watch"
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold firm to ~$4,095/oz (goldprice.org 10/22) on the haven bid + dollar weakness (DXY 101.61, -0.17%) — a modest haven tailwind. But gold -5.89% over the past month is a warning. Net neutral"
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY 101.61, -0.17% on the day off the 52-wk high 102.95 (Yahoo/Investing 10/22). Slipping as yields fall, but a small move; structurally still firm on rate expectations. Net neutral"
+    }
+  },
+  "symbols": {
+    "XLE": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent $113.21 5-mo high, WTI ~$99-100, +2.39% day on Iran-US escalation (Forbes/Fortune/Barchart 10/22) — cleanest confirmed uptrend; regime strongly supports a long"
+    },
+    "XOM": {
+      "long": 2,
+      "short": 0,
+      "why": "Top XLE holding; Brent $113.21 5-mo high, +71% YTD (Forbes 10/22) — multi-month uptrend intact and accelerating today, regime supports the long"
+    },
+    "USO": {
+      "long": 2,
+      "short": 0,
+      "why": "Oil the regime's cleanest signal: Brent +2.39% to $113.21 5-mo high (Forbes 10/22). USO follows Brent; regime strongly supports a long"
+    },
+    "TLT": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y yield DOWN to ~4.97% today supports a bonds-long now, but 4.97% is still an extreme level + hawkish Fed 4.0% target keeps medium-term regime bearish — net neutral, watch"
+    },
+    "GLD": {
+      "long": 2,
+      "short": 0,
+      "why": "Gold firm ~$4,095/oz on the haven bid + dollar weakness as yields fled (goldprice.org/Yahoo 10/22); gold 'fled to bonds' alongside equities — modest haven tailwind, regime supports a long"
+    },
+    "UUP": {
+      "long": 0,
+      "short": 1,
+      "why": "DXY 101.61, -0.17% off the 52-wk high 102.95 as yields eased (Yahoo/Investing 10/22) — a mild dollar-weak signal; structurally still firm but net neutral-to-soft"
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "S&P MidCap 400 -0.79% but S&P SmallCap 600 +0.65% (StreetStats 10/22) — small caps actually held/risk-ON relative to mega-cap; mixed, net neutral"
+    },
+    "XLK": {
+      "long": 0,
+      "short": 2,
+      "why": "Tech the worst sector, chip stocks -big (MarketWatch 10/22); XLK directly tracks the tech selloff — regime strongly supports a short (dissent: a sharp 10Y drop can bid long-duration growth)"
+    },
+    "NVDA": {
+      "long": 0,
+      "short": 2,
+      "why": "AI-trade worry is the headline driver of Thursday's selloff (Yahoo 10/22) — the core name in the rotation out; regime supports a short (dissent: a single stock can decouple on a name-specific event)"
+    },
+    "SMH": {
+      "long": 0,
+      "short": 2,
+      "why": "Semis the leading sector down, Chip stocks 'post big drop' + CoreWeave -10% on AI-cost-of-capital fears (MarketWatch/Yahoo 10/22) — regime strongly supports a shorts"
+    }
+  },
+  "catalysts": [
+    "NO US tier-1 catalyst Friday 10/23/2026 — no CPI, PPI, FOMC, NFP, or PCE. US rows on the TradingEconomics 10/23 calendar are all tertiary: Baker Hughes Oil/Total Rig Count (OCT/23, API Crude Oil -4.93M, EIA Crude Stocks, MBA Mortgage Applications, Retail Inventories ex Autos SEP) — none move the regime. Light day for event risk.",
+    "FOMC two-day meeting begins Tue 10/27; DECISION + press conference (Chair Warsh) Wed 10/28, 14:00 / 14:30 ET — current target 4.0% (Prior regime consensus; TradingEconomics 10/22 fedratecalc). Still the week's dominant macro event.",
+    "PCE headline + core Wed 10/29, 8:30 ET (SEP, prev headline 0.3% MoM / core 3.0% YoY) — first US tier-1 catalyst THIS week (MarketWatch/TradingEconomics calendar). Note: CPI is Tue 10/14 (already printed ahead), NOT this window.",
+    "Retail Sales MoM Tue 10/27 09:15 ET (prev 0.8%); Jobless Claims + EIA Crude Stocks Thu 10/29 (TradingEconomics 10/23 calendar)",
+    "EARNINGS GATE for the 10:15 DECISION run: Q3 earnings season live — META Q3 ~10/21, TSLA Q3 ~10/22, IBM 10/22, Blackstone 10/22 (Yahoo 10/22), SPCX gave back gains post-earnings. Any universe stock reporting within 10 trading days is gated via --exclude / --earnings-checked at 10:15. Check NVDA/GOOGL/AAPL/AMZN/META/TSLA/JPM/AVGO/XOM next-earnings dates; none newly flagged as blacked beyond META for the 10/23 window, verify at decision time."
+  ]
+}
