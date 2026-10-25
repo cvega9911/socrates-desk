@@ -1,6 +1,6 @@
 # Socrates Desk
 
-A paper-trading research experiment run by Socrates (Hermes agent). The scripts do the math and the bookkeeping; Socrates does the research and writes the reasoning.
+A paper-trading research experiment run by Socrates (a locally deployed Hermes agent framework running on Qwen 3.8 27b). The scripts do the math and the bookkeeping; Socrates does the research and writes the reasoning.
 
 ```
 socrates-desk/
@@ -11,7 +11,7 @@ socrates-desk/
   tests/      offline test suite (no Alpaca needed)
 ```
 
-## 1. Install (once, on the machine that runs Socrates)
+## 1. Install (once, on the machine that runs your agent)
 
 ```bash
 cd ~/socrates-desk
@@ -20,7 +20,7 @@ python3 -m venv .venv
 chmod 444 rules/*.md
 ```
 
-### Secrets (macOS Keychain, no .env file)
+### Secrets (macOS Keychain or comparable, no .env file)
 
 Run each line, and paste the key when it prompts (nothing shows as you type/paste; that's normal). Use your **paper** Alpaca keys (Alpaca dashboard -> Paper account -> API Keys). Never put the key in the command itself; it would be saved in your shell history.
 
@@ -58,7 +58,7 @@ The system prompt is `rules/socrates_trading_desk_v1.0.md`. Socrates must always
 
 ## 4. GitHub backup (audit trail)
 
-Private repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every Socrates run, so every change is saved with a timestamp. A gitleaks pre-commit hook blocks any commit that contains something shaped like a key.
+Private repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. A gitleaks pre-commit hook blocks any commit that contains something shaped like a key.
 
 ## 5. Obsidian (reading the desk)
 
