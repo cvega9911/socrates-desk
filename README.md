@@ -1,6 +1,6 @@
-# Socrates Desk
+# Socrates's Desk
 
-A paper-trading research experiment run by Socrates (a locally deployed Hermes agent framework running on Qwen 3.8 27b). The scripts do the math and the bookkeeping; Socrates does the research and writes the reasoning.
+A paper-trading research experiment run by Socrates (a locally deployed Hermes agent framework running on Qwen 3.8 27b). Since small models are prone to accuracy issued the workflow ensures that the scripts do the math and the bookkeeping so that Socrates (or whatever agent you may use) can focus on research and writing the reasoning.
 
 ```
 socrates-desk/
@@ -20,7 +20,7 @@ python3 -m venv .venv
 chmod 444 rules/*.md
 ```
 
-### Secrets (macOS Keychain or comparable, no .env file)
+### Secrets (macOS Keychain, infisical or comparable secrets manager, no .env file)
 
 Run each line, and paste the key when it prompts (nothing shows as you type/paste; that's normal). Use your **paper** Alpaca keys (Alpaca dashboard -> Paper account -> API Keys). Never put the key in the command itself; it would be saved in your shell history.
 
@@ -58,7 +58,7 @@ The system prompt is `rules/socrates_trading_desk_v1.0.md`. Socrates must always
 
 ## 4. GitHub backup (audit trail)
 
-Private repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. A gitleaks pre-commit hook blocks any commit that contains something shaped like a key.
+repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. A gitleaks pre-commit hook blocks any commit that contains something shaped like a key.
 
 ## 5. Obsidian (reading the desk)
 
@@ -66,7 +66,7 @@ Obsidian -> "Open folder as vault" -> pick `socrates-desk`. No plugin needed on 
 
 ## 6. The random control group (automatic)
 
-Every DECISION run also draws 5 random trades (random symbol and direction, same entry/stop/target rules, same hard gates, score ignored) into `journal/control.jsonl`. They are never traded. `sync.py` resolves them on daily bars as they hit a target, a stop, or the 10-day time stop. The draw is seeded by date and rules version, so it can't be cherry-picked. Nothing to run; Socrates' prompt doesn't change.
+Every DECISION run also draws 5 random trades (random symbol and direction, same entry/stop/target rules, same hard gates, score ignored) into `journal/control.jsonl`. They are never traded. `sync.py` resolves them on daily bars as they hit a target, a stop, or the 10-day time stop. The draw is seeded by date and rules version, so it can't be cherry-picked. Nothing to run? Socrates' prompt doesn't change.
 
 To draw controls for a day where DECISION already ran without them (only while the market is open): `.venv/bin/python scripts/score.py --mode controls`
 
@@ -79,4 +79,4 @@ To draw controls for a day where DECISION already ran without them (only while t
 
 ## 8. Rules about the rules
 
-No trading-rule changes until 40 closed A+B trades. A change means: edit the prompt, bump `rules_version.txt` (v1.1), record it in `rules/CHANGELOG.md`, commit. The review compares only trades from the current version. Measurement-only changes (logging, reports) are recorded in the changelog but don't change which trades are taken.
+No trading-rule changes until 40 closed A+B trades. A change means: edit the prompt, bump `rules_version.txt` (v1.1), record it in `rules/CHANGELOG.md`, commit. The review compares only trades from the current version. Measurement only changes (logging, reports) are recorded in the changelog but don't change which trades are taken (for continuity purposes).
