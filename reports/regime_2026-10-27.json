@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-27",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "S&P and Nasdaq jumped on Mon 10/26 on the Anthropic IPO announcement (TheStreet 10/26); tape net mixed with record-near prints but no single clean trend. Neutral."
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "AI/semis selloff from 10/22 cooled into 10/26 (TheStreet 'Nasdaq, S&P 500 jump after Anthropic IPO', 10/26). QQQ stabilizing near records. Neutral, mild long on the recovery."
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No US consumer print today except New Home Sales 10:00 ET + Consumer Confidence 10:00 ET (MarketWatch 10/27 calendar). No decisive read pre-data. Neutral."
+    },
+    "energy": {
+      "long": 2,
+      "short": 0,
+      "why": "Cleanest confirmed regime trend: Brent ~$115.95/bbl, WTI ~$102.04/bbl (FT.com 10/27), up +64% YoY (Macrotrends WTI 10/26). Multi-month uptrend intact and elevated. Regime supports the long."
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y yield ~4.97% (TradingEconomics 10/27) supports NIM, but yields easing off the 5.37% 52-wk high is a soft counter-signal ahead of the FOMC. Mixed. Neutral."
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Haven bid into the 10/28 FOMC decision (14:00 ET) keeps defensives elevated; but yields easing + equities near records reduce the flight-to-safety premium. Mixed. Neutral."
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Rotation pressure from the week earlier faded into 10/26's gains; no single-day cyclicals read today. Watch Durable Goods 08:30 ET. Neutral."
+    },
+    "bonds": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y yield ~4.97% (TradingEconomics 10/27), down off the 5.37% 52-wk high (CNBC US10Y) — supports a bonds-long in the session but still extreme + hawkish Fed (3.75-4.00% target) keeps the medium-term regime bond-cautious. Net neutral, watch the FOMC."
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold spot ~$3,995-4,022/oz, modestly down on the day (-0.16% to -0.74%, sdbullion/goldprice.org 10/27), off the recent ~$4,026 high (Forbes 10/26). Modest softening vs an elevated level. Neutral."
+    },
+    "dollar": {
+      "long": 0,
+      "short": 1,
+      "why": "DXY ~101.84-102.25, off the 52-wk high 102.95 (CNBC .DXY / Yahoo DX-Y 10/26), slipping as yields ease but structurally firm on rate expectations. Net soft-to-neutral, mild short bias."
+    }
+  },
+  "symbols": {
+    "XLE": {
+      "long": 2,
+      "short": 0,
+      "why": "Brent ~$115.95 / WTI ~$102.04 (FT.com 10/27), multi-month uptrend intact and +64% YoY. Regime strongly supports the long."
+    },
+    "XOM": {
+      "long": 2,
+      "short": 0,
+      "why": "Top XLE holding; Brent ~$116 / WTI ~$102, monthly uptrend intact (FT.com 10/27). Regime supports the long."
+    },
+    "USO": {
+      "long": 2,
+      "short": 0,
+      "why": "Oil is the regime's cleanest signal: Brent ~$116 / WTI ~$102 on a multi-month uptrend (FT.com 10/27). USO follows Brent; regime supports a long."
+    },
+    "TLT": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y yield ~4.97%, down off the 52-wk high 5.37% (TradingEconomics/CNBC 10/27) supports a bonds-long in the session, but 4.97% is still extreme + hawkish Fed 3.75-4.00% target keeps the medium-term regime bond-cautious. Net neutral, watch the FOMC."
+    },
+    "GLD": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold spot ~$3,995-4,022/oz, modestly down on the day (sdbullion/goldprice.org 10/27), off the ~$4,026 recent high. Slight day-level headwind vs an elevated level. Net neutral."
+    },
+    "UUP": {
+      "long": 0,
+      "short": 1,
+      "why": "DXY ~101.84-102.25 off the 52-wk high 102.95 as yields ease (CNBC/Yahoo 10/26) — softening but structurally firm; net neutral-to-soft, mild short bias."
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "Small caps mixed through the week's rotation; no decisive small-cap read on 10/27. Neutral."
+    },
+    "QQQ": {
+      "long": 1,
+      "short": 1,
+      "why": "The 10/22 Nasdaq selloff cooled into 10/26's jump on the Anthropic IPO (TheStreet 10/26); QQQ stabilizing near records. Neutral, mild long on the recovery."
+    },
+    "XLK": {
+      "long": 1,
+      "short": 1,
+      "why": "Tech the recent laggard is stabilizing as the AI selloff cooled; chip pressure easing into 10/26's gains. Net neutral."
+    },
+    "SMH": {
+      "long": 1,
+      "short": 1,
+      "why": "Semis under pressure from the 10/22 AI rout but cooling into 10/26 (TheStreet). The strong short tilt downgraded to neutral as the tape stabilizes."
+    },
+    "NVDA": {
+      "long": 1,
+      "short": 1,
+      "why": "AI-trade worry that drove 10/22 cooled into 10/26's gains (TheStreet); name-specific pressure eases. Net neutral."
+    },
+    "AVGO": {
+      "long": 1,
+      "short": 1,
+      "why": "Chip selloff cooling into 10/26; the strong short tilt downgraded to neutral as the tape stabilizes. Net neutral."
+    }
+  },
+  "catalysts": [
+    "FOMC two-day meeting BEGINS today, Mon 10/27 — DECISION + Chair Kevin Warsh press conference are Wed 10/28 at 14:00 / 14:30 ET (MarketWatch, Federal Reserve FOMC calendar). Fed funds target 3.75-4.00% after a +0.25 move last meeting. DECISION is >30 min away at the Mon 10:15 DECISION run, so NO event lock is needed today; PCE also later this week.",
+    "PCE headline + core, Thursday 10/29, 08:30 ET (Sep) — PCE M/M forecast 0.5% / prev 0.3%, Y/Y forecast 3.7% / prev 3.4%, Core M/M forecast 0.3% / prev 0.2%, Core Y/Y forecast 3.1% / prev 3.0% (MarketWatch calendar 10/26-11/06). The week's first big inflation print; NOT today.",
+    "NO CPI and NO PPI this week — both already printed earlier this month: CPI SEP +0.6% MoM (BLS 10/14), PPI SEP +1.3% final demand (BLS 10/15). This week is FOMC + PCE only.",
+    "Tertiary Mon 10/27: Durable Goods 08:30 ET (forecast +1.7%), S&P Cotality Case-Shiller (Aug) 09:00 ET, New Home Sales + Conference Board Consumer Confidence (Oct, forecast 81 vs prev 81.9) both 10:00 ET (MarketWatch 10/27 calendar). Light-to-moderate day for event risk; none are tier-1, so no event lock needed at the Mon 10:15 DECISION run.",
+    "THU 10/29 also carries the PCE complex; FRI 10/30 carries Employment Cost Index; next NFP is Fri 11/06 (MarketWatch/TradingEconomics 10/27).",
+    "EARNINGS GATE for the 10:15 DECISION run: check each universe stock's next-earnings date. Any symbol reporting within 10 trading days is gated via --exclude / --earnings-checked. Verify NVDA/GOOGL/AAPL/AMZN/TSLA/JPM/AVGO/XOM/META before placing."
+  ]
+}
