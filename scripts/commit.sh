@@ -9,12 +9,12 @@ cd "$(dirname "$0")/.." || { echo "BACKUP FAILED: desk folder not found. Tell Ch
 
 fail() { echo "BACKUP FAILED: $1 The files are still saved on this Mac. Tell Chris."; exit 1; }
 
-# 1. A run never changes code or rules. If something did, say so loudly (it is not committed here).
+# 1. A run never changes code or rules. If something did, stop: the edited code (maybe even this scan) can't be trusted.
 changed=$(git status --porcelain -- scripts rules rules_version.txt tests README.md requirements.txt .gitignore .githooks .github 2>/dev/null)
 if [ -n "$changed" ]; then
-  echo "WARNING: code or rules files were changed on this Mac and were NOT backed up:"
-  printf '%s\n' "$changed" | sed 's/^/  /'
-  echo "Socrates must never edit these. Tell Chris."
+  echo "Code or rules files were changed on this Mac:"
+  sed 's/^/  /' <<<"$changed"
+  fail "the desk's own code or rules were edited (see list), so nothing was backed up. Socrates must never edit these."
 fi
 
 # 2. Stage data only, and unstage anything else someone staged by hand.
@@ -41,7 +41,7 @@ upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null) |
 base=$(git merge-base HEAD "$upstream") || fail "could not compare with GitHub."
 foreign=$(git diff --name-only "$base" "$upstream" -- . ':(exclude)journal' ':(exclude)reports' ':(exclude)start_date.txt')
 if [ -n "$foreign" ]; then
-  fail "GitHub has code or rules changes this Mac hasn't reviewed ($(printf '%s' "$foreign" | tr '\n' ' ')). Chris must pull them by hand."
+  fail "GitHub has code or rules changes this Mac hasn't reviewed ($(tr '\n' ' ' <<<"$foreign")). Chris must pull them by hand."
 fi
 if ! git merge-base --is-ancestor "$upstream" HEAD; then
   if ! out=$(git rebase -q "$upstream" 2>&1); then

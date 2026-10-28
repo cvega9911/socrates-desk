@@ -22,7 +22,15 @@ logging.getLogger("urllib3").setLevel(logging.ERROR)   # retry warnings print fu
 
 
 class BrokerError(RuntimeError):
-    pass
+    def __init__(self, msg, status=None):
+        super().__init__(msg)
+        self.status = status      # HTTP status, or None for network errors / timeouts
+
+    @property
+    def definitely_not_accepted(self):
+        """A 4xx (other than timeout / rate limit) means Alpaca refused the request. Anything else (network error,
+        timeout, 5xx) may have been accepted on Alpaca's side, so the caller must look the order up later."""
+        return self.status is not None and 400 <= self.status < 500 and self.status not in (408, 429)
 
 
 class NotFound(BrokerError):
@@ -58,16 +66,16 @@ class RestBroker:
                 r = self.s.request(method, url, timeout=TIMEOUT, allow_redirects=False, **kw)
             except requests.RequestException as e:
                 # GETs were already retried by the session; POST/DELETE are not retried here on purpose.
-                raise BrokerError(f"{method} {url} -> network error: {type(e).__name__}: {e}") from e
+                raise BrokerError(f"{method} {url} -> network error: {type(e).__name__}: {e}", None) from e
             if r.status_code == 429 and method != "GET":   # rate limited: the request was not processed, safe to resend
                 time.sleep(2 * (attempt + 1))
                 continue
             if 300 <= r.status_code < 400:     # never follow a redirect: the key headers would go along with it
-                raise BrokerError(f"{method} {url} -> unexpected redirect {r.status_code}")
+                raise BrokerError(f"{method} {url} -> unexpected redirect {r.status_code}", r.status_code)
             if r.status_code == 404:
-                raise NotFound(f"{method} {url} -> 404: {r.text[:300]}")
+                raise NotFound(f"{method} {url} -> 404: {r.text[:300]}", 404)
             if r.status_code >= 400:
-                raise BrokerError(f"{method} {url} -> {r.status_code}: {r.text[:300]}")
+                raise BrokerError(f"{method} {url} -> {r.status_code}: {r.text[:300]}", r.status_code)
             return r.json() if r.text else {}
         raise BrokerError(f"{method} {url} -> rate limited 3 times")
 

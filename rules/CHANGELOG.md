@@ -23,11 +23,17 @@ trade, or changes to logging/measurement that do not affect which trades are tak
     splits after the logged date scaled out. The 5 controls resolved before this date used dividend-adjusted bars.
   - Controls skip stocks whose earnings date could not be verified; a failed shortable lookup aborts the day's
     draw (backfill later) instead of logging a long-only draw.
-  - Review: the primary test is now planned candidates vs random controls (both simulated the same way), a
-    two-sided block permutation test by ISO week at alpha 0.05 with 20 planned / 50 controls / 10 decision days;
-    every other table is labelled exploratory. Calibration leaves out time-stop exits and pre-base-rate trades.
+  - Review: the primary test is now planned candidates vs random controls (both simulated the same way), each
+    planned trade measured against same-day, same-direction controls, averaged per fortnight, sign-flip test on the
+    fortnights; needs 20 planned / 50 controls / 10 decision days / 12 fortnights; "better" at p < 0.04, "worse" at
+    p < 0.05 (false-call rates checked by simulation, about 2.5% each). Every other table is labelled exploratory. Calibration leaves out time-stop exits and pre-base-rate trades.
     "This week" is exactly 7 days. Re-running the review replaces that day's section.
   - Anti-tampering: rules_version.txt must match the version in the code; DECISION can't be silently rerun
     (--force is logged); exclusions need a stock and a recorded reason; every candidate row records which regime
     file scored it.
+  - Scoring uses split-adjusted bars (not dividend-adjusted) so stops, targets and ATR are in the same real-price
+    terms as the live entry. Dividend adjustment had shifted 60-day levels by about the dividend (around 1 ATR for
+    TLT/IEF).
+  - Placement re-checks every order against the journal's plan record and the live risk limits; stock exclusions
+    must name an earnings date inside the 10-trading-day window; hand-checked earnings need a next_earnings date.
 

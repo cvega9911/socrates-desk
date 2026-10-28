@@ -103,21 +103,36 @@ def load_order_file(path):
         raise D.DeskError(f"REFUSED: order file is not valid JSON ({e}).")
     if not isinstance(data, dict):
         raise D.DeskError("REFUSED: order file must be a JSON object.")
-    extra = set(data) - {"symbol", "p_target", "thesis", "invalidation", "dissent", "earnings_checked", "earnings_note"}
+    extra = set(data) - {"symbol", "p_target", "thesis", "invalidation", "dissent", "earnings_checked", "earnings_note",
+                         "next_earnings"}
     if extra:
         raise D.DeskError(f"REFUSED: unknown keys in order file: {', '.join(sorted(extra))}.")
     return data
 
 
-def verify_plan(pj, plan_text, c, b, today):
-    """The plan must be exactly what score.py wrote (fingerprint logged in the journal), and the order itself must
-    make sense on its own, so a hand-edited or forged plan file can never place an arbitrary order."""
+def verify_plan(pj, plan_text, c, b, today, recheck_limits=True):
+    """The order must be exactly what score.py planned in its LATEST run today (plan fingerprint and the plan's own
+    candidate row in the journal), and it must still fit every risk limit against live positions right now. So a
+    stale, restored, edited or forged plan can never place an order the rules wouldn't."""
+    cands = [r for r in D.read_jsonl(D.CANDIDATES) if r.get("date") == today and str(r.get("run", "")).startswith("decision")]
+    if not cands:
+        raise D.DeskError("REFUSED: no DECISION run is logged for today. Nothing sent. Tell Chris.")
+    def run_n(r):
+        m = re.search(r"rerun(\d+)$", str(r.get("run", "")))
+        return int(m.group(1)) if m else 0
+    latest = max(run_n(r) for r in cands)
+    latest_rows = [r for r in cands if run_n(r) == latest]
     sha = hashlib.sha256(plan_text.encode()).hexdigest()
-    logged = {r.get("plan_sha") for r in D.read_jsonl(D.CANDIDATES)
-              if r.get("date") == today and r.get("run") == pj.get("run", "decision")}
-    if sha not in logged:
-        raise D.DeskError("REFUSED: plan file does not match the plan score.py logged today (it was edited or "
-                          "replaced). Nothing sent. Tell Chris.")
+    if pj.get("run", "decision") != latest_rows[0].get("run") or sha not in {r.get("plan_sha") for r in latest_rows}:
+        raise D.DeskError("REFUSED: plan file is not the plan from today's latest DECISION run (it was edited, replaced "
+                          "or restored). Nothing sent. Tell Chris.")
+    row = next((r for r in latest_rows if r.get("symbol") == c["symbol"]), None)
+    if not row or row.get("action") != "planned":
+        raise D.DeskError(f"REFUSED: the journal does not show {c['symbol']} as planned in today's DECISION run.")
+    for k in ("direction", "tier", "entry", "stop", "target", "shares"):
+        if row.get(k) != c.get(k):
+            raise D.DeskError(f"REFUSED: plan and journal disagree on {k} for {c['symbol']}. Nothing sent. Tell Chris.")
+
     def num(k):
         v = c.get(k)
         if isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0:
@@ -131,15 +146,39 @@ def verify_plan(pj, plan_text, c, b, today):
         raise D.DeskError(f"REFUSED: plan share count {shares!r} is invalid.")
     if not ((c["direction"] == "long" and stop < entry < target) or (c["direction"] == "short" and target < entry < stop)):
         raise D.DeskError("REFUSED: stop/target are on the wrong side of the entry.")
-    rr = abs(target - entry) / abs(entry - stop)
-    if rr < D.MIN_RR - 0.01 or abs(rr - float(c.get("rr", -1))) > 0.02:
-        raise D.DeskError(f"REFUSED: R:R {rr:.2f} doesn't match the plan ({c.get('rr')}) or is below {D.MIN_RR}.")
+    if not rr_matches(entry, stop, target, c.get("rr")):
+        raise D.DeskError(f"REFUSED: R:R doesn't match the plan ({c.get('rr')}) or is below {D.MIN_RR}.")
     equity = float(b.account()["equity"])
     plan_eq = float(c.get("equity_at_plan") or equity)
     if abs(plan_eq - equity) / equity > 0.05:
         raise D.DeskError("REFUSED: account equity moved more than 5% since the plan was made. Tell Chris.")
     if shares > D.size(plan_eq, D.RISK_PCT[c["tier"]], entry, stop):
         raise D.DeskError("REFUSED: the plan's share count is larger than the risk rules allow.")
+
+    # the risk limits again, against what is live right now (earlier orders from the same plan included).
+    # Skipped only when finishing an interrupted placement of this same order, which already passed them.
+    risk = round(shares * abs(entry - stop), 2)
+    c["risk_dollars"] = risk
+    if not recheck_limits:
+        return
+    positions = b.positions()
+    orders = b.open_orders()
+    jopen = D.open_trades()
+    tracked = {t["symbol"] for t in jopen}
+    busy = {p["symbol"] for p in positions} | {o["symbol"] for o in orders} | tracked
+    if c["symbol"] in busy:
+        raise D.DeskError(f"REFUSED: risk rule 5: already have a position or order in {c['symbol']}.")
+    if len(busy) >= D.MAX_POSITIONS:
+        raise D.DeskError("REFUSED: risk rule 2: already at the 5-position limit.")
+    open_risk = sum(float(t.get("risk_dollars") or 0) for t in jopen)
+    open_risk += sum(equity * D.RISK_PCT["A"] for s in ({p["symbol"] for p in positions} | {o["symbol"] for o in orders})
+                     if s not in tracked)
+    if open_risk + risk > equity * D.MAX_OPEN_RISK_PCT + 0.01:
+        raise D.DeskError("REFUSED: risk rule 3: total open risk would exceed 2.5%.")
+    theme = D.THEME_OF.get(c["symbol"])
+    if sum(1 for s in busy if D.THEME_OF.get(s) == theme) >= D.MAX_PER_THEME:
+        raise D.DeskError(f"REFUSED: risk rule 4: already 2 positions in theme '{theme}'.")
+    c["risk_dollars"] = risk
     px = b.latest_prices([c["symbol"]]).get(c["symbol"], {})
     ref = px.get("last") or ((px.get("bid", 0) + px.get("ask", 0)) / 2)
     if ref and abs(ref - entry) / entry > 0.03:
@@ -147,18 +186,30 @@ def verify_plan(pj, plan_text, c, b, today):
                           "Nothing sent; report it as a skipped order.")
 
 
-def check_earnings_note(b, today, note):
-    """An earnings date written by hand must be a real date beyond the 10-trading-day blackout window."""
-    m = re.search(r"\d{4}-\d{2}-\d{2}", note or "")
-    if not m:
-        raise D.DeskError('REFUSED: "earnings_checked" needs "earnings_note" with the next earnings date as YYYY-MM-DD '
-                          'and the source, e.g. "next earnings 2026-11-20 (investor.nvidia.com)".')
+def rr_matches(entry, stop, target, rr_plan):
+    """The plan's rr was computed before stop/target were rounded to cents, so allow exactly that much rounding."""
+    try:
+        rr_plan = float(rr_plan)
+    except (TypeError, ValueError):
+        return False
+    rr = abs(target - entry) / abs(entry - stop)
+    tol = 0.005 * (1 + rr) / abs(entry - stop) + 0.006
+    return rr_plan >= D.MIN_RR and abs(rr - rr_plan) <= tol
+
+
+def check_next_earnings(b, today, next_earnings):
+    """A hand-checked earnings date must be a real date beyond the 10-trading-day blackout window."""
+    if not isinstance(next_earnings, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", next_earnings or ""):
+        raise D.DeskError('REFUSED: "earnings_checked" needs "next_earnings": "YYYY-MM-DD" (the date you found) and '
+                          '"earnings_note" with the source.')
+    if next_earnings < today:
+        raise D.DeskError(f"REFUSED: next_earnings {next_earnings} is in the past; give the NEXT report date.")
     try:
         window_end = D.trading_days_ahead(b, today, 10)
     except Exception as e:
         raise D.DeskError(f"MARKET CALENDAR UNAVAILABLE ({type(e).__name__}); can't check the earnings date. Tell Chris.")
-    if m.group(0) <= window_end:
-        raise D.DeskError(f"REFUSED: earnings on {m.group(0)} is inside the 10-trading-day blackout (through "
+    if next_earnings <= window_end:
+        raise D.DeskError(f"REFUSED: earnings on {next_earnings} is inside the 10-trading-day blackout (through "
                           f"{window_end}). Do not place it; report why.")
 
 
@@ -171,13 +222,14 @@ def _update(trade_id, **fields):
 
 
 def place(symbol, thesis, invalidation, dissent, p_target, earnings_checked=False, dry_run=False, text_source="file",
-          earnings_note=None):
+          earnings_note=None, next_earnings=None):
     with D.journal_lock():
         return _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dry_run, text_source,
-                      earnings_note)
+                      earnings_note, next_earnings)
 
 
-def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dry_run, text_source, earnings_note):
+def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dry_run, text_source, earnings_note,
+           next_earnings):
     today = D.today_str()
     rv = D.rules_version()
     if not isinstance(symbol, str) or not re.fullmatch(r"[A-Z]{1,5}", symbol or ""):
@@ -205,8 +257,9 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
     thesis, invalidation, dissent = (clean_text(n, v) for n, v in
                                      (("thesis", thesis), ("invalidation", invalidation), ("dissent", dissent)))
     if c.get("earnings_unverified") and not earnings_checked:
-        raise D.DeskError(f"REFUSED: {symbol} earnings date unverified. Check it; if no earnings in 10 trading days, set "
-                          '"earnings_checked": true (and "earnings_note": "<date and source>") in the order file.')
+        raise D.DeskError(f"REFUSED: {symbol} earnings date unverified. Look it up; if it is more than 10 trading days "
+                          'away, set "earnings_checked": true, "next_earnings": "YYYY-MM-DD" and "earnings_note": "<source>" '
+                          "in the order file.")
 
     trade_id = f"{today}-{symbol}-{c['direction']}"
     rows = D.read_jsonl(D.TRADES)
@@ -232,9 +285,9 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
         raise D.DeskError(f"MARKET CLOCK UNAVAILABLE ({type(e).__name__}). Nothing sent. Tell Chris.")
     if not (trading_day and is_open):
         raise D.DeskError("REFUSED: the market is not open right now. Nothing sent.")
-    verify_plan(pj, plan_text, c, b, today)
+    verify_plan(pj, plan_text, c, b, today, recheck_limits=not retry_submitting)
     if c.get("earnings_unverified"):
-        check_earnings_note(b, today, earnings_note)
+        check_next_earnings(b, today, next_earnings)
 
     if not retry_submitting:
         D.append_jsonl(D.TRADES, [{
@@ -245,7 +298,7 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
             "planned_shares": c["shares"], "risk_dollars": c["risk_dollars"],
             "equity_at_open": c.get("equity_at_plan"), "p_target": p_target, "p_base": round(base, 3),
             "thesis": thesis, "invalidation": invalidation, "dissent": dissent, "text_source": text_source,
-            "earnings_checked": bool(earnings_checked), "earnings_note": earnings_note,
+            "earnings_checked": bool(earnings_checked), "earnings_note": earnings_note, "next_earnings": next_earnings,
             "status": "submitting", "date_close": None, "exit_price": None, "exit_reason": None,
             "result_R": None, "pnl": None}])
 
@@ -266,13 +319,15 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
             try:
                 found = b.order_by_client_id(trade_id)
             except Exception:
-                raise D.DeskError(f"ORDER STATUS UNKNOWN for {trade_id}: submit failed ({err[:200]}) and the lookup "
-                                  "failed too. Do NOT report it as placed and do not rerun place.py; sync.py will "
-                                  "reconcile it. Tell Chris.")
+                found = None
             if not found:
-                _update(trade_id, status="failed_submit", exit_reason="submit_failed", date_close=today,
-                        error=err[:300])
-                raise D.DeskError(f"ORDER NOT PLACED: {symbol}: {err[:300]}")
+                if e.definitely_not_accepted:      # Alpaca answered with a clear refusal: nothing exists
+                    _update(trade_id, status="failed_submit", exit_reason="submit_failed", date_close=today,
+                            error=err[:300])
+                    raise D.DeskError(f"ORDER NOT PLACED: {symbol}: {err[:300]}")
+                # timeout / 5xx: Alpaca may still have it. Leave the row as 'submitting' for sync.py to settle.
+                raise D.DeskError(f"ORDER STATUS UNKNOWN for {symbol} ({err[:150]}). Do NOT report it as placed and "
+                                  "do not rerun place.py; sync.py will find out what happened. Tell Chris.")
             oid = found["id"]
 
     got = confirm(b, oid)
@@ -320,7 +375,7 @@ def main(argv=None):
             raise D.DeskError('REFUSED: "earnings_checked" must be true or false.')
         note = d.get("earnings_note")
         place(sym, d.get("thesis"), d.get("invalidation"), d.get("dissent"), d.get("p_target"), ec or a.earnings_checked,
-              a.dry_run, "file", clean_text("earnings_note", note) if note else None)
+              a.dry_run, "file", clean_text("earnings_note", note) if note else None, d.get("next_earnings"))
     else:
         if not a.symbol or a.p_target is None:
             ap.error("use --input reports/order_<SYMBOL>_<date>.json (or the legacy --symbol and --p-target)")

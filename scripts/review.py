@@ -7,10 +7,10 @@ Usage:
 
 Statistics, stated up front so nobody goes fishing:
 - PRIMARY test (5b): do the planned candidates beat the random controls? Both are simulated the same way from the
-  same logged levels, so fills, slippage and timing can't tilt the comparison. Longs are compared with control longs
-  and shorts with control shorts inside each fortnight (so the market's direction can't pose as skill), and a
-  two-sided sign-flip test runs on the fortnights, alpha 0.05, only after 20 planned + 50 controls over 10+
-  decision days AND 12+ fortnights. Checked by simulation: about 5% false positives when there is no skill.
+  same logged levels, so fills, slippage and timing can't tilt the comparison. Each planned trade is measured against
+  the controls from the same day and direction, averaged per fortnight, and a sign-flip test runs on the fortnights.
+  Verdict only after 20 planned + 50 controls over 10+ decision days AND 12+ fortnights; "better" at p < 0.04,
+  "worse" at p < 0.05. Checked by simulation: about 2.5% false calls each way when there is no skill.
 - Everything else (real fills vs controls, planned vs shadow, the score study, factor tables) is EXPLORATORY:
   no multiple-comparison correction, so treat a "significant" result there as a lead, not a finding.
 """
@@ -297,7 +297,8 @@ def _run(offline):
                  f"{C.MIN_CONTROL}+ matured controls and {C.MIN_BLOCKS}+ fortnights with both; have {len(pl)} over "
                  f"{pl_dates} days, {len(ctrl_mat)} controls and {nb} fortnights. Numbers above are for tracking only.")
     L.append("- Caveats: simulations assume a fill at the logged entry and exit on the first stop/target touch in daily bars "
-             "(gaps fill at the open); the test treats fortnights as independent, which is close but not exact; one "
+             "(gaps fill at the open); each planned trade is compared with same-day, same-direction controls and the test "
+             "treats fortnights as independent, which is close but not exact; one "
              "stretch of market is not every regime; a pass here is evidence, not proof.")
 
     # 5c. Does the score predict forward results? Every scored candidate, not just traded ones. Exploratory.

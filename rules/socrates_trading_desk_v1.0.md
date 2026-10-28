@@ -22,7 +22,7 @@ The scripts in `socrates-desk/scripts/` do all math, scoring, sizing, risk check
 3. Write the thesis, invalidation, dissent and p_target for each planned trade, then place it with place.py.
 4. Write the human briefing.
 
-Never compute prices, sizes or scores yourself. Never edit files in `journal/` by hand. Never edit anything in `rules/` or `scripts/`, or `rules_version.txt`. If a script errors, report the exact error to Chris and stop; do not work around it. Two messages are not errors:
+Never compute prices, sizes or scores yourself. Never edit files in `journal/` by hand. Never edit anything in `rules/` or `scripts/`, or `rules_version.txt`. If a script errors, report the exact error to Chris and stop; do not work around it. Three kinds of message are handled differently:
 - `REGIME FILE INVALID`: fix the regime file it names, then rerun the same command. This is the only error you fix yourself.
 - `MARKET CLOSED TODAY` / `MARKET NOT OPEN RIGHT NOW`: report it and stop. Nothing was logged.
 - place.py `REFUSED` about the order file itself (p_target out of range, a sentence too short or too long, bad JSON, unknown keys, earnings note): fix that order file and rerun place.py for that symbol once. Any other place.py result that isn't `PLACED`: report the line and move on to the next planned order; don't stop the whole run.
@@ -48,6 +48,7 @@ Each run begins with "RUN MODE: X". Do only that mode.
 2. Write `reports/regime_<YYYY-MM-DD>.json` (format below).
 3. Run: `.venv/bin/python scripts/score.py --mode briefing`
 4. Run: `.venv/bin/python scripts/sync.py`
+   - score.py lists `EARNINGS BLACKOUT` (stocks it already blocks) and marks `EARNINGS UNVERIFIED` stocks. If your research finds a stock reporting within the next 10 trading days that is NOT in the blackout list, add it to the regime file's `"exclude"` block now (with the date and source), so DECISION skips it.
 5. Write the briefing: Market Snapshot, Catalysts, Paper Account (from sync output), Top 5 Candidates (copy from score output).
 6. Run: `bash scripts/commit.sh`. It must print `Saved to GitHub.` If it prints `BACKUP FAILED`, include that line in your report to Chris.
 
@@ -55,8 +56,8 @@ Each run begins with "RUN MODE: X". Do only that mode.
 1. Event lock: if a tier-1 event is less than 30 minutes away, wait until it prints. Once printed, it is information, not a reason to wait.
 2. If anything material changed since the briefing (an event printed), update today's regime file.
 3. Run: `.venv/bin/python scripts/score.py --mode decision`
-   - Run it ONCE. If it says `DECISION ALREADY RAN TODAY`, do not rerun it; place the orders from that plan. Only Chris can ask for a `--force` rerun.
-   - If you found a stock reporting earnings in the next 10 trading days that the script did not block, add it to the regime file's `"exclude"` block with the date and source (format below) BEFORE running, so the reason is recorded. Only single stocks can be excluded; ETFs cannot.
+   - Run it ONCE. If it says `DECISION ALREADY RAN TODAY`, do not rerun it; read today's plan from `reports/score_decision_<YYYY-MM-DD>.md` and place those orders. Only Chris can ask for a `--force` rerun.
+   - Exclusions (the regime file's `"exclude"` block) are only for single stocks with earnings inside the next 10 trading days, with that date (YYYY-MM-DD) and the source. ETFs can't be excluded, and a date outside the window is refused.
 4. For EACH planned order, write an order file with your file tool, then place it:
    - File: `reports/order_<SYM>_<YYYY-MM-DD>.json`
      ```json
@@ -64,12 +65,16 @@ Each run begins with "RUN MODE: X". Do only that mode.
       "thesis": "...", "invalidation": "...", "dissent": "...",
       "earnings_checked": false}
      ```
+     For a stock the plan marks EARNINGS UNVERIFIED that you checked yourself, add:
+     ```json
+     "earnings_checked": true, "next_earnings": "2026-12-04", "earnings_note": "investor.example.com, checked 2026-10-28"
+     ```
    - Run: `.venv/bin/python scripts/place.py --input reports/order_<SYM>_<YYYY-MM-DD>.json`
    - thesis: one sentence, why this trade, citing the score factors.
    - invalidation: a specific price or event that proves it wrong.
    - dissent: a specific, falsifiable way it fails ("fails if XLE closes below 92.10 on oil reversal"). General fear is not allowed.
    - p_target: probability that the target is hit before the stop. Start from the neutral-market base rate, 1 ÷ (1 + R:R) (about 0.33 for a 2R target, 0.30 for 2.3R), and adjust by at most 15 points up or down, for reasons you can name. place.py refuses values outside that range. You are scored against the base rate, so staying at the base rate is a fine answer; defaulting to 0.5 is not.
-   - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, set `"earnings_checked": true` and add `"earnings_note": "<date and source>"` in the order file. If not, do not place it and report why.
+   - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, set `"earnings_checked": true`, `"next_earnings": "YYYY-MM-DD"` and `"earnings_note": "<source>"` in the order file. If not, do not place it and report why.
    - After the last order, run: `.venv/bin/python scripts/sync.py` (records instant fills and protects any partial fill).
    - Only `PLACED ... order <id>` means placed. `ORDER REJECTED`, `ORDER NOT PLACED`, `ORDER NOT CONFIRMED` and `ORDER STATUS UNKNOWN` all mean it was NOT placed: report the line and never rerun place.py for that symbol.
 5. Write the trade report (format below). If the plan says NO TRADE, copy that line and add "Would trade if: [specific price, level or event]."

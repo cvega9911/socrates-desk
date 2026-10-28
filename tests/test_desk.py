@@ -110,7 +110,9 @@ class FakeBroker:
 
     def submit_bracket(self, symbol, qty, side, limit_price, take_profit, stop_price, client_order_id=None):
         if self.submit_mode == "error":
-            raise BR.BrokerError("POST /v2/orders -> 500: boom")
+            raise BR.BrokerError("POST /v2/orders -> 422: insufficient buying power", 422)
+        if self.submit_mode == "error500":
+            raise BR.BrokerError("POST /v2/orders -> 500: boom", 500)
         self.n += 1
         oid = f"ord{self.n}"
         self.orders[oid] = {"id": oid, "symbol": symbol, "qty": qty, "side": side,
@@ -649,7 +651,13 @@ ok(any(w.startswith("XLU") and "Stale" in w for w in r["warnings"]) and all(c["s
 print("exclusions")
 fb4 = fresh()
 expect_exit(lambda: score.run("decision", exclude=("XLE",)), "only single stocks", "--exclude on an ETF is refused (no vetoes)")
-write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": "earnings 2026-11-19 (nvidia.com 10/28)"}})
+SOON = D.trading_days_ahead(fb4, str(TODAY), 2)
+write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": f"earnings {SOON} (nvidia.com 10/28)"}})
+r_far = None
+write_regime({"exclude": {"NVDA": "earnings 2027-05-20 (nvidia.com)"}})
+expect_exit(lambda: score.run("decision"), "outside the 10-trading-day window" if False else "no earnings date between",
+            "an exclusion dated outside the 10-trading-day window is refused (no vetoes on stocks either)")
+write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": f"earnings {SOON} (nvidia.com 10/28)"}})
 r = score.run("decision")
 nv = [c for c in D.read_jsonl(D.CANDIDATES) if c["symbol"] == "NVDA"]
 ok(nv and nv[0]["excluded"], "a stock excluded in the regime file is logged as excluded")
@@ -770,6 +778,13 @@ if c10:
                 "a submit that never reached Alpaca says NOT PLACED")
     t10 = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c10["symbol"]][0]
     ok(t10["status"] == "failed_submit", "and is journaled as failed_submit")
+c10b = plan7[4] if len(plan7) > 4 else None
+if c10b:
+    fb7.submit_mode = "error500"
+    expect_exit(lambda: place.place(c10b["symbol"], *PLAN_TEXT, round(1 / (1 + c10b["rr"]), 2), True), "ORDER STATUS UNKNOWN",
+                "a 5xx/timeout with no order found is UNKNOWN, not 'not placed' (Alpaca may still have it)")
+    t10b = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c10b["symbol"]][0]
+    ok(t10b["status"] == "submitting", "the row stays 'submitting' for sync.py to settle")
 fb7.submit_mode = None
 fb7.is_open = False
 c11 = plan7[-1]
@@ -1012,12 +1027,143 @@ score._finnhub_get = lambda session, sym, start, end, key: [] if sym == "AAPL" e
 bl45, ver45, note45 = score.earnings_blackout(fb45, TODAY.isoformat())
 ok("AAPL" not in ver45 and "MSFT" in ver45 and "no upcoming date" in note45,
    "an empty earnings answer is 'unknown', not 'no earnings' (verified only when a next date is found)")
-write_regime({"exclude": {"MSFT": "earnings 2026-10-29 (made up)"}})
+write_regime({"exclude": {"MSFT": f"earnings {D.trading_days_ahead(fb45, str(TODAY), 1)} (made up)"}})
 r45 = score.run("decision")
 score._finnhub_get = real_fh
 del os.environ["FINNHUB_API_KEY"]
 ok(any("EXCLUSION CONFLICT: MSFT" in w for w in r45["warnings"]), "excluding a stock the calendar shows clean is flagged loudly")
 ok([c for c in D.read_jsonl(D.CANDIDATES) if c["symbol"] == "MSFT"][0]["exclusion_conflict"], "and recorded for the weekly review")
+
+
+print("final-review regressions")
+ok(place.rr_matches(29.09, 28.86, 29.56, 2.0), "the real UUP plan (29.09 / 28.86 / 29.56, rr 2.0) is no longer refused by cent rounding")
+ok(not place.rr_matches(29.09, 28.86, 29.75, 2.0), "but a target moved by hand still fails the R:R check")
+
+fb50 = fresh()
+r50 = score.run("decision")
+sup = TMP / "reports" / f"plan_{TODAY}.json"
+first_plan = sup.read_text()
+score.run("decision", force=True)
+sup.write_text(first_plan)              # restore the superseded plan by hand
+c50 = r50["plan"][0]
+expect_exit(lambda: place.place(c50["symbol"], *PLAN_TEXT, round(1 / (1 + c50["rr"]), 2), True), "not the plan from today",
+            "restoring a superseded plan after a rerun is refused (only the latest run counts)")
+
+fb51 = fresh()
+r51 = score.run("decision")
+pf51 = TMP / "reports" / f"plan_{TODAY}.json"
+pj51 = json.loads(pf51.read_text())
+victim = pj51["plan"][0]
+victim["shares"] = victim["shares"] * 40
+text51 = json.dumps(pj51, indent=2)
+pf51.write_text(text51)
+rows51 = D.read_jsonl(D.CANDIDATES)
+for r_ in rows51:                       # forge the journal to match (an agent that can write journal/)
+    r_["plan_sha"] = __import__("hashlib").sha256(text51.encode()).hexdigest()
+    if r_["symbol"] == victim["symbol"]:
+        r_["shares"] = victim["shares"]
+D.write_jsonl(D.CANDIDATES, rows51)
+expect_exit(lambda: place.place(victim["symbol"], *PLAN_TEXT, round(1 / (1 + victim["rr"]), 2), True), "larger than the risk rules allow",
+            "even a plan forged together with the journal can't oversize an order")
+ok(not fb51.orders, "nothing was sent")
+
+fb52 = fresh()
+r52 = score.run("decision")
+for i, sym in enumerate(("AAA", "BBB", "CCC", "DDD", "EEE")):
+    fb52.pos[sym] = {"symbol": sym, "current_price": "10"}
+c52 = r52["plan"][0]
+expect_exit(lambda: place.place(c52["symbol"], *PLAN_TEXT, round(1 / (1 + c52["rr"]), 2), True), "risk rule",
+            "placement re-checks the live risk limits (5 positions already open)")
+
+fb53 = fresh()
+oid53 = open_old_trade(fb53, days=2)
+for l in fb53.orders[oid53]["legs"]:
+    l["status"] = "canceled"
+D.write_jsonl(D.TRADES, [dict(D.read_jsonl(D.TRADES)[0], exit_order_ids=["oco_x"], exit_order_id="oco_x")])
+fb53.orders["oco_x"] = {"id": "oco_x", "symbol": "XLF", "type": "limit", "status": "new",
+                        "legs": [{"id": "oco_xsl", "type": "stop", "status": "new"}]}
+real53 = fb53.order
+seen53 = {"n": 0}
+def racy(oid):
+    o = real53(oid)
+    if oid == "oco_x":
+        seen53["n"] += 1
+        if seen53["n"] == 1:           # first read: still live... then the target fills before the next read
+            snap = json.loads(json.dumps(o))
+            fb53.orders["oco_x"].update({"status": "filled", "filled_avg_price": "53.0", "filled_at": f"{TODAY}T18:30:00Z"})
+            fb53.orders["oco_x"]["legs"][0]["status"] = "canceled"
+            fb53.pos.pop("XLF", None)
+            return snap
+    return o
+fb53.order = racy
+sync.run()
+fb53.order = real53
+sync.run()
+t53 = D.read_jsonl(D.TRADES)[0]
+ok(t53["status"] == "closed" and t53["exit_reason"] == "target" and not fb53.ocos,
+   "an exit that fills mid-check is recorded, and no new OCO is placed on a flat position")
+
+fb54 = fresh()
+open_old_trade(fb54, days=2)
+oid54 = next(iter(fb54.orders))
+for l in fb54.orders[oid54]["legs"]:
+    l["status"] = "canceled"
+real_oco = fb54.submit_oco
+def lost_oco(*a, **k):
+    real_oco(*a, **k)
+    raise BR.BrokerError("POST /v2/orders -> network error: ReadTimeout")
+fb54.submit_oco = lost_oco
+res54 = sync.run()
+sync.run()
+live_ocos = [o for o in fb54.ocos if o["status"] == "new"]
+ok(len(live_ocos) == 1, f"an OCO whose reply was lost is found by its client id, never doubled ({len(live_ocos)} live)")
+
+fb55 = fresh()
+p55 = score.run("decision")["plan"][0]
+place.place(p55["symbol"], *PLAN_TEXT, round(1 / (1 + p55["rr"]), 2), True)
+t55 = D.read_jsonl(D.TRADES)[0]
+o55 = fb55.orders[t55["order_id"]]
+o55.update({"status": "partially_filled", "filled_qty": "1", "filled_avg_price": str(t55["planned_entry"]),
+            "filled_at": f"{TODAY}T15:00:00Z"})
+fb55.pos[t55["symbol"]] = {"symbol": t55["symbol"], "current_price": str(t55["planned_entry"])}
+real_cancel55 = fb55.cancel_order
+def cancel55(oid):
+    if oid.endswith("tp") or oid.endswith("sl"):
+        return                          # the old legs refuse to die
+    if oid == o55["id"]:
+        o55["status"] = "canceled"      # parent cancels, legs stay live
+        return
+    real_cancel55(oid)
+fb55.cancel_order = cancel55
+for l in o55["legs"]:
+    l["status"] = "new"
+res55 = sync.run()
+ok(not fb55.ocos and any("would not cancel" in a for a in res55["alerts"]),
+   "after a partial fill, stuck old legs mean no second exit set is added (and Chris is told)")
+
+fb56 = fresh()
+p56 = score.run("decision")["plan"][0]
+place.place(p56["symbol"], *PLAN_TEXT, round(1 / (1 + p56["rr"]), 2), True)
+t56 = D.read_jsonl(D.TRADES)[0]
+fb56.orders[t56["order_id"]]["status"] = "rejected"
+res56 = sync.run()
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "rejected" and any("rejected" in a for a in res56["alerts"]),
+   "an order Alpaca rejects after accepting it is journaled as rejected (not 'unfilled')")
+
+fb57 = fresh()
+both57 = {s: {d: {"rr": 2.0, "entry": 10, "stop": 9 if d == "long" else 11, "target": 12 if d == "long" else 8}
+              for d in ("long", "short")} for s in ("AAPL", "MSFT", "XLE")}
+rows57, _ = control.draw(both57, {"AAPL", "MSFT"}, fb57, "2099-03-01", verified=set(D.STOCKS))
+ok(all(r["symbol"] == "XLE" for r in rows57), "excluded or blacked-out stocks are never drawn as controls")
+
+fb58 = fresh()
+p58 = score.run("decision")["plan"][0]
+place.place(p58["symbol"], *PLAN_TEXT, round(1 / (1 + p58["rr"]), 2), True)
+t58 = D.read_jsonl(D.TRADES)[0]
+fb58.orders[t58["order_id"]]["status"] = "replaced"
+res58 = sync.run(close_mode=True)
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "pending" and any("edited by hand" in a for a in res58["alerts"]),
+   "an entry edited by hand in the dashboard is flagged, not wrongly marked unfilled")
 
 print("pentest regressions")
 fb30 = fresh()
@@ -1028,7 +1174,7 @@ orig_plan = pf.read_text()
 forged = json.loads(orig_plan)
 forged["plan"][0]["shares"] = forged["plan"][0]["shares"] * 50
 pf.write_text(json.dumps(forged, indent=2))
-expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "does not match the plan",
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "not the plan from today",
             "a hand-edited plan file (50x the shares) is refused")
 ok(not fb30.orders, "and nothing was sent to the broker")
 pf.write_text(orig_plan)
@@ -1036,13 +1182,14 @@ fb30.bars[c30["symbol"]][-1]["c"] *= 1.10
 expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "more than 3% from the planned entry",
             "an entry far from the live price is refused")
 fb30.bars[c30["symbol"]][-1]["c"] /= 1.10
-expect_exit(lambda: place.check_earnings_note(fb30, str(TODAY), None), "earnings_note", "earnings_checked without a dated note is refused")
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), None), "next_earnings", "earnings_checked without a next_earnings date is refused")
 soon = D.trading_days_ahead(fb30, str(TODAY), 3)
-expect_exit(lambda: place.check_earnings_note(fb30, str(TODAY), f"next earnings {soon} (ir site)"), "inside the 10-trading-day blackout",
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), soon), "inside the 10-trading-day blackout",
             "a hand-checked earnings date inside the window is refused")
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), "2020-01-01"), "in the past", "a past earnings date is refused")
 later = (TODAY + dt.timedelta(days=60)).isoformat()
-place.check_earnings_note(fb30, str(TODAY), f"next earnings {later} (ir site)")
-ok(True, "a hand-checked earnings date beyond the window is accepted")
+place.check_next_earnings(fb30, str(TODAY), later)
+ok(True, "a hand-checked next earnings date beyond the window is accepted (a 'checked on' date in the note no longer confuses it)")
 
 (TMP / ".env").write_text("HTTPS_PROXY=http://evil:8080\nREQUESTS_CA_BUNDLE=/tmp/evil.pem\nALPACA_API_KEY=PKFROMENV\n")
 for k in ("HTTPS_PROXY", "REQUESTS_CA_BUNDLE", "ALPACA_API_KEY"):
@@ -1082,7 +1229,7 @@ expect_exit(lambda: score.load_regime(str(deep)), "REGIME FILE INVALID", "a path
 deep.unlink()
 
 fb31 = fresh()
-write_regime({"exclude": {"AAPL": "earnings 2026-10-30 [click](http://evil.example) <img src=x onerror=alert(1)>"}})
+write_regime({"exclude": {"AAPL": f"earnings {D.trading_days_ahead(fb31, str(TODAY), 1)} [click](http://evil.example) <img src=x onerror=alert(1)>"}})
 score.run("decision")
 D.write_jsonl(D.TRADES, [])
 review.run(offline=True)

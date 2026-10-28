@@ -186,7 +186,9 @@ def _run(mode, regime_path, exclude, force):
     last_equity = float(acct.get("last_equity") or equity)
 
     start = (D.now_et() - dt.timedelta(days=150)).date().isoformat() + "T00:00:00Z"
-    raw = b.daily_bars(D.UNIVERSE, start, D.bars_end(), adjustment="all")
+    # split-only bars: stops, targets and ATR must be in the same (real) price terms as the live entry price;
+    # dividend-adjusted history would shift 60-day levels by about the dividend (around 1 ATR for TLT/IEF)
+    raw = b.daily_bars(D.UNIVERSE, start, D.bars_end(), adjustment="split")
     feed = getattr(b, "bars_feed", "test")
     try:
         last_session = D.previous_trading_day(b, today)
@@ -215,10 +217,32 @@ def _run(mode, regime_path, exclude, force):
     blackout, verified, enote = earnings_blackout(b, today)
     if len(verified) < len(D.STOCKS):
         warnings.append(f"Earnings calendar incomplete ({enote}). Unverified stocks are marked EARNINGS UNVERIFIED.")
+    # an exclusion must name an earnings date inside the 10-trading-day window, or it's a veto in disguise
+    if exclusions:
+        try:
+            window_end = D.trading_days_ahead(b, today, EARNINGS_DAYS)
+        except Exception:
+            window_end = None
+            warnings.append("Could not check exclusion dates (market calendar unavailable).")
+        if window_end:
+            bad = []
+            for s, why in exclusions.items():
+                dates = re.findall(r"\d{4}-\d{2}-\d{2}", why)
+                if why.startswith("--exclude"):
+                    continue
+                if not any(today <= d_ <= window_end for d_ in dates):
+                    bad.append(f"exclude.{s}: no earnings date between {today} and {window_end} in {why!r}; an "
+                               "exclusion is only for earnings inside the 10-trading-day window")
+            if bad:
+                raise D.DeskError("REGIME FILE INVALID:\n  - " + "\n  - ".join(bad) +
+                                  "\nFix the file and rerun score.py (this is the one error you fix yourself).")
     contradicts = sorted(s for s in exclusions if s in verified and s not in blackout)
     for s in contradicts:
         warnings.append(f"EXCLUSION CONFLICT: {s} is excluded, but the earnings calendar shows no report in the next "
-                        "10 trading days. It is skipped as asked and flagged in the weekly review.")
+                        "10 trading days." + (" It is skipped as asked and flagged in the weekly review."
+                                              if mode == "decision" else ""))
+    if blackout:
+        warnings.append("EARNINGS BLACKOUT (blocked automatically): " + ", ".join(sorted(blackout)))
 
     prices = b.latest_prices(list(frames)) if live else {}
 
@@ -248,12 +272,19 @@ def _run(mode, regime_path, exclude, force):
               "bars_feed": feed, "earnings_check": enote, "exclusions": exclusions, "warnings": warnings}
 
     if mode == "controls":
-        crows, cnote = C.draw(both, blackout, b, today, verified, backfill=True)
+        crows, cnote = C.draw(both, blackout | set(exclusions), b, today, verified, backfill=True)
         result.update({"controls": crows, "controls_drawn": len(crows), "controls_note": cnote})
         _save(result, f"controls_{today}.json")
         return result
 
     if not live:
+        for c in cands:
+            if c["symbol"] in blackout:
+                c["flag"] = "EARNINGS BLACKOUT"
+            elif c["symbol"] in exclusions:
+                c["flag"] = "EXCLUDED"
+            elif c.get("earnings_unverified"):
+                c["flag"] = "EARNINGS UNVERIFIED"
         result["top"] = cands[:5]
         result["all"] = cands
         _save(result, f"score_briefing_{today}.json")
@@ -364,7 +395,7 @@ def _run(mode, regime_path, exclude, force):
 
     run_name = "decision" if not rerun_n else f"decision-rerun{rerun_n}"
     try:   # the control group must never be able to block trading
-        crows, cnote = C.draw(both, blackout, b, today, verified)
+        crows, cnote = C.draw(both, blackout | set(exclusions), b, today, verified)
     except Exception as e:
         crows, cnote = [], f"control draw failed ({type(e).__name__}: {e}); backfill later with --mode controls"
     result.update({"run": run_name, "day_pnl_pct": round(day_pnl, 4), "halted": halted,
@@ -386,6 +417,7 @@ def _run(mode, regime_path, exclude, force):
         "regime_sha": reg_sha, "plan_sha": plan_sha, "bars_feed": feed, "excluded": c["symbol"] in exclusions,
         "exclusion_conflict": c["symbol"] in contradicts,
         "earnings_unverified": bool(c.get("earnings_unverified")),
+        "shares": c.get("shares"), "risk_dollars": c.get("risk_dollars"),
         "py": platform.python_version()} for c in cands])
     return result
 
@@ -416,7 +448,7 @@ def summary(r):
         return "\n".join(out)
     if r["mode"] == "briefing":
         out.append("TOP 5 CANDIDATES:")
-        out += ["  " + line(c) for c in r["top"]]
+        out += ["  " + line(c) + (f" [{c['flag']}]" if c.get("flag") else "") for c in r["top"]]
         return "\n".join(out)
     if r.get("run", "decision") != "decision":
         out.append(f"NOTE: this is a forced rerun ({r['run']}); the earlier plan was kept as plan_{r['date']}_superseded*.json.")

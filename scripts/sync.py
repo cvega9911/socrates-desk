@@ -20,7 +20,8 @@ import broker as BR
 import control as C
 import desk as D
 
-TERMINAL = {"filled", "canceled", "expired", "rejected", "replaced", "suspended"}
+TERMINAL = {"filled", "canceled", "expired", "rejected", "suspended"}
+# "replaced" is deliberately NOT final: the order lives on under a new id (someone edited it in the dashboard).
 sleep = time.sleep      # tests replace this
 
 
@@ -59,11 +60,18 @@ def wait_terminal(b, oid, timeout_s=10.0, step=0.5):
     return o
 
 
+def exit_ids(t):
+    ids = list(t.get("exit_order_ids") or [])
+    if t.get("exit_order_id") and t["exit_order_id"] not in ids:      # rows written before exit_order_ids existed
+        ids.insert(0, t["exit_order_id"])
+    return ids
+
+
 def exit_orders(b, t, o):
-    """Every order that can close this position: the bracket's legs plus any OCO we placed later."""
+    """Every order that can close this position: the bracket's legs plus every OCO we ever placed for it."""
     out = list(o.get("legs") or [])
-    if t.get("exit_order_id"):
-        e = b.order(t["exit_order_id"])
+    for i in exit_ids(t):
+        e = b.order(i)
         out += [e] + list(e.get("legs") or [])
     return out
 
@@ -76,9 +84,15 @@ def filled_exit(orders):
 
 
 def held_qty(b, t):
-    """Shares Alpaca says we hold in this symbol right now (fresh read, not the start-of-run snapshot)."""
+    """Shares Alpaca says we hold in this symbol right now (fresh read, not the start-of-run snapshot), counted only
+    if the position is on our side (a long trade needs a long position)."""
     p = next((p for p in b.positions() if p["symbol"] == t["symbol"]), None)
-    return abs(int(float(p.get("qty", t["shares"])))) if p else 0
+    if not p:
+        return 0
+    q = int(float(p.get("qty", t["shares"] if t["direction"] == "long" else -t["shares"])))
+    if (t["direction"] == "long" and q <= 0) or (t["direction"] == "short" and q >= 0):
+        return 0
+    return abs(q)
 
 
 def find_close_fill(b, t, today):
@@ -90,17 +104,39 @@ def find_close_fill(b, t, today):
     return None
 
 
-def protect(b, t, alerts, why):
-    """Put the original stop and target back as an exit-only OCO for the shares we hold."""
-    try:
-        e = b.submit_oco(t["symbol"], t["shares"], exit_side(t), t["target"], t["stop"],
-                         client_order_id=f"{t['trade_id']}-oco-{int(time.time())}")
-        t["exit_order_id"] = e["id"]
-        return True
-    except Exception as ex:
-        alerts.append(f"{t['symbol']}: POSITION HAS NO STOP. {why}, and re-placing the stop/target failed "
-                      f"({type(ex).__name__}: {ex}). Tell Chris immediately; set a stop in the Alpaca dashboard.")
+def protect(b, t, alerts, why, qty=None):
+    """Put the original stop and target back as an exit-only OCO for the shares actually held.
+    Idempotent: each attempt has a numbered client id, so a submit whose reply was lost is found and reused on the
+    next try instead of stacking a second OCO on top."""
+    ids = exit_ids(t)
+    cid = f"{t['trade_id']}-oco{len(ids) + 1}"
+    if qty is None:
+        try:
+            qty = held_qty(b, t)
+        except Exception:
+            qty = t["shares"] if t["direction"] == "long" else None   # a stray sell is rejected; a stray buy is not
+    if not qty:
+        alerts.append(f"{t['symbol']}: {why}, but no matching position could be confirmed, so no new stop was sent. "
+                      "Check the position in Alpaca now. Tell Chris.")
         return False
+    try:
+        e = b.order_by_client_id(cid)
+        if not e or e.get("status") in TERMINAL:
+            e = b.submit_oco(t["symbol"], qty, exit_side(t), t["target"], t["stop"], client_order_id=cid)
+    except Exception as ex:
+        try:
+            e = b.order_by_client_id(cid)
+        except Exception:
+            e = None
+        if not e:
+            alerts.append(f"{t['symbol']}: POSITION HAS NO STOP. {why}, and re-placing the stop/target failed "
+                          f"({type(ex).__name__}: {ex}). Tell Chris immediately; set a stop in the Alpaca dashboard.")
+            return False
+    t["exit_order_ids"] = ids + [e["id"]]
+    t["exit_order_id"] = e["id"]
+    if qty != t["shares"]:
+        t["protected_qty"] = qty
+    return True
 
 
 def cancel_and_wait(b, ids):
@@ -134,8 +170,18 @@ def handle_partial(b, t, o, notes, alerts):
         return
     adopt_fill(t, final, partial=True)
     live_legs = [l["id"] for l in final.get("legs") or [] if l.get("status") not in TERMINAL]
-    cancel_and_wait(b, live_legs)
-    protect(b, t, alerts, "Partial fill")
+    legs_after = cancel_and_wait(b, live_legs)
+    done = filled_exit(legs_after + list(final.get("legs") or []))
+    if done:            # a bracket leg filled for the partial shares while we were tidying up: that is the exit
+        leg, reason = done
+        record_exit(t, leg["filled_avg_price"], reason, et_date(leg.get("filled_at")))
+        notes.append(f"{t['symbol']}: partial fill of {qty} sh, then {reason} hit at {t['exit_price']} ({t['result_R']}R)")
+        return
+    if any(x.get("status") not in TERMINAL for x in legs_after):
+        alerts.append(f"{t['symbol']}: entry partly filled ({qty} sh) and its old stop/target would not cancel, so no "
+                      "new stop was added (two exit sets could oversell). Check the orders in Alpaca. Tell Chris.")
+        return
+    protect(b, t, alerts, "Partial fill", qty=qty)
     notes.append(f"{t['symbol']}: entry PARTIALLY filled ({qty} of {t.get('planned_shares', '?')} sh at {t['entry_fill']}); "
                  f"rest cancelled, stop {t['stop']} / target {t['target']} placed for {qty} sh")
 
@@ -183,7 +229,7 @@ def _recover_close(b, t, today, err, notes, alerts):
     try:
         qty = held_qty(b, t)
     except Exception:
-        qty = None
+        qty = None      # protect() below decides what is safe without a position read
     if qty == 0:        # the position is gone: maybe the close went through and only the reply was lost
         try:
             f = find_close_fill(b, t, today)
@@ -197,17 +243,20 @@ def _recover_close(b, t, today, err, notes, alerts):
             alerts.append(f"RECONCILE {t['symbol']}: time stop interrupted ({type(err).__name__}) and Alpaca shows no "
                           "position and no closing fill today. Check manually.")
         return
-    if protect(b, t, alerts, f"Time stop interrupted ({type(err).__name__})"):
+    if protect(b, t, alerts, f"Time stop interrupted ({type(err).__name__})", qty=qty):
         alerts.append(f"{t['symbol']}: TIME STOP FAILED ({type(err).__name__}: {err}). Stop {t['stop']} and target "
                       f"{t['target']} were put back; the close is retried at the next CLOSE run.")
 
 
 def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
-    if t["status"] == "submitting":        # place.py died between logging and confirming
+    if t["status"] == "submitting":        # place.py died or timed out between logging and confirming
         found = b.order_by_client_id(t["trade_id"])
         if not found:
-            t.update({"status": "failed_submit", "exit_reason": "submit_failed", "date_close": today})
-            notes.append(f"{t['symbol']}: order was never received by Alpaca; marked failed_submit")
+            if (t.get("date_open") or today) < today or close_mode:
+                t.update({"status": "failed_submit", "exit_reason": "submit_failed", "date_close": today})
+                notes.append(f"{t['symbol']}: order was never received by Alpaca; marked failed_submit")
+            else:
+                notes.append(f"{t['symbol']}: placement outcome still unknown (Alpaca has no record yet); checked again later")
             return
         t.update({"order_id": found["id"], "status": "pending"})
         notes.append(f"{t['symbol']}: recovered order {found['id']} after an interrupted placement")
@@ -242,9 +291,16 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
         elif st in TERMINAL:
             if filled_qty > 0:
                 handle_partial(b, t, o, notes, alerts)
+            elif st == "rejected":
+                t.update({"status": "rejected", "date_close": today, "exit_reason": "order rejected"})
+                alerts.append(f"{t['symbol']}: Alpaca rejected the entry order after it was placed. It never traded.")
             else:
                 t.update({"status": "unfilled", "date_close": today, "exit_reason": st})
                 notes.append(f"{t['symbol']}: entry {st}, marked unfilled")
+            return
+        elif st == "replaced":
+            alerts.append(f"{t['symbol']}: the entry order was edited by hand in Alpaca (status replaced). The desk "
+                          "won't guess what replaced it. Tell Chris.")
             return
         elif st == "partially_filled":
             # Alpaca's bracket legs don't protect a partial entry, so settle it right away: keep the filled
@@ -286,11 +342,24 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
     # expired), put the stop and target back now instead of waiting for someone to notice.
     exits = exit_orders(b, t, o)
     if not any(x.get("status") not in TERMINAL for x in exits) and not (close_mode and t.get("time_stop_due") and market_open):
-        if protect(b, t, alerts, "Its stop/target orders were no longer live"):
-            alerts.append(f"{t['symbol']}: had NO live stop/target (orders ended: "
-                          f"{', '.join(sorted({str(x.get('status')) for x in exits})) or 'none'}). Put back stop "
-                          f"{t['stop']} / target {t['target']} for {t['shares']} sh.")
         o = b.order(t["order_id"])
+        exits = exit_orders(b, t, o)        # fresh read: an exit may have filled since the check above
+        done = filled_exit(exits)
+        if done:
+            leg, reason = done
+            record_exit(t, leg["filled_avg_price"], reason, et_date(leg.get("filled_at")))
+            notes.append(f"{t['symbol']}: {reason} hit at {t['exit_price']} ({t['result_R']}R, ${t['pnl']})")
+            return
+        if not any(x.get("status") not in TERMINAL for x in exits):
+            qty = held_qty(b, t)
+            if qty == 0:
+                alerts.append(f"RECONCILE {t['symbol']}: no live stop/target and no position on our side. Check manually.")
+                return
+            if protect(b, t, alerts, "Its stop/target orders were no longer live", qty=qty):
+                alerts.append(f"{t['symbol']}: had NO live stop/target (orders ended: "
+                              f"{', '.join(sorted({str(x.get('status')) for x in exits})) or 'none'}). Put back stop "
+                              f"{t['stop']} / target {t['target']} for {qty} sh.")
+            o = b.order(t["order_id"])
     if not close_mode:
         return
     try:

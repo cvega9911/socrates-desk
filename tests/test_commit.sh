@@ -93,11 +93,36 @@ out=$(bash scripts/commit.sh 2>&1); rc=$?
 ok '[ $rc -ne 0 ] && printf "%s" "$out" | grep -q "BACKUP FAILED: git commit failed"' "a blocking hook is reported, not 'Saved'"
 rm -f .git/hooks/pre-commit
 
-echo "# tampered" >> scripts/commit.sh.bak 2>/dev/null; echo "x" > rules_version.txt
+echo "x" > rules_version.txt
+echo '{"t":1}' >> journal/trades.jsonl
 out=$(bash scripts/commit.sh 2>&1); rc=$?
-ok 'printf "%s" "$out" | grep -q "WARNING: code or rules files were changed"' "edited rules/code are flagged"
+ok '[ $rc -ne 0 ] && printf "%s" "$out" | grep -q "own code or rules were edited"' "edited rules/code stop the backup (the edited code can't be trusted)"
 ok '! git show --stat HEAD | grep -q rules_version.txt' "edited rules/code are not committed by a run"
-git checkout -q -- rules_version.txt; rm -f scripts/commit.sh.bak
+git checkout -q -- rules_version.txt
+printf 'exit 0\n' | cat - scripts/secret_scan.sh > /tmp/ss.$$ && cp /tmp/ss.$$ scripts/secret_scan.sh && rm -f /tmp/ss.$$
+echo "PKZZTESTKEYVALUE1234" > reports/k.md
+out=$(bash scripts/commit.sh 2>&1); rc=$?
+ok '[ $rc -ne 0 ] && ! git --git-dir="$T/remote.git" log --all -p | grep -q PKZZTESTKEYVALUE1234' "a scan disabled by editing it can't push a key"
+git checkout -q -- scripts/secret_scan.sh; rm -f reports/k.md; git reset -q; git checkout -q -- journal 2>/dev/null
+
+python3 - <<'PY'
+import random
+random.seed(1)
+with open("journal/aaa_big.txt", "w") as f:
+    f.write("PKZZTESTKEYVALUE1234\n")
+    for i in range(6000):
+        f.write("".join(random.choice("abcdefghij ") for _ in range(60)) + "\n")
+PY
+out=$(bash scripts/commit.sh 2>&1); rc=$?
+ok '[ $rc -ne 0 ] && ! git --git-dir="$T/remote.git" log --all -p | grep -q PKZZTESTKEYVALUE1234' "a key at the start of a ~360 KB diff is still caught (no SIGPIPE fail-open)"
+rm -f journal/aaa_big.txt; git reset -q
+
+git commit -q --no-verify --allow-empty -m "noop"
+echo "PKZZTESTKEYVALUE1234" > journal/tmpkey.txt && git add journal/tmpkey.txt && git commit -q --no-verify -m "add key"
+git rm -q journal/tmpkey.txt && git commit -q --no-verify -m "remove key"
+out=$(bash scripts/commit.sh 2>&1); rc=$?
+ok '[ $rc -ne 0 ] && ! git --git-dir="$T/remote.git" log --all -p | grep -q PKZZTESTKEYVALUE1234' "a key added then deleted in unpushed commits is still caught (scanned commit by commit)"
+git reset -q --hard origin/main
 
 echo "junk" > notes.txt && git add notes.txt
 echo '{"f":6}' >> journal/trades.jsonl

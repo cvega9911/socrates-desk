@@ -3,24 +3,28 @@
 # API key, or a binary file. It compares against the real key values (Keychain, or .env as a fallback) without
 # ever printing them, and it fails CLOSED: if no key values can be loaded, nothing is committed.
 #   bash scripts/secret_scan.sh              # staged changes (pre-commit)
-#   bash scripts/secret_scan.sh --range REF  # everything between REF and HEAD (pre-push)
+#   bash scripts/secret_scan.sh --range REF  # EVERY commit between REF and HEAD, one by one (pre-push), so a key
+#                                            # added in one commit and deleted in the next is still caught
+# Matching uses here-strings, never `printf | grep -q` (with pipefail, grep -q's early exit makes printf die of
+# SIGPIPE on big inputs and the match would be lost). Works on macOS bash 3.2.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
 if [ "${1:-}" = "--range" ] && [ -n "${2:-}" ]; then
-  diff=$(git diff -U0 --no-color --no-ext-diff "$2" HEAD) || exit 2
-  names=$(git diff --name-only "$2" HEAD) || exit 2
-  numstat=$(git diff --numstat "$2" HEAD) || exit 2
+  diff=$(git log -p -U0 --no-color --no-ext-diff --format= "$2..HEAD") || exit 2
+  names=$(git log --name-only --format= "$2..HEAD") || exit 2
+  numstat=$(git log --numstat --format= "$2..HEAD") || exit 2
 else
   diff=$(git diff --cached -U0 --no-color --no-ext-diff) || exit 2
   names=$(git diff --cached --name-only) || exit 2
   numstat=$(git diff --cached --numstat) || exit 2
 fi
 [ -z "$diff" ] && [ -z "$names" ] && exit 0
-added=$(printf '%s\n' "$diff" | grep -E '^\+' | grep -vE '^\+\+\+ ')
-haystack=$(printf '%s\n%s\n' "$added" "$names")
+added=$(grep -E '^\+' <<<"$diff" | grep -vE '^\+\+\+ ')
+haystack="$added
+$names"
 found=0
 
-if printf '%s\n' "$numstat" | grep -qE '^-[[:space:]]+-[[:space:]]'; then
+if grep -qE '^-[[:space:]]+-[[:space:]]' <<<"$numstat"; then
   echo "SECRET SCAN: a binary file is included; the desk only ever saves text. Not committing." >&2
   found=1
 fi
@@ -37,7 +41,7 @@ for name in ALPACA_API_KEY ALPACA_SECRET_KEY FINNHUB_API_KEY; do
   fi
   if [ ${#val} -ge 8 ]; then
     loaded=$((loaded + 1))
-    if printf '%s' "$haystack" | grep -qF -- "$val"; then
+    if grep -qF -- "$val" <<<"$haystack"; then
       echo "SECRET SCAN: the changes contain the value of $name." >&2
       found=1
     fi
@@ -48,13 +52,17 @@ if [ "$loaded" -eq 0 ]; then
   echo "SECRET SCAN: could not load any key values to compare against (Keychain locked?). Not committing." >&2
   found=1
 fi
-if printf '%s' "$haystack" | grep -qE '(^|[^A-Za-z0-9])(PK|AK|CK)[A-Z0-9]{16,20}([^A-Za-z0-9]|$)|APCA-API-(KEY-ID|SECRET-KEY)|(api[_-]?key|secret[_-]?key|access[_-]?token|token)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_-]{20,}'; then
-  echo "SECRET SCAN: the changes contain something shaped like an API key." >&2
+if grep -qE '(^|[^A-Za-z0-9])(PK|AK|CK)[A-Z0-9]{16,20}([^A-Za-z0-9]|$)|APCA-API-(KEY-ID|SECRET-KEY)|(api[_-]?key|secret[_-]?key|access[_-]?token|token)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_-]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----' <<<"$haystack"; then
+  echo "SECRET SCAN: the changes contain something shaped like an API key or private key." >&2
   found=1
 fi
 if command -v gitleaks >/dev/null 2>&1; then
-  out=$(gitleaks protect --staged --redact --no-banner 2>&1)
-  if [ $? -ne 0 ] && printf '%s' "$out" | grep -qiE 'leaks found: [1-9]'; then
+  if [ "${1:-}" = "--range" ]; then
+    out=$(gitleaks detect --log-opts="$2..HEAD" --redact --no-banner 2>&1)
+  else
+    out=$(gitleaks protect --staged --redact --no-banner 2>&1)
+  fi
+  if [ $? -ne 0 ] && grep -qiE 'leaks found: [1-9]' <<<"$out"; then
     echo "SECRET SCAN: gitleaks flagged the changes." >&2
     found=1
   fi
