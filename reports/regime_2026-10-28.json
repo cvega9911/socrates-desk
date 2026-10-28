@@ -1,0 +1,180 @@
+{
+ "date": "2026-10-28",
+ "themes": {
+   "broad": {
+     "long": 1,
+     "short": 1,
+     "why": "S&P 7722.60 (+0.60%, 11 new 52w highs), Nasdaq 26477.81 (+1.18%), Dow 52377.57 (Reuters 10/27); back-to-back index gains + renewed AI momentum. But FOMC decision 14:00 ET + MSFT/GOOGL after-close earnings = high event risk, so regime net neutral."
+   },
+   "tech": {
+     "long": 1,
+     "short": 1,
+     "why": "Nasdaq +1.18%, SK Hynix profit +632% lifts chips (Reuters/Yahoo 10/28); AI sentiment marked. But MSFT (-0.2%) & GOOG (+0.8%) report after the bell today — name volatility gate. Net neutral, event-risk heavy."
+   },
+   "consumer": {
+     "long": 1,
+     "short": 1,
+     "why": "TSLA +4.0% to 407.46 (Fool 10/28) leads consumer, but no clean consumer read into the FOMC. Neutral."
+   },
+   "energy": {
+     "long": 2,
+     "short": 0,
+     "why": "Cleanest regime trend: WTI ~$99.82 (+60.7% YoY, Macrotrends 10/27), Brent ~$110.91 (Yahoo BZ=F 10/28). Elevated multi-month uptrend intact. Regime supports the long."
+   },
+   "financials": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y yield ~5.01% (TradingEconomics 10/28, FRED 5.00 10/26), extreme + Fed holding hawkish at 3.75-4.00% => elevated NIM regime. Supports financials long; no offsetting signal today."
+   },
+   "defensive": {
+     "long": 1,
+     "short": 1,
+     "why": "Haven bid into the FOMC keeps defensives elevated, but equities near records + Fed holding (not cutting) muting the flight-to-safety premium. Mixed. Neutral."
+   },
+   "cyclicals": {
+     "long": 1,
+     "short": 1,
+     "why": "No clean cyclicals read today; broad tape positive but event-driven. Neutral."
+   },
+   "bonds": {
+     "long": 0,
+     "short": 1,
+     "why": "10Y ~5.01% (TradingEconomics 10/28), up today, near the 5.37% 52-wk high (CNBC US10Y 10/28). Rising yields + hawkish hold = regime against the long; a bonds-long needs a hawkish-miss surprise, which is base-case-off."
+   },
+   "metals": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$4,049-4,067/oz, down ~0.2-0.3% on the day (goldprice.org/Kitco 10/28), off recent ~$4,067-4,076 highs. Elevated but softening. Neutral."
+   },
+   "dollar": {
+     "long": 1,
+     "short": 0,
+     "why": "DXY ~102.38-102.41, +0.06-0.09% today (TradingEconomics/Yahoo 10/28), strengthened +1.00% over the month (+3.19% 12m), firm off the 52-wk high 102.95. Rising yields supporting. Mild long."
+   }
+ },
+ "symbols": {
+   "XLE": {
+     "long": 2,
+     "short": 0,
+     "why": "WTI ~$99.82 / Brent ~$110.91, +60.7% YoY (Macrotrends/Yahoo 10/28), multi-month uptrend intact. Regime strongly supports the long."
+   },
+   "XOM": {
+     "long": 2,
+     "short": 0,
+     "why": "Top XLE holding; WTI ~$99.82 / Brent ~$110.91 elevated uptrend (Macrotrends/Yahoo 10/28). Regime supports the long."
+   },
+   "USO": {
+     "long": 2,
+     "short": 0,
+     "why": "Oil is the regime's cleanest signal: WTI ~$99.82 / Brent ~$110.91 multi-month uptrend (Macrotrends/Yahoo 10/28). USO follows Brent; regime supports a long."
+   },
+   "XLF": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y ~5.01% (TradingEconomics 10/28) + hawkish Fed hold 3.75-4.00% => elevated NIM regime supports financials long; no offsetting signal today."
+   },
+   "JPM": {
+     "long": 1,
+     "short": 1,
+     "why": "Benefits from the high-yield NIM regime (10Y ~5.01%), but bank earnings season + FOMC add event risk; net mild long, neutral-to-long."
+   },
+   "TLT": {
+     "long": 0,
+     "short": 1,
+     "why": "10Y ~5.01% (TradingEconomics 10/28), rising + near 52-wk high 5.37%; hawkish Fed holds. Regime against the long; needs a hawkish-miss surprise."
+   },
+   "IEF": {
+     "long": 0,
+     "short": 1,
+     "why": "Same as TLT: rising yields (10Y ~5.01%) + hawkish hold regime against the bond long."
+   },
+   "GLD": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$4,049-4,067/oz, modestly lower on the day off recent highs (goldprice.org/Kitco 10/28). Elevated but soft; neutral."
+   },
+   "SLV": {
+     "long": 1,
+     "short": 1,
+     "why": "Silver ~$53.71/oz, flat-on-the-day (goldprice.org 10/28); no clean metals signal. Neutral."
+   },
+   "GDX": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold miners follow spot gold, which is flat/slightly soft off highs. No clean signal. Neutral."
+   },
+   "UUP": {
+     "long": 1,
+     "short": 0,
+     "why": "DXY ~102.38, +0.06% today, +1.00% on the month (TradingEconomics 10/28), rising-yield support. Mild long."
+   },
+   "IWM": {
+     "long": 1,
+     "short": 1,
+     "why": "Broad tape positive (S&P +0.60%, Nasdaq +1.18%) but no decisive small-cap read; event risk. Neutral."
+   },
+   "QQQ": {
+     "long": 1,
+     "short": 1,
+     "why": "Nasdaq +1.18% to 26477.81 + renewed AI momentum (Reuters 10/28) but MSFT/GOOGL after-close earnings = event risk. Net neutral, mild long."
+   },
+   "XLK": {
+     "long": 1,
+     "short": 1,
+     "why": "Tech sentiment improving (SK Hynix +632%, Reuters 10/28); chip pressure eased. But two megacap earnings after close. Neutral."
+   },
+   "SMH": {
+     "long": 1,
+     "short": 1,
+     "why": "Chip recovery on SK Hynix profit jump + Samsung (Reuters/Yahoo 10/28); no decisive signal yet. Neutral, mild long."
+   },
+   "NVDA": {
+     "long": 1,
+     "short": 1,
+     "why": "NVDA +0.9% to 217.94, chip complex recovering (Fool/Reuters 10/28). No single-day decisive tilt; neutral."
+   },
+   "AVGO": {
+     "long": 1,
+     "short": 1,
+     "why": "Chip complex recovering into FOMC + MSFT/GOOGL earnings; no clean AVGO-specific signal. Neutral."
+   },
+   "TSLA": {
+     "long": 1,
+     "short": 1,
+     "why": "TSLA +4.0% to 407.46 (Fool 10/28) strong momentum but single-name; no clean regime tilt. Neutral-to-long."
+   },
+   "AAPL": {
+     "long": 1,
+     "short": 1,
+     "why": "AAPL +0.9% to 347.10 (Fool 10/28); no name-specific tilt into the FOMC. Neutral."
+   },
+   "AMZN": {
+     "long": 1,
+     "short": 1,
+     "why": "AMZN +1.6% to 253.10 (Fool 10/28); no clean regime tilt. Neutral."
+   },
+   "MSFT": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: MSFT reports Q1 earnings after the close TODAY 10/28 (Yahoo/Reuters 10/28) — within 0 trading days => excluded from today's decision run via --exclude MSFT."
+   },
+   "GOOGL": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: GOOGL/Alphabet reports earnings after the close TODAY 10/28 (Yahoo/Reuters 10/28) — within 0 trading days => excluded via --exclude GOOGL."
+   },
+   "META": {
+     "long": 1,
+     "short": 1,
+     "why": "META -1.6% to 620.19 (Fool 10/28); soft but no decisive regime tilt. Neutral."
+   }
+ },
+ "catalysts": [
+   "FOMC TIER-1 EVENT (today): rate DECISION 14:00 ET + Warsh press conference 14:30 ET (MarketWatch/Federal Reserve calendar; Yahoo/Reuters 10/28). Market expects HOLD at 3.75-4.00% with a hawkish 'not done with the cycle' tilt (Reuters/CME FedWatch 10/28). At the 10:15 DECISION run this is ~3.5h away => NOT locked (<30min rule does not fire); if it prints before a decision run, it is information, not a reason to wait.",
+   "TIER-1 PCE head: Thursday 10/29 08:30 ET (Sep) — the week's first big inflation print; PCE + core, not printed until THU. NOT today.",
+   "NO CPI / NO PPI this week: CPI SEP +0.6% MoM (BLS 10/14) and PPI SEP +1.3% final demand (BLS 10/15) already printed earlier this month.",
+   "Tertiary today (10/28): MBA mortgage applications (week ended Oct); earnings after close from MSFT, GOOGL, Ford F, GE Vernova GEV, T-Mobile TMUS, eBay EBAY, Chipotle CMG, ServiceNow NOW (Yahoo 10/28). MSFT & GOOGL are in-universe => EARNINGS GATE via --exclude.",
+   "THU 10/29 also carries PCE; FRI 10/30 carries Employment Cost Index; next NFP is Fri 11/06 (MarketWatch/TradingEconomics 10/28).",
+   "EARNINGS GATE for the 10:15 DECISION run: MSFT and GOOGL report after the close TODAY => EXCLUDE both. Verify the remaining in-universe stocks (NVDA/GOOGL/AAPL/AMZN/TSLA/JPM/AVGO/XOM/META) have no earnings within 10 trading days before placing; any within 10 trading days => --exclude or --earnings-checked."
+ ]
+}
