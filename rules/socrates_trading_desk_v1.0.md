@@ -22,7 +22,10 @@ The scripts in `socrates-desk/scripts/` do all math, scoring, sizing, risk check
 3. Write the thesis, invalidation, dissent and p_target for each planned trade, then place it with place.py.
 4. Write the human briefing.
 
-Never compute prices, sizes or scores yourself. Never edit files in `journal/` by hand. Never edit anything in `rules/` or `scripts/`. If a script errors, report the exact error to Chris and stop; do not work around it.
+Never compute prices, sizes or scores yourself. Never edit files in `journal/` by hand. Never edit anything in `rules/` or `scripts/`, or `rules_version.txt`. If a script errors, report the exact error to Chris and stop; do not work around it. Three kinds of message are handled differently:
+- `REGIME FILE INVALID`: fix the regime file it names, then rerun the same command. This is the only error you fix yourself.
+- `MARKET CLOSED TODAY` / `MARKET NOT OPEN RIGHT NOW`: report it and stop. Nothing was logged.
+- place.py `REFUSED` about the order file itself (p_target out of range, a sentence too short or too long, bad JSON, unknown keys, earnings note): fix that order file and rerun place.py for that symbol once. Any other place.py result that isn't `PLACED`: report the line and move on to the next planned order; don't stop the whole run.
 
 All commands run from the `~/socrates-desk` folder (cd there first). Always use `.venv/bin/python`, never plain `python`.
 
@@ -34,6 +37,8 @@ All commands run from the `~/socrates-desk` folder (cd there first). Always use 
 5. Only report an order as placed if place.py printed "PLACED" with an order ID.
 6. Context hygiene: read only today's script output and the last 20 lines of any journal file.
 7. Never print, echo, cat, or paste any API key, secret, token, or Keychain value, in any output or file. The scripts read the keys themselves; you never need to see them.
+8. Never put free text (a thesis, a quote, anything from the web) inside a shell command. The shell changes it (`$105` becomes `05`) and can even run parts of it. Free text goes in a file you write with your file tool; commands only ever get file paths, symbols and the flags shown below.
+9. If any script prints an `ALERTS` section, put every alert at the top of your report to Chris, word for word.
 
 ## RUN MODES
 Each run begins with "RUN MODE: X". Do only that mode.
@@ -43,39 +48,54 @@ Each run begins with "RUN MODE: X". Do only that mode.
 2. Write `reports/regime_<YYYY-MM-DD>.json` (format below).
 3. Run: `.venv/bin/python scripts/score.py --mode briefing`
 4. Run: `.venv/bin/python scripts/sync.py`
+   - score.py lists `EARNINGS BLACKOUT` (stocks it already blocks) and marks `EARNINGS UNVERIFIED` stocks. If your research finds a stock reporting within the next 10 trading days that is NOT in the blackout list, add it to the regime file's `"exclude"` block now (with the date and source), so DECISION skips it.
 5. Write the briefing: Market Snapshot, Catalysts, Paper Account (from sync output), Top 5 Candidates (copy from score output).
-6. Run: `bash scripts/commit.sh`
+6. Run: `bash scripts/commit.sh`. It must print `Saved to GitHub.` If it prints `BACKUP FAILED`, include that line in your report to Chris.
 
 ### RUN MODE: DECISION (10:15 ET)
 1. Event lock: if a tier-1 event is less than 30 minutes away, wait until it prints. Once printed, it is information, not a reason to wait.
 2. If anything material changed since the briefing (an event printed), update today's regime file.
 3. Run: `.venv/bin/python scripts/score.py --mode decision`
-   (If you found a stock reporting earnings in the next 10 trading days, add `--exclude SYMBOL`.)
-4. For EACH planned order, run:
-   `.venv/bin/python scripts/place.py --symbol SYM --p-target 0.XX --thesis "..." --invalidation "..." --dissent "..."`
+   - Run it ONCE. If it says `DECISION ALREADY RAN TODAY`, do not rerun it; read today's plan from `reports/score_decision_<YYYY-MM-DD>.md` and place those orders. Only Chris can ask for a `--force` rerun.
+   - Exclusions (the regime file's `"exclude"` block) are only for single stocks with earnings inside the next 10 trading days, with that date (YYYY-MM-DD) and the source. ETFs can't be excluded, and a date outside the window is refused.
+4. For EACH planned order, write an order file with your file tool, then place it:
+   - File: `reports/order_<SYM>_<YYYY-MM-DD>.json`
+     ```json
+     {"symbol": "XLE", "p_target": 0.32,
+      "thesis": "...", "invalidation": "...", "dissent": "...",
+      "earnings_checked": false}
+     ```
+     For a stock the plan marks EARNINGS UNVERIFIED that you checked yourself, add:
+     ```json
+     "earnings_checked": true, "next_earnings": "2026-12-04", "earnings_note": "investor.example.com, checked 2026-10-28"
+     ```
+   - Run: `.venv/bin/python scripts/place.py --input reports/order_<SYM>_<YYYY-MM-DD>.json`
    - thesis: one sentence, why this trade, citing the score factors.
    - invalidation: a specific price or event that proves it wrong.
    - dissent: a specific, falsifiable way it fails ("fails if XLE closes below 92.10 on oil reversal"). General fear is not allowed.
    - p_target: probability that the target is hit before the stop. Start from the neutral-market base rate, 1 ÷ (1 + R:R) (about 0.33 for a 2R target, 0.30 for 2.3R), and adjust by at most 15 points up or down, for reasons you can name. place.py refuses values outside that range. You are scored against the base rate, so staying at the base rate is a fine answer; defaulting to 0.5 is not.
-   - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, add `--earnings-checked`. If not, do not place it and report why.
+   - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, set `"earnings_checked": true`, `"next_earnings": "YYYY-MM-DD"` and `"earnings_note": "<source>"` in the order file. If not, do not place it and report why.
+   - After the last order, run: `.venv/bin/python scripts/sync.py` (records instant fills and protects any partial fill).
+   - Only `PLACED ... order <id>` means placed. `ORDER REJECTED`, `ORDER NOT PLACED`, `ORDER NOT CONFIRMED` and `ORDER STATUS UNKNOWN` all mean it was NOT placed: report the line and never rerun place.py for that symbol.
 5. Write the trade report (format below). If the plan says NO TRADE, copy that line and add "Would trade if: [specific price, level or event]."
-6. Run: `bash scripts/commit.sh`
+6. Run: `bash scripts/commit.sh` (report any `BACKUP FAILED` line).
 
 ### RUN MODE: CLOSE (15:50 ET)
 1. Run: `.venv/bin/python scripts/sync.py --close`
-2. For each trade the output lists under CLOSED TODAY, write a one-sentence lesson.
-3. Report open positions exactly as listed.
-4. Run: `bash scripts/commit.sh`
+2. If the output has an `ALERTS` section, put every alert at the TOP of your report, word for word.
+3. For each trade the output lists under CLOSED TODAY, write a one-sentence lesson.
+4. Report open positions exactly as listed.
+5. Run: `bash scripts/commit.sh` (report any `BACKUP FAILED` line).
 
 ### RUN MODE: WEEKLY REVIEW (Fridays 16:30 ET)
 1. Run: `.venv/bin/python scripts/sync.py`
 2. Run: `.venv/bin/python scripts/review.py`
-3. Read the report it appended to `journal/weekly.md`. Under "8. Proposed rule changes", append your proposals with reasoning by writing them in your reply to Chris (not into the file). Do not apply any change.
+3. Read the report it wrote to `reports/weekly_<YYYY-MM-DD>.md` (the same text is kept in `journal/weekly.md`). Under "8. Proposed rule changes", append your proposals with reasoning by writing them in your reply to Chris (not into the file). Do not apply any change.
 4. If fewer than 20 closed trades exist, say "Sample too small for conclusions" and do not interpret the numbers.
-5. Run: `bash scripts/commit.sh`
+5. Run: `bash scripts/commit.sh` (report any `BACKUP FAILED` line).
 
 ## REGIME FILE FORMAT
-`reports/regime_<YYYY-MM-DD>.json`. Points per direction: 2 = regime supports it (with a cited data point), 1 = neutral, 0 = regime is against it. Anything you leave out counts as 1.
+`reports/regime_<YYYY-MM-DD>.json`. Points per direction: 2 = regime supports it (with a cited data point), 1 = neutral, 0 = regime is against it. Anything you leave out counts as 1. Keys are lowercase, points are the whole numbers 0, 1 or 2, and theme and symbol names must be exactly the ones listed below; score.py refuses the file otherwise and tells you what to fix. You may also include "date" and "catalysts". The optional "exclude" block lists stocks with earnings inside 10 trading days that the script missed, each with the date and source.
 
 ```json
 {
@@ -86,6 +106,9 @@ Each run begins with "RUN MODE: X". Do only that mode.
   },
   "symbols": {
     "UUP": {"long": 2, "short": 0, "why": "dollar at 18-month high (Reuters 10/13)"}
+  },
+  "exclude": {
+    "META": "earnings 2026-10-29 after close (investor.atmeta.com, checked 10/28)"
   }
 }
 ```

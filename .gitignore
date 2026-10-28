@@ -3,5 +3,6 @@
 .venv/
 __pycache__/
 *.tmp
-.obsidian/workspace*.json
+.obsidian/
 .DS_Store
+journal/.lock

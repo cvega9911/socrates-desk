@@ -1,8 +1,14 @@
 """Shared config, journal I/O and indicator math for the Socrates trading desk (rules v1.0)."""
+import contextlib
 import datetime as dt
+import fcntl
+import hashlib
 import json
 import math
 import os
+import re
+import sys
+import tempfile
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -17,6 +23,8 @@ TRADES = JOURNAL / "trades.jsonl"
 CONTROL = JOURNAL / "control.jsonl"
 WEEKLY = JOURNAL / "weekly.md"
 START_FILE = ROOT / "start_date.txt"
+LOCK_FILE = JOURNAL / ".lock"
+CORRUPT_FILE = JOURNAL / "corrupt_lines.txt"
 
 # ---------------- rules v1.0 constants ----------------
 ETFS = ["SPY", "QQQ", "IWM", "DIA", "XLE", "XLK", "XLF", "XLV", "XLI", "XLU", "XLY", "XLP", "XLB",
@@ -49,11 +57,46 @@ QUOTA_MIN_SCORE = 4
 TIME_STOP_DAYS = 10
 ENTRY_SLIP = 0.0005
 MIN_RR = 1.0
+MIN_BARS = 61            # 60-day levels + 1
+BARS_DELAY_MIN = 16      # free data plan: SIP history must be older than 15 minutes
+TEXT_MAX = 600           # longest thesis / invalidation / dissent accepted
+
+# The rules version is pinned in code. rules_version.txt must match it, so editing the text file alone can never
+# reset the scorecard; a real version bump changes both (and is reviewed by Chris).
+RULES_VERSION = "v1.0"
+
+
+class DeskError(SystemExit):
+    """A refusal or failure the agent must report verbatim. Exits non-zero."""
 
 
 def rules_version():
     f = ROOT / "rules_version.txt"
-    return f.read_text().strip() if f.exists() else "v1.0"
+    v = f.read_text().strip() if f.exists() else RULES_VERSION
+    if v != RULES_VERSION:
+        raise DeskError(f"RULES VERSION MISMATCH: rules_version.txt says {v!r} but the scripts are {RULES_VERSION!r}. "
+                        "Rule changes go through Chris; do not edit rules_version.txt. Stop and tell Chris.")
+    return v
+
+
+_INVISIBLE = re.compile("[\u0000-\u0008\u000b-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]")
+
+
+def plain_text(val, limit=TEXT_MAX):
+    """Free text for the journal: no control, zero-width or right-to-left override characters, single-spaced, capped."""
+    val = " ".join(_INVISIBLE.sub(" ", str(val)).split())
+    return val[:limit]
+
+
+def md_safe(val, limit=300):
+    """Text from the agent or the web, made inert for markdown/HTML (GitHub, Obsidian)."""
+    val = plain_text(val, limit).replace("<", "\u2039").replace(">", "\u203a")
+    return re.sub(r"([\\`*_\[\]()<>!|#])", r"\\\1", val)
+
+
+def warn(msg):
+    """Loud warning on stderr (keeps --json output on stdout valid)."""
+    print(f"WARNING: {msg}", file=sys.stderr)
 
 
 SECRET_NAMES = ("ALPACA_API_KEY", "ALPACA_SECRET_KEY", "FINNHUB_API_KEY")
@@ -72,7 +115,8 @@ def keychain_get(name):
 
 
 def load_env():
-    """Secrets come from the macOS Keychain first; socrates-desk/.env is only a fallback."""
+    """Secrets come from the macOS Keychain first; socrates-desk/.env is only a fallback, and only for the three
+    secret names. Nothing else in .env is read, so a planted .env can't set a proxy or CA bundle and siphon the keys."""
     for name in SECRET_NAMES:
         if not os.environ.get(name):
             v = keychain_get(name)
@@ -84,7 +128,9 @@ def load_env():
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+                k = k.strip()
+                if k in SECRET_NAMES:
+                    os.environ.setdefault(k, v.strip().strip('"').strip("'"))
 
 
 _BROKER = None
@@ -112,36 +158,235 @@ def today_str():
     return now_et().date().isoformat()
 
 
+def bars_end():
+    """End timestamp for bar requests: now minus the free plan's 15-minute SIP delay."""
+    return (dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=BARS_DELAY_MIN)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def sha256_file(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16] if path and Path(path).exists() else None
+
+
+# ---------------- market calendar ----------------
+def session(b, day=None):
+    """Today's trading session from Alpaca's calendar: {"date","open","close"} or None on weekends/holidays."""
+    day = day or today_str()
+    rows = b.calendar_days(day, day)
+    return next((r for r in rows if r.get("date") == day), None)
+
+
+def market_status(b):
+    """(is_trading_day, is_open_now, session_close_hhmm). Raises if Alpaca can't be reached: never guess."""
+    sess = session(b)
+    clk = b.clock()
+    return sess is not None, bool(clk.get("is_open")), (sess or {}).get("close")
+
+
+def trading_days_between(b, start, end):
+    """Trading days strictly after `start` up to and including `end`. Raises on API failure (never silently 0)."""
+    if start >= end:
+        return 0
+    return max(0, len(b.calendar(start, end)) - 1)
+
+
+def trading_days_ahead(b, start, n):
+    """The date n trading days after `start` (inclusive window end). Raises on API failure."""
+    end = (dt.date.fromisoformat(start) + dt.timedelta(days=n * 2 + 10)).isoformat()
+    days = [d for d in b.calendar(start, end) if d > start]
+    if len(days) < n:
+        raise ValueError(f"calendar returned only {len(days)} trading days after {start}")
+    return days[n - 1]
+
+
+def previous_trading_day(b, day=None):
+    day = day or today_str()
+    start = (dt.date.fromisoformat(day) - dt.timedelta(days=10)).isoformat()
+    days = [d for d in b.calendar(start, day) if d < day]
+    if not days:
+        raise ValueError(f"calendar returned no trading day before {day}")
+    return days[-1]
+
+
 # ---------------- journal I/O ----------------
+# All scripts take one exclusive lock on journal/.lock for their whole run, so two runs (or a run plus a manual
+# command) can never interleave writes. Appends start on a fresh line and are fsynced; rewrites are atomic.
+_lock_depth = 0
+_lock_fh = None
+
+
+@contextlib.contextmanager
+def journal_lock(timeout_s=120):
+    global _lock_depth, _lock_fh
+    if _lock_depth:
+        _lock_depth += 1
+        try:
+            yield
+        finally:
+            _lock_depth -= 1
+        return
+    JOURNAL.mkdir(parents=True, exist_ok=True)
+    fh = os.fdopen(os.open(LOCK_FILE, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600), "r+")
+    deadline = dt.datetime.now().timestamp() + timeout_s
+    while True:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            break
+        except BlockingIOError:
+            if dt.datetime.now().timestamp() > deadline:
+                fh.close()
+                raise DeskError("JOURNAL BUSY: another desk script has held the journal lock for 2 minutes. "
+                                "Do not retry in a loop; tell Chris.")
+            import time
+            time.sleep(0.5)
+    _lock_fh, _lock_depth = fh, 1
+    try:
+        yield
+    finally:
+        _lock_depth = 0
+        fcntl.flock(fh, fcntl.LOCK_UN)
+        fh.close()
+        _lock_fh = None
+
+
+def _quarantine(path, lineno, line):
+    if len(line) > 2000:
+        line = line[:2000] + f"...[{len(line) - 2000} more characters]"
+    with open(CORRUPT_FILE, "a") as f:
+        f.write(json.dumps({"file": Path(path).name, "line": lineno, "text": line,
+                            "found": dt.datetime.now(ET).isoformat(timespec="seconds")}) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+    warn(f"{Path(path).name} line {lineno} is not valid JSON (a crash mid-write?). Copied it to "
+         f"journal/{CORRUPT_FILE.name} so nothing is lost. Tell Chris.")
+
+
 def read_jsonl(path):
+    """Every valid row. A corrupted line is never silently dropped: it is copied to journal/corrupt_lines.txt
+    (once) with a loud warning, so a later rewrite of the file can't erase it without a trace."""
     if not Path(path).exists():
         return []
-    rows = []
-    for line in Path(path).read_text().splitlines():
+    rows, seen = [], None
+    for i, line in enumerate(Path(path).read_text().splitlines(), start=1):
         line = line.strip()
-        if line:
-            try:
-                rows.append(json.loads(line))
-            except json.JSONDecodeError:
-                pass   # a corrupted line never kills a run
+        if not line:
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            if seen is None:
+                seen = CORRUPT_FILE.read_text() if CORRUPT_FILE.exists() else ""
+            if json.dumps(line[:2000])[:-1] not in seen:
+                _quarantine(path, i, line)
     return rows
 
 
+def _fsync_dir(path):
+    try:
+        fd = os.open(str(Path(path).parent), os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+    except OSError:
+        pass
+
+
 def append_jsonl(path, rows):
+    if not rows:
+        return
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "a") as f:
-        for r in rows:
-            f.write(json.dumps(r) + "\n")
+    with journal_lock():
+        with open(path, "ab+") as f:
+            f.seek(0, os.SEEK_END)
+            if f.tell() > 0:
+                f.seek(-1, os.SEEK_END)
+                if f.read(1) != b"\n":       # last write was torn: never glue a good row onto it
+                    f.write(b"\n")
+            f.write("".join(json.dumps(r) + "\n" for r in rows).encode())
+            f.flush()
+            os.fsync(f.fileno())
+
+
+def atomic_write(path, text):
+    """Write a file so a crash leaves either the old or the new version. The temp file has an unpredictable name
+    (no symlink games) and lives next to the target so the rename is atomic."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+    _fsync_dir(path)
 
 
 def write_jsonl(path, rows):
-    tmp = Path(str(path) + ".tmp")
-    tmp.write_text("".join(json.dumps(r) + "\n" for r in rows))
-    tmp.replace(path)
+    with journal_lock():
+        atomic_write(path, "".join(json.dumps(r) + "\n" for r in rows))
+
+
+ACTIVE = ("submitting", "pending", "open", "closing")
 
 
 def open_trades():
-    return [t for t in read_jsonl(TRADES) if t.get("status") in ("pending", "open", "closing")]
+    return [t for t in read_jsonl(TRADES) if t.get("status") in ACTIVE]
+
+
+# ---------------- regime file ----------------
+REGIME_EXTRA_OK = {"date", "catalysts", "notes", "sources", "exclude"}
+
+
+def validate_regime(reg):
+    """Return (errors, warnings). Errors make the scores wrong, so score.py refuses to run until they're fixed."""
+    errors, warns = [], []
+    if not isinstance(reg, dict):
+        return ["the file must be a JSON object"], []
+    for k in reg:
+        if k not in ("themes", "symbols") and k not in REGIME_EXTRA_OK:
+            warns.append(f"unknown top-level key {k!r} ignored")
+    for scope, allowed in (("themes", THEMES), ("symbols", UNIVERSE)):
+        block = reg.get(scope) or {}
+        if not isinstance(block, dict):
+            errors.append(f"{scope} must be an object")
+            continue
+        for key, node in block.items():
+            if key not in allowed:
+                errors.append(f"{scope}.{key}: unknown {scope[:-1]} (must be one of: {', '.join(sorted(allowed))})")
+                continue
+            if not isinstance(node, dict):
+                errors.append(f"{scope}.{key}: must be an object like {{\"long\": 1, \"short\": 1, \"why\": \"...\"}}")
+                continue
+            for nk, nv in node.items():
+                if nk in ("long", "short"):
+                    if isinstance(nv, bool) or not isinstance(nv, int) or not 0 <= nv <= 2:
+                        errors.append(f"{scope}.{key}.{nk}: must be the whole number 0, 1 or 2 (got {nv!r})")
+                elif nk == "why":
+                    if not isinstance(nv, str):
+                        errors.append(f"{scope}.{key}.why: must be text")
+                else:
+                    errors.append(f"{scope}.{key}: unknown key {nk!r} (only long, short, why; keys are lowercase)")
+    ex = reg.get("exclude")
+    if ex is not None:
+        if not isinstance(ex, dict):
+            errors.append('exclude must be an object like {"META": "earnings 2026-10-29 (nasdaq.com 10/28)"}')
+        else:
+            for sym, why in ex.items():
+                if sym not in STOCKS:
+                    errors.append(f"exclude.{sym}: only single stocks can be excluded (earnings); "
+                                  "ETFs have no earnings, so excluding one would be a veto")
+                elif not isinstance(why, str) or len(why.strip()) < 10 or not re.search(r"\d{4}-\d{2}-\d{2}", why):
+                    errors.append(f"exclude.{sym}: give the earnings date (YYYY-MM-DD) and source, e.g. \"earnings 2026-10-29 (nasdaq.com)\"")
+                elif len(why) > 200:
+                    errors.append(f"exclude.{sym}: keep the reason under 200 characters")
+    return errors, warns
 
 
 # ---------------- indicators ----------------
@@ -191,7 +436,7 @@ def factors(df, spy_ret20):
 
 
 def levels(f, entry, direction):
-    """Stop: beyond the 10-day swing, clamped to 1-2 ATR.
+    """Stop: at the 10-day swing low/high, clamped to 1-2 ATR (ATR = simple 14-day average of true range).
     Target: nearest 20/60-day level at least 1R away (closer levels are ignored); none -> 2R; capped at 3R."""
     a = f["atr"]
     if direction == "long":
@@ -268,3 +513,47 @@ def simulate_path(df, direction, entry, stop, target, start_date, horizon=TIME_S
     if len(path) < horizon:
         return None
     return r_multiple(direction, entry, stop, float(path["close"].iloc[-1])), "time"
+
+
+# ---------------- simulating logged levels forward ----------------
+def simulation_bars(b, syms, first_date, today):
+    """Bars for walking LOGGED price levels forward. Logged entries/stops/targets are real (unadjusted) prices, so
+    simulate on split-only bars (dividends never move history) and keep raw bars to undo a split that happened
+    after the logged date. Completed bars only. Returns {symbol: (split_df, raw_df)}."""
+    if not syms:
+        return {}
+    start = (dt.date.fromisoformat(first_date) - dt.timedelta(days=7)).isoformat() + "T00:00:00Z"
+    end = bars_end()
+    today_d = dt.date.fromisoformat(today)
+    sp = b.daily_bars(syms, start, end, adjustment="split")
+    rw = b.daily_bars(syms, start, end, adjustment="raw")
+    return {s: (completed(bars_to_df(sp.get(s, [])), today_d), completed(bars_to_df(rw.get(s, [])), today_d))
+            for s in syms}
+
+
+def split_factor(df_split, df_raw, d0):
+    """raw / split-adjusted close on the last bar at or before d0: 1.0 unless the symbol split after d0."""
+    a, r = df_split[df_split["date"] <= d0], df_raw[df_raw["date"] <= d0]
+    if a.empty or r.empty:
+        return 1.0
+    sa, ra = float(a["close"].iloc[-1]), float(r["close"].iloc[-1])
+    if sa <= 0:
+        return 1.0
+    f = ra / sa
+    return 1.0 if abs(f - 1.0) < 0.02 else f
+
+
+def simulate_logged(frames, direction, entry, stop, target, d0, horizon=TIME_STOP_DAYS):
+    """simulate_path for levels logged in real prices on day d0. R is unchanged by the split scaling."""
+    if not frames:
+        return None
+    df_split, df_raw = frames
+    if df_split is None or df_split.empty:
+        return None
+    f = split_factor(df_split, df_raw, d0)
+    return simulate_path(df_split, direction, entry / f, stop / f, target / f, d0, horizon)
+
+
+def matured(df, d0, horizon=TIME_STOP_DAYS):
+    """True once d0 has `horizon` completed bars after it, so every outcome is known."""
+    return df is not None and len(df[df["date"] > d0]) >= horizon

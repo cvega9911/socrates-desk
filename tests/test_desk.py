@@ -20,9 +20,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 (TMP / "start_date.txt").write_text("PENDING\n")
 
 import desk as D          # noqa: E402
+import broker as BR       # noqa: E402
 import score, place, sync, review, control   # noqa: E402
 
 TODAY = dt.date.fromisoformat(D.today_str())
+place.sleep = sync.sleep = lambda s: None     # no real waiting in tests
 
 
 def bdays(n_back, n_fwd=0):
@@ -62,6 +64,31 @@ class FakeBroker:
         self.equity, self.last_equity = 100000.0, 100000.0
         self.orders, self.pos, self.n = {}, {}, 0
         self.cancelled = []
+        self.is_open, self.holidays = True, set()
+        self.submit_mode = None        # None | "timeout_after_accept" | "error" | "reject"
+        self.close_fails = False
+        self.cancel_stuck = False      # cancels are accepted but never take effect
+        self.calendar_fails = False
+        self.order_fails = set()
+        self.close_lost_reply = False
+        self.ocos = []
+
+    def clock(self):
+        return {"is_open": self.is_open}
+
+    def calendar_days(self, a, b):
+        if self.calendar_fails:
+            raise BR.BrokerError("calendar down")
+        a, b = dt.date.fromisoformat(a), dt.date.fromisoformat(b)
+        out = []
+        for i in range((b - a).days + 1):
+            d = a + dt.timedelta(days=i)
+            if (d.weekday() < 5 or d == TODAY) and d.isoformat() not in self.holidays:
+                out.append({"date": d.isoformat(), "open": "09:30", "close": "16:00"})
+        return out
+
+    def order_by_client_id(self, cid):
+        return next((o for o in self.orders.values() if o.get("client_order_id") == cid), None)
 
     def account(self):
         return {"equity": str(self.equity), "last_equity": str(self.last_equity)}
@@ -76,42 +103,93 @@ class FakeBroker:
         return {"shortable": True, "easy_to_borrow": s != "GDX"}
 
     def calendar(self, a, b):
-        a, b = dt.date.fromisoformat(a), dt.date.fromisoformat(b)
-        return [str(a + dt.timedelta(days=i)) for i in range((b - a).days + 1) if (a + dt.timedelta(days=i)).weekday() < 5]
+        return [d["date"] for d in self.calendar_days(a, b)]
 
     def portfolio_history(self, period="1A"):
         return {"equity": [], "timestamp": []}
 
     def submit_bracket(self, symbol, qty, side, limit_price, take_profit, stop_price, client_order_id=None):
+        if self.submit_mode == "error":
+            raise BR.BrokerError("POST /v2/orders -> 422: insufficient buying power", 422)
+        if self.submit_mode == "error500":
+            raise BR.BrokerError("POST /v2/orders -> 500: boom", 500)
         self.n += 1
         oid = f"ord{self.n}"
-        self.orders[oid] = {"id": oid, "symbol": symbol, "qty": qty, "side": side, "status": "new", "limit": limit_price,
+        self.orders[oid] = {"id": oid, "symbol": symbol, "qty": qty, "side": side,
+                            "status": "rejected" if self.submit_mode == "reject" else "new",
+                            "limit": limit_price, "client_order_id": client_order_id, "filled_qty": "0",
                             "legs": [{"id": oid + "tp", "type": "limit", "status": "held", "limit_price": take_profit},
                                      {"id": oid + "sl", "type": "stop", "status": "held", "stop_price": stop_price}]}
+        if self.submit_mode == "timeout_after_accept":
+            raise BR.BrokerError("POST /v2/orders -> network error: ReadTimeout")
+        return {"id": oid}
+
+    def submit_oco(self, symbol, qty, side, take_profit, stop_price, client_order_id=None):
+        if client_order_id and any(o.get("client_order_id") == client_order_id for o in self.orders.values()):
+            raise BR.BrokerError("POST /v2/orders -> 422: client_order_id must be unique", 422)   # as Alpaca does
+        self.n += 1
+        oid = f"oco{self.n}"
+        self.orders[oid] = {"id": oid, "symbol": symbol, "qty": qty, "side": side, "type": "limit", "status": "new",
+                            "client_order_id": client_order_id, "limit_price": take_profit,
+                            "legs": [{"id": oid + "sl", "type": "stop", "status": "new", "stop_price": stop_price}]}
+        self.ocos.append(self.orders[oid])
         return {"id": oid}
 
     def order(self, oid):
-        return self.orders[oid]
+        if oid in self.order_fails:
+            raise BR.BrokerError(f"GET order {oid} -> 500")
+        if oid in self.orders:
+            return self.orders[oid]
+        for o in self.orders.values():
+            for l in o.get("legs") or []:
+                if l["id"] == oid:
+                    return l
+        raise BR.NotFound(f"order {oid} not found")
 
     def cancel_order(self, oid):
         self.cancelled.append(oid)
+        if self.cancel_stuck:
+            return
+        for o in self.orders.values():           # Alpaca: a replaced order is final on its side, not cancelable
+            if any(x["id"] == oid and x.get("status") == "replaced" for x in [o] + list(o.get("legs") or [])):
+                raise BR.BrokerError("DELETE -> 422: order is not cancelable", 422)
         for o in self.orders.values():
-            if o["id"] == oid:
+            if o["id"] == oid and o["status"] not in ("filled",):
                 o["status"] = "canceled"
-            for l in o["legs"]:
-                if l["id"] == oid:
+                for l in o.get("legs") or []:
+                    if l["status"] in ("held", "new"):
+                        l["status"] = "canceled"
+            for l in o.get("legs") or []:
+                if l["id"] == oid and l["status"] != "filled":
                     l["status"] = "canceled"
 
     def close_position(self, s):
+        if self.close_lost_reply:          # the sale happens, the reply never arrives
+            self.close_lost_reply = False
+            self.n += 1
+            oid = f"close{self.n}"
+            px = float(self.pos[s]["current_price"])
+            self.orders[oid] = {"id": oid, "symbol": s, "side": "sell", "status": "filled", "filled_avg_price": str(px),
+                                "filled_at": f"{TODAY}T19:55:00Z", "legs": []}
+            del self.pos[s]
+            raise BR.BrokerError("DELETE /v2/positions -> network error: ReadTimeout")
+        if self.close_fails:
+            raise BR.BrokerError(f"DELETE /v2/positions/{s} -> 403: insufficient qty available")
+        if s not in self.pos:
+            raise BR.NotFound(f"position {s} not found")
         self.n += 1
         oid = f"close{self.n}"
         px = float(self.pos[s]["current_price"])
-        self.orders[oid] = {"id": oid, "symbol": s, "status": "filled", "filled_avg_price": str(px),
+        self.orders[oid] = {"id": oid, "symbol": s, "side": "sell", "status": "filled", "filled_avg_price": str(px),
                             "filled_at": f"{TODAY}T19:55:00Z", "legs": []}
         del self.pos[s]
         return {"id": oid}
 
-    def daily_bars(self, symbols, start, end):
+    def recent_orders(self, symbol, after):
+        return [o for o in self.orders.values() if o.get("symbol") == symbol and o.get("status") == "filled"
+                and str(o["id"]).startswith("close")]
+
+    def daily_bars(self, symbols, start, end, adjustment="all"):
         return {s: self.bars[s] for s in symbols if s in self.bars}
 
     def latest_prices(self, symbols):
@@ -124,7 +202,8 @@ class FakeBroker:
     # helpers for tests
     def fill_entry(self, oid, price):
         o = self.orders[oid]
-        o.update({"status": "filled", "filled_avg_price": str(price), "filled_at": f"{TODAY}T14:20:00Z"})
+        o.update({"status": "filled", "filled_avg_price": str(price), "filled_at": f"{TODAY}T14:20:00Z",
+                  "filled_qty": str(o["qty"])})
         for l in o["legs"]:
             l["status"] = "new"
         self.pos[o["symbol"]] = {"symbol": o["symbol"], "current_price": str(price)}
@@ -233,7 +312,12 @@ ok(all(c["rr"] >= 1.0 for c in ctrl), "controls obey the R:R >= 1.0 gate")
 ok(all(not (c["symbol"] == "GDX" and c["direction"] == "short") for c in ctrl), "controls obey the shortable gate")
 ok(all(c["direction"] in ("long", "short") for c in ctrl), "controls have a direction")
 first_draw = [(c["symbol"], c["direction"]) for c in ctrl]
-rr_again = score.run("decision")
+try:
+    score.run("decision")
+    ok(False, "a second DECISION run must be refused")
+except SystemExit as e:
+    ok("DECISION ALREADY RAN" in str(e), "a second DECISION run the same day is refused without --force")
+rr_again = score.run("decision", force=True)
 ok(len(D.read_jsonl(D.CONTROL)) == 5 and rr_again["controls_drawn"] == 0, "rerunning decision does not double-draw controls")
 D.write_jsonl(D.CONTROL, [])
 control_rows, _ = control.draw({s: {d: c for d, c in [("long", {"rr": 2.0, "entry": 10, "stop": 9, "target": 12}),
@@ -284,11 +368,11 @@ try:
     place.place(c0["symbol"], "Strong trend and regime support", "Daily close below the stop level",
                 "Fails if the sector reverses on macro news", round(base0 + 0.05, 2), earnings_checked=True)
 except SystemExit as e:
-    ok("already has an open" in str(e), "refuses duplicate placement")
+    ok("already" in str(e), "refuses duplicate placement")
 ok(all("p_base" in t and abs(t["p_base"] - 1 / (1 + c["rr"])) < 0.001 for t, c in zip(D.read_jsonl(D.TRADES), plan)), "p_base logged on every trade")
 
 # rerun decision: symbols now busy, should not re-plan them
-r2 = score.run("decision")
+r2 = score.run("decision", force=True)
 ok(not set(c["symbol"] for c in r2["plan"]) & set(t["symbol"] for t in trades), "decision does not re-plan busy symbols")
 D.write_jsonl(D.CANDIDATES, logged)   # restore single decision log for review checks
 
@@ -403,7 +487,7 @@ for i in range(25):
     trade_rows.append({"trade_id": f"t{i}", "order_id": f"o{i}", "rules_version": "v1.0", "date_open": fr.days[-35 + i // 2].isoformat(),
                        "symbol": "XLE", "direction": "long", "tier": "A" if i % 2 else "B", "score": 7 if i % 2 else 5,
                        "entry_fill": 100, "stop": 98, "target": 104, "shares": 100, "risk_dollars": 200 if i % 2 else 200,
-                       "p_target": 0.6 if win else 0.3, "thesis": "x" * 20, "invalidation": "y" * 20, "dissent": "z" * 20,
+                       "p_target": 0.45 if win else 0.25, "p_base": 0.333, "thesis": "x" * 20, "invalidation": "y" * 20, "dissent": "z" * 20,
                        "status": "closed", "date_close": fr.days[-30 + i // 2].isoformat(), "exit_reason": "target" if win else "stop",
                        "result_R": 2.0 if win else -1.0, "pnl": 400 if win else -200})
 D.write_jsonl(D.CANDIDATES, cand_rows)
@@ -417,11 +501,11 @@ print(rep)
 ok("Win rate 36.0%" in rep, "win rate computed (9/25)")
 ok("+0.08R" in rep, "expectancy computed ((9*2-16)/25 = +0.08R)")
 ok("5b. Random baseline" in rep and "Random controls (all resolved): 80" in rep, "random baseline section reports controls")
-ok("beats" in rep and "Verdict:" in rep, "baseline verdict shown once 20 real + 50 controls exist")
+ok("PRIMARY TEST" in rep and "fortnights" in rep, "primary test section reports its fortnight count")
 ok("Brier score" in rep and "Brier skill" in rep and "neutral base rate" in rep, "calibration reported with the base-rate anchor check")
 ok("5c. Does the score predict forward R" in rep and "matured candidate-trades" in rep, "score study section reports matured candidates")
 ok("Factor regime:" in rep and "Score 7:" in rep and "Significance test withheld" in rep, "score buckets and factor lines shown; significance withheld on small samples")
-ok("Matured cohorts (25 real vs 80 controls)" in rep, "baseline verdict uses matured cohorts only")
+ok("Verdict withheld" in rep and "13, 26, 52 closed fortnights" in rep, "no verdict before the first fixed look (5 weeks here)")
 ok("planned: " in rep and "resolved" in rep, "shadow book simulated")
 ok("Sample too small" not in rep, "no small-sample warning at 25 trades")
 ok("planned but never placed" in rep, "flags planned-but-not-placed candidates")
@@ -429,21 +513,861 @@ ok(D.WEEKLY.read_text().count("## Weekly review") == 1, "appended to weekly.md")
 D.write_jsonl(D.CONTROL, D.read_jsonl(D.CONTROL)[:10])
 rep_off = review.run(offline=True)
 ok("Skipped" in rep_off, "offline mode works without Alpaca")
+ok(D.WEEKLY.read_text().count("## Weekly review") == 1, "re-running the review the same day replaces its section (no duplicate)")
 ok("Verdict withheld" in rep_off, "verdict withheld when there are too few controls")
 rr_ = __import__("random").Random(11)
 pos = [{"date": f"d{d}", "score": sc, "R": (sc - 5) * 0.3 + rr_.gauss(0, 0.5)} for d in range(30) for sc in range(3, 9)]
 neg = [{"date": f"d{d}", "score": sc, "R": rr_.gauss(0, 1.0)} for d in range(30) for sc in range(3, 9)]
 r1, p1 = review.within_day_perm_p(pos, 500)
 r2, p2 = review.within_day_perm_p(neg, 500)
-ok(r1 > 0.5 and p1 < 0.01, f"permutation test detects a real score->R relationship (r={r1:.2f}, p={p1:.3f})")
+ok(r1 > 0.5 and p1 < 0.01 and p1 > 0, f"permutation test detects a real score->R relationship (r={r1:.2f}, p={p1:.3f}, never 0)")
 ok(abs(r2) < 0.3 and p2 > 0.01, f"permutation test stays quiet on noise (r={r2:.2f}, p={p2:.3f})")
 young = [{"date": str(TODAY - dt.timedelta(days=3)), "symbol": "SPY", "direction": "long", "score": 8, "entry": 100.0,
           "stop": 1.0, "target": 100.01, "breakdown": {}}]
-ok(review.score_study(young, {"SPY": D.bars_to_df(fr.bars["SPY"])}) == [], "candidates younger than 10 trading days are excluded (no early-exit bias)")
-pc_hi = control.percentile_vs_random(5.0, [-1.0, 2.0, -1.0], 25)
-pc_lo = control.percentile_vs_random(-5.0, [-1.0, 2.0, -1.0], 25)
-ok(pc_hi > 0.99 and pc_lo < 0.01, "percentile function separates clearly better / worse than random")
-ok("no evidence" in control.verdict(0.5) and "evidence of skill" in control.verdict(0.97) and "hurting" in control.verdict(0.02), "verdict wording")
+spy_df = D.bars_to_df(fr.bars["SPY"])
+ok(review.score_study(young, {"SPY": (spy_df, spy_df)}) == [], "candidates younger than 10 trading days are excluded (no early-exit bias)")
+rr3 = __import__("random").Random(5)
+dd0 = dt.date(2026, 1, 5)
+def rows_(edge, mkt, lean):
+    out_a, out_b = [], []
+    for i in range(200):
+        day = (dd0 + dt.timedelta(days=i)).isoformat()
+        m = mkt[i // 14]
+        sa = 1 if rr3.random() < lean else -1
+        out_a.append((day, "long" if sa > 0 else "short", sa * m + edge + rr3.gauss(0, 1)))
+        for _ in range(2):
+            sb = rr3.choice([1, -1])
+            out_b.append((day, "long" if sb > 0 else "short", sb * m + rr3.gauss(0, 1)))
+    return out_a, out_b
+mkt = [rr3.gauss(0, 2) for _ in range(20)]
+a1, b1 = rows_(0.6, mkt, 1.0)
+d1, pp1, nb1 = control.compare(a1, b1, n_perm=2000)
+ok(d1 > 0.3 and pp1 < 0.01 and pp1 > 0 and nb1 >= 12, f"the primary test detects a real edge (diff {d1:+.2f}, p={pp1:.4f}, {nb1} fortnights, p never 0)")
+a2, b2 = rows_(0.0, [abs(x) + 2 for x in mkt], 1.0)
+d2, pp2, _ = control.compare(a2, b2, n_perm=2000)
+ok(pp2 > 0.05, f"a long-only plan in a rising market is NOT called skill (direction-matched; p={pp2:.3f})")
+one = [("2026-01-06", "long", 1.0)] * 30
+other = [("2026-03-02", "long", -1.0)] * 60
+_, _, nbx = control.compare(one, other, n_perm=200)
+ok(nbx == 0, "plans and controls from different fortnights are never compared with each other")
+ok("no evidence" in control.verdict(0.2, 0.5) and "evidence of skill" in control.verdict(0.3, 0.01)
+   and "hurting" in control.verdict(-0.3, 0.01) and "no evidence" in control.verdict(0.3, 0.06), "verdict wording (two-sided)")
+
+
+# =====================================================================================================
+# Hardening tests (one block per review finding)
+# =====================================================================================================
+import subprocess   # noqa: E402
+
+PLAN_TEXT = ("Strong trend and regime support", "Daily close below the stop level", "Fails if the sector reverses on macro news")
+
+
+def fresh(**kw):
+    reset_journal()
+    for f in (TMP / "journal").glob("corrupt_lines.txt"):
+        f.unlink()
+    (TMP / "start_date.txt").write_text("PENDING\n")
+    b = FakeBroker(**kw)
+    D.set_broker(b)
+    return b
+
+
+def write_regime(obj):
+    (TMP / "reports" / f"regime_{TODAY}.json").write_text(json.dumps(obj))
+
+
+def expect_exit(fn, needle, msg):
+    try:
+        fn()
+    except SystemExit as e:
+        ok(needle in str(e), f"{msg} ({str(e)[:70]!r})")
+        return str(e)
+    ok(False, msg + " (no refusal)")
+
+
+print("journal integrity")
+fresh()
+D.append_jsonl(D.TRADES, [{"a": 1}])
+with open(D.TRADES, "a") as fh:
+    fh.write('{"torn": tr')            # crash mid-write: no newline
+D.append_jsonl(D.TRADES, [{"b": 2}])
+rows = D.read_jsonl(D.TRADES)
+ok({"b": 2} in rows and {"a": 1} in rows, "a row appended after a torn write stays intact (not glued to the torn line)")
+ok(D.CORRUPT_FILE.exists() and "torn" in D.CORRUPT_FILE.read_text(), "the torn line is copied to corrupt_lines.txt, not silently dropped")
+D.write_jsonl(D.TRADES, rows)
+D.read_jsonl(D.TRADES)
+ok(D.CORRUPT_FILE.read_text().count("torn") == 1, "a corrupted line is quarantined once, not on every read")
+with D.journal_lock():
+    with D.journal_lock():
+        D.append_jsonl(D.TRADES, [{"c": 3}])
+ok({"c": 3} in D.read_jsonl(D.TRADES), "the journal lock is re-entrant inside one run")
+with D.journal_lock():
+    code = ("import os,sys; os.environ['DESK_ROOT']=sys.argv[1]; sys.path.insert(0, sys.argv[2]); import desk as D\n"
+            "try:\n    D.journal_lock(timeout_s=0.5).__enter__(); print('GOT')\nexcept SystemExit as e: print('BUSY', e)")
+    out = subprocess.run([sys.executable, "-c", code, str(TMP), str(Path(__file__).resolve().parent.parent / "scripts")],
+                         capture_output=True, text=True, timeout=30).stdout
+ok(out.startswith("BUSY"), "a second process can't write while a run holds the journal lock")
+
+print("rules version")
+(TMP / "rules_version.txt").write_text("v1.1\n")
+expect_exit(D.rules_version, "RULES VERSION MISMATCH", "editing rules_version.txt alone is refused (can't reset the scorecard)")
+(TMP / "rules_version.txt").write_text("v1.0\n")
+
+print("regime validation")
+errs, warns = D.validate_regime({"date": "x", "catalysts": [], "catcalysts": [], "themes": {"energy": {"long": 2, "short": 0, "why": "w"}}})
+ok(not errs and any("catcalysts" in w for w in warns), "real-world files (date, catalysts, a typo'd extra key) pass with a warning")
+for bad, needle in (({"themes": {"Energy": {"long": 2}}}, "unknown theme"),
+                    ({"themes": {"energy": {"Long": 2}}}, "unknown key"),
+                    ({"themes": {"energy": {"long": "two"}}}, "whole number"),
+                    ({"themes": {"energy": {"long": True}}}, "whole number"),
+                    ({"themes": {"energy": {"long": 3}}}, "whole number"),
+                    ({"symbols": {"ZZZ": {"long": 2}}}, "unknown symbol"),
+                    ({"exclude": {"XLE": "earnings 2026-10-29 (nasdaq)"}}, "only single stocks"),
+                    ({"exclude": {"META": "x"}}, "earnings date"), ({"exclude": {"META": "earnings soon, nasdaq.com"}}, "YYYY-MM-DD")):
+    e2, _ = D.validate_regime(bad)
+    ok(any(needle in e for e in e2), f"regime file rejected: {needle}")
+fresh()
+write_regime({"themes": {"energy": {"long": "two"}}})
+expect_exit(lambda: score.run("decision"), "REGIME FILE INVALID", "score.py refuses an invalid regime file")
+ok(D.read_jsonl(D.CANDIDATES) == [], "nothing is logged when the regime file is invalid")
+
+print("market calendar")
+fb2 = fresh()
+fb2.is_open = False
+expect_exit(lambda: score.run("decision"), "MARKET NOT OPEN", "DECISION refuses to run outside market hours")
+fb2.is_open, fb2.holidays = True, {TODAY.isoformat()}
+expect_exit(lambda: score.run("decision"), "MARKET CLOSED TODAY", "DECISION refuses to run on a market holiday")
+ok(D.read_jsonl(D.CANDIDATES) == [] and D.read_jsonl(D.CONTROL) == [], "nothing logged on a holiday")
+rb = score.run("briefing")
+ok(any("not a trading day" in w for w in rb["warnings"]), "a holiday briefing still runs, with a warning")
+fb2.holidays = set()
+fb2.calendar_fails = True
+expect_exit(lambda: score.run("decision"), "UNAVAILABLE", "no calendar: DECISION refuses instead of guessing")
+fb2.calendar_fails = False
+
+print("stale data")
+fb3 = fresh()
+for row in range(3):
+    fb3.bars["XLU"].pop()                 # XLU's newest bars are missing
+r = score.run("briefing")
+ok(any(w.startswith("XLU") and "Stale" in w for w in r["warnings"]) and all(c["symbol"] != "XLU" for c in r["all"]),
+   "a symbol whose newest bar is old is skipped with a warning")
+
+print("exclusions")
+fb4 = fresh()
+write_regime({"exclude": {"XLE": "earnings 2026-10-29 (x.com)"}})
+expect_exit(lambda: score.run("decision"), "only single stocks", "excluding an ETF is refused (no vetoes)")
+SOON = D.trading_days_ahead(fb4, str(TODAY), 2)
+write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": f"earnings {SOON} (nvidia.com 10/28)"}})
+r_far = None
+write_regime({"exclude": {"NVDA": "earnings 2027-05-20 (nvidia.com)"}})
+expect_exit(lambda: score.run("decision"), "outside the 10-trading-day window" if False else "no earnings date between",
+            "an exclusion dated outside the 10-trading-day window is refused (no vetoes on stocks either)")
+write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": f"earnings {SOON} (nvidia.com 10/28)"}})
+r = score.run("decision")
+nv = [c for c in D.read_jsonl(D.CANDIDATES) if c["symbol"] == "NVDA"]
+ok(nv and nv[0]["excluded"], "a stock excluded in the regime file is logged as excluded")
+ok("NVDA" in r["exclusions"] and "nvidia.com" in r["exclusions"]["NVDA"], "the exclusion reason is recorded")
+ok(all(c.get("regime_sha") for c in D.read_jsonl(D.CANDIDATES)), "every candidate row records which regime file scored it")
+
+print("earnings check (per stock)")
+fb5 = fresh()
+os.environ["FINNHUB_API_KEY"] = "tok_SECRET_123"
+calls = []
+
+
+def fake_finnhub(session, sym, start, end, key):
+    calls.append(sym)
+    if sym == "TSLA":
+        raise ConnectionError(f"https://finnhub.io/api?token={key} timed out")
+    if sym == "META":
+        return [{"symbol": "META", "date": start}]
+    return [{"symbol": sym, "date": (dt.date.fromisoformat(start) + dt.timedelta(days=60)).isoformat()}]
+
+
+real_fh = score._finnhub_get
+score._finnhub_get = fake_finnhub
+bl, ver, note = score.earnings_blackout(fb5, TODAY.isoformat())
+score._finnhub_get = real_fh
+ok(sorted(calls) == sorted(D.STOCKS), "every stock gets its own earnings lookup")
+ok(bl == {"META"}, "a stock reporting inside the window is blacked out")
+ok("TSLA" not in ver and "AAPL" in ver, "a failed lookup leaves only that stock unverified")
+ok("tok_SECRET_123" not in note and "TSLA" in note, "the note names the failure without ever printing the API token")
+del os.environ["FINNHUB_API_KEY"]
+bl, ver, note = score.earnings_blackout(fb5, TODAY.isoformat())
+ok(not ver and "no FINNHUB_API_KEY" in note, "no key: everything unverified and the warning says why")
+
+print("controls")
+fb6 = fresh()
+both = {s: {d: {"rr": 2.0, "entry": 10, "stop": 9 if d == "long" else 11, "target": 12 if d == "long" else 8}
+            for d in ("long", "short")} for s in ("AAPL", "MSFT", "XLE", "XLF", "SPY", "QQQ", "IWM", "TLT")}
+rows_c, _ = control.draw(both, set(), fb6, "2099-02-01", verified=set())
+ok(rows_c and all(r["symbol"] not in D.STOCKS for r in rows_c), "stocks whose earnings weren't verified are never drawn as controls")
+ok(all("py" in r for r in rows_c), "the Python version is logged with each control (reproducibility)")
+
+
+class AssetDown(FakeBroker):
+    def asset(self, s):
+        raise BR.BrokerError("asset lookup down")
+
+
+ad = AssetDown()
+D.write_jsonl(D.CONTROL, [])
+try:
+    control.draw(both, set(), ad, "2099-02-03", verified=set(D.STOCKS))
+    drew_anyway = True
+except BR.BrokerError:
+    drew_anyway = False
+ok(not drew_anyway and D.read_jsonl(D.CONTROL) == [], "a failed shortable lookup aborts the draw instead of logging a long-only day")
+
+print("split-safe simulation")
+days_ = [dt.date(2026, 3, 2) + dt.timedelta(days=i) for i in range(14)]
+raw_rows = [{"t": f"{d}T05:00:00Z", "o": 1000, "h": 1005, "l": 995, "c": 1000, "v": 1} for d in days_[:4]] + \
+           [{"t": f"{d}T05:00:00Z", "o": 100, "h": 100.5, "l": 99.5, "c": 100, "v": 1} for d in days_[4:]]
+split_rows = [dict(r, o=r["o"] / 10 if i < 4 else r["o"], h=r["h"] / 10 if i < 4 else r["h"],
+                   l=r["l"] / 10 if i < 4 else r["l"], c=r["c"] / 10 if i < 4 else r["c"]) for i, r in enumerate(raw_rows)]
+fr_s = (D.bars_to_df(split_rows), D.bars_to_df(raw_rows))
+out = D.simulate_logged(fr_s, "long", 1000.0, 950.0, 1100.0, days_[1])
+ok(out is not None and out[1] == "time" and abs(out[0]) < 0.01, f"a 10:1 split after the entry doesn't fake a -18R loss ({out})")
+div_split = [{"t": f"{d}T05:00:00Z", "o": 100, "h": 101, "l": 99.5, "c": 100, "v": 1} for d in days_]
+div_all = [dict(r, o=r["o"] - 0.35 if i < 3 else r["o"], h=r["h"] - 0.35 if i < 3 else r["h"],
+                l=r["l"] - 0.35 if i < 3 else r["l"], c=r["c"] - 0.35 if i < 3 else r["c"]) for i, r in enumerate(div_split)]
+out = D.simulate_logged((D.bars_to_df(div_split), D.bars_to_df(div_split)), "long", 100.0, 99.0, 101.0, days_[1])
+ok(out == (1.0, "target"), f"dividends no longer shift history under the logged levels ({out})")
+
+print("place: order files")
+fb7 = fresh()
+write_regime({"themes": {"energy": {"long": 2, "short": 0, "why": "e"}}})
+plan7 = score.run("decision")["plan"]
+c7 = plan7[0]
+p7 = round(1 / (1 + c7["rr"]), 2)
+of = TMP / "reports" / f"order_{c7['symbol']}_{TODAY}.json"
+of.write_text(json.dumps({"symbol": c7["symbol"], "p_target": p7, "thesis": "Brent at $105.92 and the regime file at 2",
+                          "invalidation": "Daily close below the stop at $90.10", "dissent": "Fails if `rm -rf` $(whoami) news hits",
+                          "earnings_checked": True}))
+place.main(["--input", str(of)])
+t7 = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c7["symbol"]][0]
+ok("$105.92" in t7["thesis"] and "$(whoami)" in t7["dissent"], "dollar signs and shell syntax in an order file arrive untouched (never run)")
+ok(t7["text_source"] == "file" and t7["status"] == "pending", "trade logged from the file as pending")
+outside = TMP / "order_X.json"
+outside.write_text("{}")
+expect_exit(lambda: place.main(["--input", str(outside)]), "must be reports/order_", "order files outside reports/ are refused")
+bad = TMP / "reports" / f"order_BAD_{TODAY}.json"
+bad.write_text(json.dumps({"symbol": "XLE", "p_target": 0.3, "thesis": "x" * 20, "invalidation": "y" * 20,
+                           "dissent": "z" * 20, "shell": "rm -rf /"}))
+expect_exit(lambda: place.main(["--input", str(bad)]), "unknown keys", "unknown keys in an order file are refused")
+bad.write_text(json.dumps({"symbol": "XLE", "p_target": True, "thesis": "x" * 20, "invalidation": "y" * 20, "dissent": "z" * 20}))
+expect_exit(lambda: place.main(["--input", str(bad)]), "p_target must be a number", "p_target true/false is refused")
+bad.write_text(json.dumps({"symbol": "../../X", "p_target": 0.3, "thesis": "x" * 20, "invalidation": "y" * 20, "dissent": "z" * 20}))
+expect_exit(lambda: place.main(["--input", str(bad)]), "1-5 capital letters", "a malformed symbol is refused")
+bad.write_text(json.dumps({"symbol": "XLE", "p_target": 0.3, "thesis": "x" * 700, "invalidation": "y" * 20, "dissent": "z" * 20}))
+expect_exit(lambda: place.main(["--input", str(bad)]), "keep it under", "an oversized thesis is refused")
+
+print("place: failures are never reported as PLACED")
+c8 = plan7[1] if len(plan7) > 1 else None
+if c8:
+    fb7.submit_mode = "reject"
+    expect_exit(lambda: place.place(c8["symbol"], *PLAN_TEXT, round(1 / (1 + c8["rr"]), 2), True), "ORDER REJECTED",
+                "an order Alpaca rejects is reported as rejected")
+    t8 = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c8["symbol"]][0]
+    ok(t8["status"] == "rejected", "the rejected order is in the journal as rejected (not pending)")
+c9 = plan7[2] if len(plan7) > 2 else None
+if c9:
+    fb7.submit_mode = "timeout_after_accept"
+    place.place(c9["symbol"], *PLAN_TEXT, round(1 / (1 + c9["rr"]), 2), True)
+    t9 = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c9["symbol"]][0]
+    ok(t9["status"] == "pending" and t9["order_id"], "a timeout after Alpaca accepted the order is recovered by client id")
+c10 = plan7[3] if len(plan7) > 3 else None
+if c10:
+    fb7.submit_mode = "error"
+    expect_exit(lambda: place.place(c10["symbol"], *PLAN_TEXT, round(1 / (1 + c10["rr"]), 2), True), "ORDER NOT PLACED",
+                "a submit that never reached Alpaca says NOT PLACED")
+    t10 = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c10["symbol"]][0]
+    ok(t10["status"] == "failed_submit", "and is journaled as failed_submit")
+c10b = plan7[4] if len(plan7) > 4 else None
+if c10b:
+    fb7.submit_mode = "error500"
+    expect_exit(lambda: place.place(c10b["symbol"], *PLAN_TEXT, round(1 / (1 + c10b["rr"]), 2), True), "ORDER STATUS UNKNOWN",
+                "a 5xx/timeout with no order found is UNKNOWN, not 'not placed' (Alpaca may still have it)")
+    t10b = [t for t in D.read_jsonl(D.TRADES) if t["symbol"] == c10b["symbol"]][0]
+    ok(t10b["status"] == "submitting", "the row stays 'submitting' for sync.py to settle")
+fb7.submit_mode = None
+fb7.is_open = False
+c11 = plan7[-1]
+if not any(t["symbol"] == c11["symbol"] for t in D.read_jsonl(D.TRADES)):
+    expect_exit(lambda: place.place(c11["symbol"], *PLAN_TEXT, round(1 / (1 + c11["rr"]), 2), True), "market is not open",
+                "place.py refuses to send orders while the market is closed")
+fb7.is_open = True
+
+print("place: crash between logging and submitting")
+fb12 = fresh()
+plan12 = score.run("decision")["plan"]
+c12 = plan12[0]
+tid = f"{TODAY}-{c12['symbol']}-{c12['direction']}"
+D.append_jsonl(D.TRADES, [{"trade_id": tid, "order_id": None, "symbol": c12["symbol"], "direction": c12["direction"],
+                           "status": "submitting", "shares": c12["shares"], "stop": c12["stop"], "target": c12["target"],
+                           "rules_version": "v1.0", "date_open": str(TODAY), "tier": c12["tier"]}])
+fb12.submit_bracket(c12["symbol"], c12["shares"], "buy", c12["entry"], c12["target"], c12["stop"], client_order_id=tid)
+n_before = len(fb12.orders)
+sync.run()
+t12 = [t for t in D.read_jsonl(D.TRADES) if t["trade_id"] == tid][0]
+ok(t12["status"] == "pending" and t12["order_id"] and len(fb12.orders) == n_before,
+   "sync adopts an order that was accepted before a crash (no duplicate order)")
+
+print("sync: partial fills")
+fb13 = fresh()
+plan13 = score.run("decision")["plan"]
+c13 = plan13[0]
+place.place(c13["symbol"], *PLAN_TEXT, round(1 / (1 + c13["rr"]), 2), True)
+t13 = D.read_jsonl(D.TRADES)[0]
+o13 = fb13.orders[t13["order_id"]]
+half = max(1, t13["shares"] // 2)
+o13.update({"status": "partially_filled", "filled_qty": str(half), "filled_avg_price": str(t13["planned_entry"]),
+            "filled_at": f"{TODAY}T15:00:00Z"})
+fb13.pos[t13["symbol"]] = {"symbol": t13["symbol"], "current_price": str(t13["planned_entry"])}
+sync.run()
+t13 = D.read_jsonl(D.TRADES)[0]
+ok(t13["status"] == "open" and t13["shares"] == half and t13.get("partial_fill"),
+   "a partial fill is settled at the first sync (bracket legs don't protect a partial entry)")
+ok(o13["status"] == "canceled", "the unfilled rest of the entry is cancelled")
+ok(t13.get("exit_order_id") and fb13.orders[t13["exit_order_id"]]["qty"] == half,
+   "the filled shares get a stop + target (OCO) for exactly the filled quantity")
+ok(abs(t13["risk_dollars"] - half * abs(t13["entry_fill"] - t13["stop"])) < 0.02, "risk is recomputed for the filled size")
+fb13.orders[t13["exit_order_id"]]["legs"][0].update({"status": "filled", "filled_avg_price": str(t13["stop"]),
+                                                      "filled_at": f"{TODAY}T19:00:00Z"})
+sync.run()
+t13 = D.read_jsonl(D.TRADES)[0]
+ok(t13["status"] == "closed" and t13["exit_reason"] == "stop" and t13["pnl"] == round(-half * abs(t13["entry_fill"] - t13["stop"]), 2),
+   "an OCO stop fill is recorded with P/L on the filled shares")
+
+
+def open_old_trade(b, sym="XLF", days=20, price=50.0, now=51.0):
+    b.n += 1
+    oid = f"ord{b.n}"
+    b.orders[oid] = {"id": oid, "symbol": sym, "status": "filled", "filled_avg_price": str(price), "filled_at": "x",
+                     "filled_qty": "10", "client_order_id": f"old-{sym}",
+                     "legs": [{"id": oid + "tp", "type": "limit", "status": "new"}, {"id": oid + "sl", "type": "stop", "status": "new"}]}
+    b.pos[sym] = {"symbol": sym, "current_price": str(now)}
+    old = (TODAY - dt.timedelta(days=days)).isoformat()
+    row = {"trade_id": f"old-{sym}", "order_id": oid, "rules_version": "v1.0", "date_open": old, "date_fill": old,
+           "symbol": sym, "direction": "long", "tier": "B", "score": 5, "entry_fill": price, "stop": price - 1,
+           "target": price + 3, "shares": 10, "risk_dollars": 10, "p_target": 0.3, "thesis": "t" * 12,
+           "invalidation": "i" * 12, "dissent": "d" * 12, "status": "open"}
+    D.append_jsonl(D.TRADES, [row])
+    return oid
+
+
+print("sync: time stop safety")
+fb14 = fresh()
+oid14 = open_old_trade(fb14)
+fb14.close_fails = True
+res = sync.run(close_mode=True)
+t14 = D.read_jsonl(D.TRADES)[0]
+ok(t14["status"] == "open" and t14.get("time_stop_due"), "a failed market close leaves the trade open and flagged")
+ok(t14.get("exit_order_id") and fb14.orders[t14["exit_order_id"]]["legs"][0]["stop_price"] == t14["stop"],
+   "the original stop and target are put back (the position is never left unprotected)")
+ok(any("TIME STOP FAILED" in a for a in res["alerts"]), "the failure is an ALERT for Chris")
+fb14.close_fails = False
+sync.run(close_mode=True)
+t14 = D.read_jsonl(D.TRADES)[0]
+ok(t14["status"] == "closed" and t14["exit_reason"] == "time", "the next CLOSE run retries the time stop and closes it")
+ok(not any("POSITION HAS NO STOP" in a for a in res["alerts"]), "and the alerts never contradict themselves")
+ok(t14["exit_order_id"] in fb14.cancelled, "the replacement OCO is cancelled before the retry closes the position")
+
+fb15 = fresh()
+open_old_trade(fb15)
+fb15.cancel_stuck = True
+res = sync.run(close_mode=True)
+t15 = D.read_jsonl(D.TRADES)[0]
+ok(t15["status"] == "open" and "XLF" in fb15.pos, "if the stop/target won't cancel, the position is not closed out from under them")
+ok(any("would not cancel" in a for a in res["alerts"]), "and Chris is alerted")
+
+fb16 = fresh()
+oid16 = open_old_trade(fb16)
+real_cancel = fb16.cancel_order
+
+
+def cancel_but_stop_fills(oid):
+    if oid.endswith("sl"):
+        leg = fb16.orders[oid16]["legs"][1]
+        leg.update({"status": "filled", "filled_avg_price": "49.0", "filled_at": f"{TODAY}T19:50:00Z"})
+        return
+    real_cancel(oid)
+
+
+fb16.cancel_order = cancel_but_stop_fills
+sync.run(close_mode=True)
+t16 = D.read_jsonl(D.TRADES)[0]
+ok(t16["status"] == "closed" and t16["exit_reason"] == "stop" and t16["result_R"] == -1.0,
+   "if the stop fills while the time stop is cancelling it, the stop is the recorded exit (no double close)")
+
+fb17 = fresh()
+open_old_trade(fb17)
+fb17.is_open = False
+res = sync.run(close_mode=True)
+t17 = D.read_jsonl(D.TRADES)[0]
+ok(t17["status"] == "open" and t17.get("time_stop_due") and not fb17.cancelled,
+   "after the closing bell, a due time stop waits (stop/target untouched)")
+
+fb18 = fresh()
+open_old_trade(fb18)
+fb18.calendar_fails = True
+res = sync.run(close_mode=True)
+ok(any("time stop was NOT checked" in a for a in res["alerts"]), "no calendar: days held is not silently 0, Chris is alerted")
+fb18.calendar_fails = False
+
+fb19 = fresh()
+open_old_trade(fb19, "XLF")
+oid_b = open_old_trade(fb19, "XLI", days=1)
+fb19.order_fails = {fb19.orders[next(iter(fb19.orders))]["id"]}
+fb19.orders[oid_b]["legs"][0].update({"status": "filled", "filled_avg_price": "53.0", "filled_at": f"{TODAY}T18:00:00Z"})
+res = sync.run()
+rows19 = {t["symbol"]: t for t in D.read_jsonl(D.TRADES)}
+ok(rows19["XLI"]["status"] == "closed" and rows19["XLF"]["status"] == "open",
+   "one trade's error doesn't stop (or un-save) the others")
+ok(any("sync error" in a for a in res["alerts"]), "the failing trade is reported, not swallowed")
+
+fb20 = fresh()
+open_old_trade(fb20)
+rows20 = D.read_jsonl(D.TRADES)
+fb20.orders["closeX"] = {"id": "closeX", "symbol": "XLF", "status": "canceled", "legs": []}
+rows20[0].update({"status": "closing", "close_order_id": "closeX"})
+D.write_jsonl(D.TRADES, rows20)
+res = sync.run()
+t20 = D.read_jsonl(D.TRADES)[0]
+ok(t20["status"] == "open" and t20.get("exit_order_id") and t20.get("time_stop_due"),
+   "a time-stop close order that gets cancelled puts the stop back and retries (never stuck in 'closing')")
+
+print("review details")
+fresh()
+wk = [{"trade_id": f"w{i}", "rules_version": "v1.0", "date_open": (TODAY - dt.timedelta(days=d)).isoformat(), "symbol": "XLE",
+       "direction": "long", "tier": "A", "score": 7, "status": "open", "risk_dollars": 1, "thesis": "x" * 12,
+       "invalidation": "y" * 12, "dissent": "z" * 12, "p_target": 0.3} for i, d in enumerate((0, 6, 7, 8))]
+D.write_jsonl(D.TRADES, wk)
+rep_w = review.run(offline=True)
+ok("This week: 2 opened" in rep_w, "'this week' is exactly 7 days (a trade from 7 days ago is last week)")
+cal_rows = [dict(wk[0], trade_id="cal1", status="closed", exit_reason="time", result_R=0.2, p_base=0.33, date_close=str(TODAY)),
+            dict(wk[0], trade_id="cal2", status="closed", exit_reason="target", result_R=2.0, p_base=0.33, date_close=str(TODAY)),
+            dict(wk[0], trade_id="cal3", status="closed", exit_reason="stop", result_R=-1.0, p_target=0.5, date_close=str(TODAY))]
+D.write_jsonl(D.TRADES, cal_rows)
+rep_c = review.run(offline=True)
+ok("on 1 trades" in rep_c and "1 time-stop exits" in rep_c and "1 trades placed before the base-rate rule" in rep_c,
+   "calibration leaves out time-stop exits and pre-rule trades, and says so")
+
+print("broker plumbing")
+os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"] = "PKTEST", "SECRET"
+rb_ = BR.RestBroker()
+retry = rb_.s.get_adapter("https://paper-api.alpaca.markets").max_retries
+ok("GET" in retry.allowed_methods and "POST" not in retry.allowed_methods and "DELETE" not in retry.allowed_methods,
+   "GETs are retried with backoff; order POSTs/DELETEs never are (no accidental double orders)")
+
+
+def boom(*a, **k):
+    import requests
+    raise requests.ConnectionError("network down")
+
+
+rb_.s.request = boom
+try:
+    rb_.account()
+    net_ok = False
+except BR.BrokerError as e:
+    net_ok = "network error" in str(e)
+ok(net_ok, "a network failure surfaces as a BrokerError the scripts handle, not a raw crash")
+del os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
+
+
+
+print("second-review regressions")
+fb40 = fresh()
+open_old_trade(fb40, days=2)
+oid40 = next(iter(fb40.orders))
+for l in fb40.orders[oid40]["legs"]:
+    l["status"] = "canceled"                 # someone cancelled the stop/target by hand
+res = sync.run()
+t40 = D.read_jsonl(D.TRADES)[0]
+ok(t40.get("exit_order_id") and any("had NO live stop" in a for a in res["alerts"]),
+   "a held position whose stop/target died gets them put back on the next sync, with an alert")
+fb40.orders[t40["exit_order_id"]]["status"] = "rejected"
+fb40.orders[t40["exit_order_id"]]["legs"][0]["status"] = "rejected"
+res = sync.run()
+t40b = D.read_jsonl(D.TRADES)[0]
+ok(t40b["exit_order_id"] != t40["exit_order_id"], "a protective OCO that is later rejected is noticed and replaced")
+
+fb41 = fresh()
+oid41 = open_old_trade(fb41)
+real_order = fb41.order
+calls41 = {"n": 0}
+def flaky_order(oid):
+    if oid == oid41 and any(x.endswith("sl") for x in fb41.cancelled):
+        calls41["n"] += 1
+        if calls41["n"] >= 1:
+            raise BR.BrokerError("GET order -> network error: ReadTimeout")
+    return real_order(oid)
+fb41.order = flaky_order
+res = sync.run(close_mode=True)
+t41 = D.read_jsonl(D.TRADES)[0]
+ok("XLF" in fb41.pos and t41.get("exit_order_id") and any("TIME STOP FAILED" in a for a in res["alerts"]),
+   "a time stop that crashes after cancelling the stop puts the stop back and says so")
+
+fb42 = fresh()
+open_old_trade(fb42)
+fb42.close_lost_reply = True
+res = sync.run(close_mode=True)
+t42 = D.read_jsonl(D.TRADES)[0]
+ok(t42["status"] == "closed" and t42["exit_reason"] == "time" and not fb42.ocos,
+   "a close that went through but lost its reply is confirmed from order history (no stray OCO, no stuck trade)")
+
+fb43 = fresh()
+score.run("decision")
+(TMP / "reports" / f"plan_{TODAY}.json").unlink()
+expect_exit(lambda: score.run("decision"), "DECISION ALREADY RAN", "deleting the plan file can't hide that DECISION ran")
+r43 = score.run("decision", force=True)
+r44 = score.run("decision", force=True)
+runs = {c["run"] for c in D.read_jsonl(D.CANDIDATES)}
+ok(runs == {"decision", "decision-rerun1", "decision-rerun2"}, f"forced reruns are numbered from the journal ({sorted(runs)})")
+
+fb45 = fresh()
+os.environ["FINNHUB_API_KEY"] = "tok"
+score._finnhub_get = lambda session, sym, start, end, key: [] if sym == "AAPL" else [{"symbol": sym, "date": (TODAY + dt.timedelta(days=70)).isoformat()}]
+bl45, ver45, note45 = score.earnings_blackout(fb45, TODAY.isoformat())
+ok("AAPL" not in ver45 and "MSFT" in ver45 and "no upcoming date" in note45,
+   "an empty earnings answer is 'unknown', not 'no earnings' (verified only when a next date is found)")
+write_regime({"exclude": {"MSFT": f"earnings {D.trading_days_ahead(fb45, str(TODAY), 1)} (made up)"}})
+r45 = score.run("decision")
+score._finnhub_get = real_fh
+del os.environ["FINNHUB_API_KEY"]
+ok(any("EXCLUSION CONFLICT: MSFT" in w for w in r45["warnings"]), "excluding a stock the calendar shows clean is flagged loudly")
+ok([c for c in D.read_jsonl(D.CANDIDATES) if c["symbol"] == "MSFT"][0]["exclusion_conflict"], "and recorded for the weekly review")
+
+
+print("final-review regressions")
+ok(place.rr_matches(29.09, 28.86, 29.56, 2.0), "the real UUP plan (29.09 / 28.86 / 29.56, rr 2.0) is no longer refused by cent rounding")
+ok(not place.rr_matches(29.09, 28.86, 29.75, 2.0), "but a target moved by hand still fails the R:R check")
+
+fb50 = fresh()
+r50 = score.run("decision")
+sup = TMP / "reports" / f"plan_{TODAY}.json"
+first_plan = sup.read_text()
+score.run("decision", force=True)
+sup.write_text(first_plan)              # restore the superseded plan by hand
+c50 = r50["plan"][0]
+expect_exit(lambda: place.place(c50["symbol"], *PLAN_TEXT, round(1 / (1 + c50["rr"]), 2), True), "not the plan from today",
+            "restoring a superseded plan after a rerun is refused (only the latest run counts)")
+
+fb51 = fresh()
+r51 = score.run("decision")
+pf51 = TMP / "reports" / f"plan_{TODAY}.json"
+pj51 = json.loads(pf51.read_text())
+victim = pj51["plan"][0]
+victim["shares"] = victim["shares"] * 40
+text51 = json.dumps(pj51, indent=2)
+pf51.write_text(text51)
+rows51 = D.read_jsonl(D.CANDIDATES)
+for r_ in rows51:                       # forge the journal to match (an agent that can write journal/)
+    r_["plan_sha"] = __import__("hashlib").sha256(text51.encode()).hexdigest()
+    if r_["symbol"] == victim["symbol"]:
+        r_["shares"] = victim["shares"]
+D.write_jsonl(D.CANDIDATES, rows51)
+expect_exit(lambda: place.place(victim["symbol"], *PLAN_TEXT, round(1 / (1 + victim["rr"]), 2), True), "larger than the risk rules allow",
+            "even a plan forged together with the journal can't oversize an order")
+ok(not fb51.orders, "nothing was sent")
+
+fb52 = fresh()
+r52 = score.run("decision")
+for i, sym in enumerate(("AAA", "BBB", "CCC", "DDD", "EEE")):
+    fb52.pos[sym] = {"symbol": sym, "current_price": "10"}
+c52 = r52["plan"][0]
+expect_exit(lambda: place.place(c52["symbol"], *PLAN_TEXT, round(1 / (1 + c52["rr"]), 2), True), "risk rule",
+            "placement re-checks the live risk limits (5 positions already open)")
+
+fb53 = fresh()
+oid53 = open_old_trade(fb53, days=2)
+for l in fb53.orders[oid53]["legs"]:
+    l["status"] = "canceled"
+D.write_jsonl(D.TRADES, [dict(D.read_jsonl(D.TRADES)[0], exit_order_ids=["oco_x"], exit_order_id="oco_x")])
+fb53.orders["oco_x"] = {"id": "oco_x", "symbol": "XLF", "type": "limit", "status": "new",
+                        "legs": [{"id": "oco_xsl", "type": "stop", "status": "new"}]}
+real53 = fb53.order
+seen53 = {"n": 0}
+def racy(oid):
+    o = real53(oid)
+    if oid == "oco_x":
+        seen53["n"] += 1
+        if seen53["n"] == 1:           # first read: still live... then the target fills before the next read
+            snap = json.loads(json.dumps(o))
+            fb53.orders["oco_x"].update({"status": "filled", "filled_avg_price": "53.0", "filled_at": f"{TODAY}T18:30:00Z"})
+            fb53.orders["oco_x"]["legs"][0]["status"] = "canceled"
+            fb53.pos.pop("XLF", None)
+            return snap
+    return o
+fb53.order = racy
+sync.run()
+fb53.order = real53
+sync.run()
+t53 = D.read_jsonl(D.TRADES)[0]
+ok(t53["status"] == "closed" and t53["exit_reason"] == "target" and not fb53.ocos,
+   "an exit that fills mid-check is recorded, and no new OCO is placed on a flat position")
+
+fb54 = fresh()
+open_old_trade(fb54, days=2)
+oid54 = next(iter(fb54.orders))
+for l in fb54.orders[oid54]["legs"]:
+    l["status"] = "canceled"
+real_oco = fb54.submit_oco
+def lost_oco(*a, **k):
+    real_oco(*a, **k)
+    raise BR.BrokerError("POST /v2/orders -> network error: ReadTimeout")
+fb54.submit_oco = lost_oco
+res54 = sync.run()
+sync.run()
+live_ocos = [o for o in fb54.ocos if o["status"] == "new"]
+ok(len(live_ocos) == 1, f"an OCO whose reply was lost is found by its client id, never doubled ({len(live_ocos)} live)")
+
+fb55 = fresh()
+p55 = score.run("decision")["plan"][0]
+place.place(p55["symbol"], *PLAN_TEXT, round(1 / (1 + p55["rr"]), 2), True)
+t55 = D.read_jsonl(D.TRADES)[0]
+o55 = fb55.orders[t55["order_id"]]
+o55.update({"status": "partially_filled", "filled_qty": "1", "filled_avg_price": str(t55["planned_entry"]),
+            "filled_at": f"{TODAY}T15:00:00Z"})
+fb55.pos[t55["symbol"]] = {"symbol": t55["symbol"], "current_price": str(t55["planned_entry"])}
+real_cancel55 = fb55.cancel_order
+def cancel55(oid):
+    if oid.endswith("tp") or oid.endswith("sl"):
+        return                          # the old legs refuse to die
+    if oid == o55["id"]:
+        o55["status"] = "canceled"      # parent cancels, legs stay live
+        return
+    real_cancel55(oid)
+fb55.cancel_order = cancel55
+for l in o55["legs"]:
+    l["status"] = "new"
+res55 = sync.run()
+ok(not fb55.ocos and any("would not cancel" in a for a in res55["alerts"]),
+   "after a partial fill, stuck old legs mean no second exit set is added (and Chris is told)")
+
+fb56 = fresh()
+p56 = score.run("decision")["plan"][0]
+place.place(p56["symbol"], *PLAN_TEXT, round(1 / (1 + p56["rr"]), 2), True)
+t56 = D.read_jsonl(D.TRADES)[0]
+fb56.orders[t56["order_id"]]["status"] = "rejected"
+res56 = sync.run()
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "rejected" and any("rejected" in a for a in res56["alerts"]),
+   "an order Alpaca rejects after accepting it is journaled as rejected (not 'unfilled')")
+
+fb57 = fresh()
+both57 = {s: {d: {"rr": 2.0, "entry": 10, "stop": 9 if d == "long" else 11, "target": 12 if d == "long" else 8}
+              for d in ("long", "short")} for s in ("AAPL", "MSFT", "XLE")}
+rows57, _ = control.draw(both57, {"AAPL", "MSFT"}, fb57, "2099-03-01", verified=set(D.STOCKS))
+ok(all(r["symbol"] == "XLE" for r in rows57), "excluded or blacked-out stocks are never drawn as controls")
+
+fb58 = fresh()
+p58 = score.run("decision")["plan"][0]
+place.place(p58["symbol"], *PLAN_TEXT, round(1 / (1 + p58["rr"]), 2), True)
+t58 = D.read_jsonl(D.TRADES)[0]
+fb58.orders[t58["order_id"]]["status"] = "replaced"
+res58 = sync.run(close_mode=True)
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "pending" and any("edited by hand" in a for a in res58["alerts"]),
+   "an entry edited by hand in the dashboard is flagged, not wrongly marked unfilled")
+
+
+print("last-review regressions")
+fb60 = fresh()
+open_old_trade(fb60, days=2)
+oid60 = next(iter(fb60.orders))
+for l in fb60.orders[oid60]["legs"]:
+    l["status"] = "canceled"
+fb60.orders["ocoX"] = {"id": "ocoX", "symbol": "XLF", "status": "canceled", "client_order_id": "old-XLF-oco1",
+                       "type": "limit", "legs": [{"id": "ocoXsl", "type": "stop", "status": "canceled"}]}
+res60 = sync.run()
+t60 = D.read_jsonl(D.TRADES)[0]
+live60 = [o for o in fb60.orders.values() if o["status"] == "new" and o["symbol"] == "XLF"]
+ok(len(live60) == 1 and t60["exit_order_id"] == live60[0]["id"] and "ocoX" in t60["exit_order_ids"],
+   "a dead OCO under a client id the journal never saw is skipped: a fresh stop goes in under the next id")
+
+fb61 = fresh()
+p61 = score.run("decision")["plan"][0]
+fb61.submit_mode = "error500"
+expect_exit(lambda: place.place(p61["symbol"], *PLAN_TEXT, round(1 / (1 + p61["rr"]), 2), True), "UNKNOWN",
+            "a 5xx placement leaves the order unknown")
+fb61.submit_mode = None
+for k in ("c", "o", "h", "l"):
+    fb61.bars[p61["symbol"]][-1][k] *= (0.9 if p61["direction"] == "long" else 1.1)
+expect_exit(lambda: place.place(p61["symbol"], *PLAN_TEXT, round(1 / (1 + p61["rr"]), 2), True), "too far from the plan",
+            "retrying an interrupted placement still checks the live price")
+ok(not [o for o in fb61.orders.values() if o.get("client_order_id")], "nothing was sent on the retry")
+
+fb62 = fresh()
+p62 = score.run("decision")["plan"][0]
+sgn = 1 if p62["direction"] == "long" else -1
+for k in ("c", "o", "h", "l"):
+    fb62.bars[p62["symbol"]][-1][k] = p62["stop"] - sgn * 0.01        # just through the stop, well within 3%
+expect_exit(lambda: place.place(p62["symbol"], *PLAN_TEXT, round(1 / (1 + p62["rr"]), 2), True), "too far from the plan",
+            "an order is refused once the price has gone through its stop, even within 3% of the entry")
+
+fb63 = fresh()
+oid63 = open_old_trade(fb63, days=20)
+fb63.orders[oid63]["legs"][1].update({"status": "replaced", "replaced_by": "repl"})
+fb63.orders["repl"] = {"id": "repl", "symbol": "XLF", "type": "stop", "status": "new", "legs": []}
+sync.run(close_mode=True)
+t63 = D.read_jsonl(D.TRADES)[0]
+ok(t63["status"] == "closed" and t63["exit_reason"] == "time" and fb63.orders["repl"]["status"] == "canceled",
+   "a stop edited in the dashboard is followed to its replacement, so the time stop still runs")
+fb64 = fresh()
+oid64 = open_old_trade(fb64, days=2)
+fb64.orders[oid64]["legs"][1].update({"status": "replaced", "replaced_by": "repl"})
+fb64.orders["repl"] = {"id": "repl", "symbol": "XLF", "type": "stop", "status": "canceled", "legs": []}
+res64 = sync.run()
+t64 = D.read_jsonl(D.TRADES)[0]
+ok(t64.get("exit_order_id") and fb64.orders[t64["exit_order_id"]]["status"] == "new"
+   and fb64.orders[oid64]["legs"][0]["status"] == "canceled" and any("NO live stop" in a for a in res64["alerts"]),
+   "when an edited stop later dies, the leftover target is cancelled and a fresh stop/target goes in")
+
+fb65 = fresh()
+for why in ("--exclude earnings 2027-03-01", "--exclude 1999-01-01 veto"):
+    write_regime({"exclude": {"NVDA": why}})
+    expect_exit(lambda: score.run("decision"), "no earnings date between",
+                f"an exclusion can't skip the date check by its wording ({why[:22]!r})")
+try:
+    score.main(["--mode", "decision", "--exclude", "NVDA"])
+    ok(False, "the --exclude flag is gone")
+except SystemExit as e:
+    ok(e.code == 2, "the --exclude flag is gone (exclusions only through the dated regime file)")
+write_regime({"exclude": {"NVDA": f"earnings {TODAY} (x.com)"}})
+real_ahead = D.trading_days_ahead
+def no_ahead(*a, **k):
+    raise BR.BrokerError("calendar down")
+D.trading_days_ahead = no_ahead
+try:
+    expect_exit(lambda: score.run("decision"), "CALENDAR UNAVAILABLE", "exclusions are refused when their dates can't be checked")
+finally:
+    D.trading_days_ahead = real_ahead
+
+fb66 = fresh()
+oid66 = open_old_trade(fb66, days=2)
+t66 = D.read_jsonl(D.TRADES)[0]
+t66["protected_qty"] = 6
+D.write_jsonl(D.TRADES, [t66])
+fb66.orders[oid66]["legs"][0].update({"status": "filled", "filled_avg_price": "53.0", "filled_qty": "6",
+                                      "filled_at": f"{TODAY}T18:00:00Z"})
+sync.run()
+t66 = D.read_jsonl(D.TRADES)[0]
+ok(t66["pnl"] == 18.0 and t66["exit_qty"] == 6, f"P/L uses the shares the exit actually sold (${t66['pnl']}, not $30)")
+
+fb67 = fresh()
+for bad in ("2026-99-99", {"x": 1}, 20261231):
+    try:
+        place.check_next_earnings(fb67, str(TODAY), bad)
+        ok(False, f"bad next_earnings {bad!r} refused")
+    except SystemExit:
+        ok(True, f"bad next_earnings {bad!r} refused")
+print("pentest regressions")
+fb30 = fresh()
+plan30 = score.run("decision")["plan"]
+c30 = plan30[0]
+pf = TMP / "reports" / f"plan_{TODAY}.json"
+orig_plan = pf.read_text()
+forged = json.loads(orig_plan)
+forged["plan"][0]["shares"] = forged["plan"][0]["shares"] * 50
+pf.write_text(json.dumps(forged, indent=2))
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "not the plan from today",
+            "a hand-edited plan file (50x the shares) is refused")
+ok(not fb30.orders, "and nothing was sent to the broker")
+pf.write_text(orig_plan)
+fb30.bars[c30["symbol"]][-1]["c"] *= 1.10
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "too far from the plan",
+            "an entry far from the live price is refused")
+fb30.bars[c30["symbol"]][-1]["c"] /= 1.10
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), None), "next_earnings", "earnings_checked without a next_earnings date is refused")
+soon = D.trading_days_ahead(fb30, str(TODAY), 3)
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), soon), "inside the 10-trading-day blackout",
+            "a hand-checked earnings date inside the window is refused")
+expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), "2020-01-01"), "in the past", "a past earnings date is refused")
+later = (TODAY + dt.timedelta(days=60)).isoformat()
+place.check_next_earnings(fb30, str(TODAY), later)
+ok(True, "a hand-checked next earnings date beyond the window is accepted (a 'checked on' date in the note no longer confuses it)")
+
+(TMP / ".env").write_text("HTTPS_PROXY=http://evil:8080\nREQUESTS_CA_BUNDLE=/tmp/evil.pem\nALPACA_API_KEY=PKFROMENV\n")
+for k in ("HTTPS_PROXY", "REQUESTS_CA_BUNDLE", "ALPACA_API_KEY"):
+    os.environ.pop(k, None)
+real_kc = D.keychain_get
+D.keychain_get = lambda name: None
+D.load_env()
+D.keychain_get = real_kc
+ok("HTTPS_PROXY" not in os.environ and "REQUESTS_CA_BUNDLE" not in os.environ and os.environ.get("ALPACA_API_KEY") == "PKFROMENV",
+   "a planted .env can only supply the three key names (no proxy / CA bundle to siphon the keys)")
+os.environ.pop("ALPACA_API_KEY", None)
+(TMP / ".env").unlink()
+ok(BR.retrying_session().trust_env is False, "HTTP sessions ignore proxy and CA settings from the environment")
+
+
+class Redirect:
+    status_code, text = 302, ""
+
+
+os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"] = "PKTEST", "SECRET"
+rb2 = BR.RestBroker()
+rb2.s.request = lambda *a, **k: Redirect()
+try:
+    rb2.account()
+    redir = False
+except BR.BrokerError as e:
+    redir = "redirect" in str(e)
+ok(redir, "a redirect is refused, so the key headers are never sent to another host")
+del os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
+
+outside_reg = TMP / "regime_evil.json"
+outside_reg.write_text("{}")
+expect_exit(lambda: score.load_regime(str(outside_reg)), "must be reports/regime_", "a regime file outside reports/ is refused")
+deep = TMP / "reports" / "regime_deep.json"
+deep.write_text("[" * 100000 + "]" * 100000)
+expect_exit(lambda: score.load_regime(str(deep)), "REGIME FILE INVALID", "a pathological regime file is a clean refusal, not a crash")
+deep.unlink()
+
+fb31 = fresh()
+write_regime({"exclude": {"AAPL": f"earnings {D.trading_days_ahead(fb31, str(TODAY), 1)} [click](http://evil.example) <img src=x onerror=alert(1)>"}})
+score.run("decision")
+D.write_jsonl(D.TRADES, [])
+review.run(offline=True)
+wk_txt = D.WEEKLY.read_text()
+ok("](http" not in wk_txt and "<img" not in wk_txt, "agent or web text can't inject links or HTML into weekly.md")
+
+fb32 = fresh()
+plan32 = score.run("decision")["plan"]
+c32 = plan32[0]
+place.place(c32["symbol"], *PLAN_TEXT, round(1 / (1 + c32["rr"]), 2), True)
+rows32 = D.read_jsonl(D.TRADES)
+rows32[0]["date_open"] = (TODAY - dt.timedelta(days=3)).isoformat()
+D.write_jsonl(D.TRADES, rows32)
+sync.run()
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "unfilled" and rows32[0]["order_id"] in fb32.cancelled,
+   "an entry left over from an earlier day is cancelled by any sync (never fills days later at a stale price)")
+
+fb33 = fresh()
+oid33 = open_old_trade(fb33, days=2)
+fb33.orders[oid33]["legs"][0].update({"status": "filled", "filled_avg_price": "53.0", "filled_at": f"{TODAY}T18:00:00Z"})
+sync.run()
+rows33 = D.read_jsonl(D.TRADES)
+rows33[0]["exit_price"], rows33[0]["result_R"] = 60.0, 10.0       # someone "improves" the result by hand
+D.write_jsonl(D.TRADES, rows33)
+issues33 = review.verify_against_broker(rows33)
+ok(any("matches no Alpaca exit fill" in i for i in issues33), "an edited result in the journal is caught against Alpaca's records")
+
+lock_target = TMP / "victim.txt"
+lock_target.write_text("keep me")
+D.LOCK_FILE.unlink(missing_ok=True)
+os.symlink(lock_target, D.LOCK_FILE)
+try:
+    with D.journal_lock():
+        pass
+    sym_ok = False
+except OSError:
+    sym_ok = True
+ok(sym_ok and lock_target.read_text() == "keep me", "the lock file refuses to follow a planted symlink")
+D.LOCK_FILE.unlink()
+D.write_jsonl(D.TRADES, [{"x": 1}])
+ok(not list((TMP / "journal").glob("*.tmp")), "atomic writes leave no temp files behind")
 
 shutil.rmtree(TMP)
 print(f"\nALL {passed} CHECKS PASSED")
