@@ -9,7 +9,10 @@ pass=0
 ok() { if eval "$1"; then pass=$((pass+1)); echo "  ok - $2"; else echo "  FAIL - $2"; exit 1; fi; }
 
 export GIT_AUTHOR_NAME=test GIT_AUTHOR_EMAIL=t@t GIT_COMMITTER_NAME=test GIT_COMMITTER_EMAIL=t@t
-export PATH="/usr/bin:/bin:$PATH"
+export GIT_MERGE_AUTOEDIT=no GIT_EDITOR=true    # never open an editor mid-test (a terminal would wait for input)
+# Stand-in for macOS `security`: the tests must only ever see their own fake keys, never the real Keychain entries
+mkdir -p "$T/bin" && printf '#!/bin/sh\nexit 44\n' > "$T/bin/security" && chmod +x "$T/bin/security"
+export PATH="$T/bin:/usr/bin:/bin:$PATH"
 git init -q --bare -b main "$T/remote.git"
 git clone -q "$T/remote.git" "$T/desk" 2>/dev/null
 cd "$T/desk"
