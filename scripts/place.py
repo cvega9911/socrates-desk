@@ -20,6 +20,7 @@ Options:
   --dry-run            show what would be sent without sending it
 """
 import argparse
+import datetime as dt
 import hashlib
 import json
 import math
@@ -159,6 +160,7 @@ def verify_plan(pj, plan_text, c, b, today, recheck_limits=True):
     # Skipped only when finishing an interrupted placement of this same order, which already passed them.
     risk = round(shares * abs(entry - stop), 2)
     c["risk_dollars"] = risk
+    check_price(b, c, entry, stop, target)
     if not recheck_limits:
         return
     positions = b.positions()
@@ -178,12 +180,21 @@ def verify_plan(pj, plan_text, c, b, today, recheck_limits=True):
     theme = D.THEME_OF.get(c["symbol"])
     if sum(1 for s in busy if D.THEME_OF.get(s) == theme) >= D.MAX_PER_THEME:
         raise D.DeskError(f"REFUSED: risk rule 4: already 2 positions in theme '{theme}'.")
-    c["risk_dollars"] = risk
+
+
+def check_price(b, c, entry, stop, target):
+    """The live price must still be near the plan: within 3% of the entry, and at least half the planned risk away
+    from the stop (on the right side of it) and short of the target. Otherwise the limit order would fill on the
+    wrong side of its own stop, or after the move it was meant to catch."""
     px = b.latest_prices([c["symbol"]]).get(c["symbol"], {})
     ref = px.get("last") or ((px.get("bid", 0) + px.get("ask", 0)) / 2)
-    if ref and abs(ref - entry) / entry > 0.03:
-        raise D.DeskError(f"REFUSED: {c['symbol']} is trading at {ref}, more than 3% from the planned entry {entry}. "
-                          "Nothing sent; report it as a skipped order.")
+    if not ref or not math.isfinite(ref) or ref <= 0:
+        raise D.DeskError(f"REFUSED: no live price for {c['symbol']} right now. Nothing sent; report it as a skipped order.")
+    sign = 1 if c["direction"] == "long" else -1
+    room = sign * (ref - stop) / abs(entry - stop)       # 1.0 = exactly at the entry, 0 = at the stop
+    if abs(ref - entry) / entry > 0.03 or room < 0.5 or sign * (target - ref) <= 0:
+        raise D.DeskError(f"REFUSED: {c['symbol']} is trading at {ref}, too far from the plan (entry {entry}, stop {stop}, "
+                          f"target {target}). Nothing sent; report it as a skipped order.")
 
 
 def rr_matches(entry, stop, target, rr_plan):
@@ -199,7 +210,13 @@ def rr_matches(entry, stop, target, rr_plan):
 
 def check_next_earnings(b, today, next_earnings):
     """A hand-checked earnings date must be a real date beyond the 10-trading-day blackout window."""
-    if not isinstance(next_earnings, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", next_earnings or ""):
+    ok_date = isinstance(next_earnings, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", next_earnings)
+    if ok_date:
+        try:
+            dt.date.fromisoformat(next_earnings)
+        except ValueError:
+            ok_date = False
+    if not ok_date:
         raise D.DeskError('REFUSED: "earnings_checked" needs "next_earnings": "YYYY-MM-DD" (the date you found) and '
                           '"earnings_note" with the source.')
     if next_earnings < today:
@@ -286,7 +303,7 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
     if not (trading_day and is_open):
         raise D.DeskError("REFUSED: the market is not open right now. Nothing sent.")
     verify_plan(pj, plan_text, c, b, today, recheck_limits=not retry_submitting)
-    if c.get("earnings_unverified"):
+    if c.get("earnings_unverified") or next_earnings is not None:
         check_next_earnings(b, today, next_earnings)
 
     if not retry_submitting:

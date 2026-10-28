@@ -6,8 +6,6 @@ Usage:
   python scripts/score.py --mode controls            # backfill today's random control entries only (no plan, no orders)
 Options:
   --regime FILE      regime scores Socrates wrote (default: reports/regime_<today>.json if present)
-  --exclude A,B      stocks to skip today for earnings Socrates found himself. Prefer the regime file's
-                     "exclude" block, which records the date and source; ETFs can never be excluded.
   --force            rerun DECISION after it already ran today (logged and flagged in the weekly review)
   --json             print raw JSON instead of the summary
 """
@@ -140,12 +138,12 @@ def market_guard(b, mode, today):
     return trading_day, close
 
 
-def run(mode, regime_path=None, exclude=(), force=False):
+def run(mode, regime_path=None, force=False):
     with D.journal_lock():
-        return _run(mode, regime_path, exclude, force)
+        return _run(mode, regime_path, force)
 
 
-def _run(mode, regime_path, exclude, force):
+def _run(mode, regime_path, force):
     b = D.broker()
     today = D.today_str()
     rv = D.rules_version()
@@ -173,13 +171,8 @@ def _run(mode, regime_path, exclude, force):
     if not reg_file:
         warnings.append("No regime file: regime = 1 (neutral) for everything. Write reports/regime_<date>.json first.")
 
-    # exclusions: the regime file's "exclude" block (with reasons) plus --exclude (stocks only)
+    # exclusions come only from the regime file's "exclude" block, where each one carries its date and source
     exclusions = {s: D.plain_text(why, 200) for s, why in (reg.get("exclude") or {}).items()}
-    for s in exclude:
-        if s not in D.STOCKS:
-            raise D.DeskError(f"REFUSED: --exclude {s}: only single stocks can be excluded (for earnings). "
-                              "ETFs have no earnings; excluding one would be a veto (hard rule 3).")
-        exclusions.setdefault(s, "--exclude (no reason recorded)")
 
     acct = b.account()
     equity = float(acct["equity"])
@@ -221,21 +214,17 @@ def _run(mode, regime_path, exclude, force):
     if exclusions:
         try:
             window_end = D.trading_days_ahead(b, today, EARNINGS_DAYS)
-        except Exception:
-            window_end = None
-            warnings.append("Could not check exclusion dates (market calendar unavailable).")
-        if window_end:
-            bad = []
-            for s, why in exclusions.items():
-                dates = re.findall(r"\d{4}-\d{2}-\d{2}", why)
-                if why.startswith("--exclude"):
-                    continue
-                if not any(today <= d_ <= window_end for d_ in dates):
-                    bad.append(f"exclude.{s}: no earnings date between {today} and {window_end} in {why!r}; an "
-                               "exclusion is only for earnings inside the 10-trading-day window")
-            if bad:
-                raise D.DeskError("REGIME FILE INVALID:\n  - " + "\n  - ".join(bad) +
-                                  "\nFix the file and rerun score.py (this is the one error you fix yourself).")
+        except Exception as e:
+            raise D.DeskError(f"MARKET CALENDAR UNAVAILABLE ({type(e).__name__}): the exclusion dates can't be checked. "
+                              "Nothing logged. Tell Chris.")
+        bad = []
+        for s, why in exclusions.items():
+            if not any(today <= d_ <= window_end for d_ in re.findall(r"\d{4}-\d{2}-\d{2}", why)):
+                bad.append(f"exclude.{s}: no earnings date between {today} and {window_end} in {why!r}; an "
+                           "exclusion is only for earnings inside the 10-trading-day window")
+        if bad:
+            raise D.DeskError("REGIME FILE INVALID:\n  - " + "\n  - ".join(bad) +
+                              "\nFix the file and rerun score.py (this is the one error you fix yourself).")
     contradicts = sorted(s for s in exclusions if s in verified and s not in blackout)
     for s in contradicts:
         warnings.append(f"EXCLUSION CONFLICT: {s} is excluded, but the earnings calendar shows no report in the next "
@@ -478,11 +467,10 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["briefing", "decision", "controls"], required=True)
     ap.add_argument("--regime")
-    ap.add_argument("--exclude", default="")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
-    res = run(a.mode, a.regime, tuple(x.strip().upper() for x in a.exclude.split(",") if x.strip()), a.force)
+    res = run(a.mode, a.regime, a.force)
     text = summary(res)
     # score_<mode>_<date>.md, so the script never overwrites the briefing/decision report Socrates writes himself
     (D.REPORTS / f"score_{a.mode}_{res['date']}.md").write_text(f"# Score {a.mode} {res['date']}\n\n```\n{text}\n```\n")

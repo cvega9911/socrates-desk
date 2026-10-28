@@ -36,4 +36,13 @@ trade, or changes to logging/measurement that do not affect which trades are tak
     TLT/IEF).
   - Placement re-checks every order against the journal's plan record and the live risk limits; stock exclusions
     must name an earnings date inside the 10-trading-day window; hand-checked earnings need a next_earnings date.
-
+  - Primary test is read only at three looks fixed in advance (13, 26 and 52 closed fortnights), each on exactly
+    those fortnights, with per-look thresholds (better p < 0.014, worse p < 0.017) so re-reading the weekly review
+    can't inflate false calls. Replaces the weekly 12-fortnight gate and p < 0.04 / 0.05 above, before any verdict
+    was ever shown. tests/null_check.py reproduces the false-call rates.
+  - The --exclude command-line flag is removed: exclusions only come from the regime file, always with a dated
+    earnings report inside the window. Placement refuses an order once the price is within half the planned risk
+    of the stop or past the target, and re-checks the price when retrying an interrupted placement.
+  - Exit orders edited by hand in the dashboard are followed to their replacement; a position counts as protected
+    only by a live stop (not a leftover target); re-placed stops never reuse a client order id; P/L uses the shares
+    the exit actually sold.

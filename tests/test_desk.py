@@ -125,6 +125,8 @@ class FakeBroker:
         return {"id": oid}
 
     def submit_oco(self, symbol, qty, side, take_profit, stop_price, client_order_id=None):
+        if client_order_id and any(o.get("client_order_id") == client_order_id for o in self.orders.values()):
+            raise BR.BrokerError("POST /v2/orders -> 422: client_order_id must be unique", 422)   # as Alpaca does
         self.n += 1
         oid = f"oco{self.n}"
         self.orders[oid] = {"id": oid, "symbol": symbol, "qty": qty, "side": side, "type": "limit", "status": "new",
@@ -148,6 +150,9 @@ class FakeBroker:
         self.cancelled.append(oid)
         if self.cancel_stuck:
             return
+        for o in self.orders.values():           # Alpaca: a replaced order is final on its side, not cancelable
+            if any(x["id"] == oid and x.get("status") == "replaced" for x in [o] + list(o.get("legs") or [])):
+                raise BR.BrokerError("DELETE -> 422: order is not cancelable", 422)
         for o in self.orders.values():
             if o["id"] == oid and o["status"] not in ("filled",):
                 o["status"] = "canceled"
@@ -500,7 +505,7 @@ ok("PRIMARY TEST" in rep and "fortnights" in rep, "primary test section reports 
 ok("Brier score" in rep and "Brier skill" in rep and "neutral base rate" in rep, "calibration reported with the base-rate anchor check")
 ok("5c. Does the score predict forward R" in rep and "matured candidate-trades" in rep, "score study section reports matured candidates")
 ok("Factor regime:" in rep and "Score 7:" in rep and "Significance test withheld" in rep, "score buckets and factor lines shown; significance withheld on small samples")
-ok("Verdict withheld" in rep and "12+ fortnights" in rep, "no verdict until 12+ fortnights of data (5 weeks here)")
+ok("Verdict withheld" in rep and "13, 26, 52 closed fortnights" in rep, "no verdict before the first fixed look (5 weeks here)")
 ok("planned: " in rep and "resolved" in rep, "shadow book simulated")
 ok("Sample too small" not in rep, "no small-sample warning at 25 trades")
 ok("planned but never placed" in rep, "flags planned-but-not-placed candidates")
@@ -650,7 +655,8 @@ ok(any(w.startswith("XLU") and "Stale" in w for w in r["warnings"]) and all(c["s
 
 print("exclusions")
 fb4 = fresh()
-expect_exit(lambda: score.run("decision", exclude=("XLE",)), "only single stocks", "--exclude on an ETF is refused (no vetoes)")
+write_regime({"exclude": {"XLE": "earnings 2026-10-29 (x.com)"}})
+expect_exit(lambda: score.run("decision"), "only single stocks", "excluding an ETF is refused (no vetoes)")
 SOON = D.trading_days_ahead(fb4, str(TODAY), 2)
 write_regime({"themes": {"tech": {"long": 2, "short": 0, "why": "t"}}, "exclude": {"NVDA": f"earnings {SOON} (nvidia.com 10/28)"}})
 r_far = None
@@ -1165,6 +1171,97 @@ res58 = sync.run(close_mode=True)
 ok(D.read_jsonl(D.TRADES)[0]["status"] == "pending" and any("edited by hand" in a for a in res58["alerts"]),
    "an entry edited by hand in the dashboard is flagged, not wrongly marked unfilled")
 
+
+print("last-review regressions")
+fb60 = fresh()
+open_old_trade(fb60, days=2)
+oid60 = next(iter(fb60.orders))
+for l in fb60.orders[oid60]["legs"]:
+    l["status"] = "canceled"
+fb60.orders["ocoX"] = {"id": "ocoX", "symbol": "XLF", "status": "canceled", "client_order_id": "old-XLF-oco1",
+                       "type": "limit", "legs": [{"id": "ocoXsl", "type": "stop", "status": "canceled"}]}
+res60 = sync.run()
+t60 = D.read_jsonl(D.TRADES)[0]
+live60 = [o for o in fb60.orders.values() if o["status"] == "new" and o["symbol"] == "XLF"]
+ok(len(live60) == 1 and t60["exit_order_id"] == live60[0]["id"] and "ocoX" in t60["exit_order_ids"],
+   "a dead OCO under a client id the journal never saw is skipped: a fresh stop goes in under the next id")
+
+fb61 = fresh()
+p61 = score.run("decision")["plan"][0]
+fb61.submit_mode = "error500"
+expect_exit(lambda: place.place(p61["symbol"], *PLAN_TEXT, round(1 / (1 + p61["rr"]), 2), True), "UNKNOWN",
+            "a 5xx placement leaves the order unknown")
+fb61.submit_mode = None
+for k in ("c", "o", "h", "l"):
+    fb61.bars[p61["symbol"]][-1][k] *= (0.9 if p61["direction"] == "long" else 1.1)
+expect_exit(lambda: place.place(p61["symbol"], *PLAN_TEXT, round(1 / (1 + p61["rr"]), 2), True), "too far from the plan",
+            "retrying an interrupted placement still checks the live price")
+ok(not [o for o in fb61.orders.values() if o.get("client_order_id")], "nothing was sent on the retry")
+
+fb62 = fresh()
+p62 = score.run("decision")["plan"][0]
+sgn = 1 if p62["direction"] == "long" else -1
+for k in ("c", "o", "h", "l"):
+    fb62.bars[p62["symbol"]][-1][k] = p62["stop"] - sgn * 0.01        # just through the stop, well within 3%
+expect_exit(lambda: place.place(p62["symbol"], *PLAN_TEXT, round(1 / (1 + p62["rr"]), 2), True), "too far from the plan",
+            "an order is refused once the price has gone through its stop, even within 3% of the entry")
+
+fb63 = fresh()
+oid63 = open_old_trade(fb63, days=20)
+fb63.orders[oid63]["legs"][1].update({"status": "replaced", "replaced_by": "repl"})
+fb63.orders["repl"] = {"id": "repl", "symbol": "XLF", "type": "stop", "status": "new", "legs": []}
+sync.run(close_mode=True)
+t63 = D.read_jsonl(D.TRADES)[0]
+ok(t63["status"] == "closed" and t63["exit_reason"] == "time" and fb63.orders["repl"]["status"] == "canceled",
+   "a stop edited in the dashboard is followed to its replacement, so the time stop still runs")
+fb64 = fresh()
+oid64 = open_old_trade(fb64, days=2)
+fb64.orders[oid64]["legs"][1].update({"status": "replaced", "replaced_by": "repl"})
+fb64.orders["repl"] = {"id": "repl", "symbol": "XLF", "type": "stop", "status": "canceled", "legs": []}
+res64 = sync.run()
+t64 = D.read_jsonl(D.TRADES)[0]
+ok(t64.get("exit_order_id") and fb64.orders[t64["exit_order_id"]]["status"] == "new"
+   and fb64.orders[oid64]["legs"][0]["status"] == "canceled" and any("NO live stop" in a for a in res64["alerts"]),
+   "when an edited stop later dies, the leftover target is cancelled and a fresh stop/target goes in")
+
+fb65 = fresh()
+for why in ("--exclude earnings 2027-03-01", "--exclude 1999-01-01 veto"):
+    write_regime({"exclude": {"NVDA": why}})
+    expect_exit(lambda: score.run("decision"), "no earnings date between",
+                f"an exclusion can't skip the date check by its wording ({why[:22]!r})")
+try:
+    score.main(["--mode", "decision", "--exclude", "NVDA"])
+    ok(False, "the --exclude flag is gone")
+except SystemExit as e:
+    ok(e.code == 2, "the --exclude flag is gone (exclusions only through the dated regime file)")
+write_regime({"exclude": {"NVDA": f"earnings {TODAY} (x.com)"}})
+real_ahead = D.trading_days_ahead
+def no_ahead(*a, **k):
+    raise BR.BrokerError("calendar down")
+D.trading_days_ahead = no_ahead
+try:
+    expect_exit(lambda: score.run("decision"), "CALENDAR UNAVAILABLE", "exclusions are refused when their dates can't be checked")
+finally:
+    D.trading_days_ahead = real_ahead
+
+fb66 = fresh()
+oid66 = open_old_trade(fb66, days=2)
+t66 = D.read_jsonl(D.TRADES)[0]
+t66["protected_qty"] = 6
+D.write_jsonl(D.TRADES, [t66])
+fb66.orders[oid66]["legs"][0].update({"status": "filled", "filled_avg_price": "53.0", "filled_qty": "6",
+                                      "filled_at": f"{TODAY}T18:00:00Z"})
+sync.run()
+t66 = D.read_jsonl(D.TRADES)[0]
+ok(t66["pnl"] == 18.0 and t66["exit_qty"] == 6, f"P/L uses the shares the exit actually sold (${t66['pnl']}, not $30)")
+
+fb67 = fresh()
+for bad in ("2026-99-99", {"x": 1}, 20261231):
+    try:
+        place.check_next_earnings(fb67, str(TODAY), bad)
+        ok(False, f"bad next_earnings {bad!r} refused")
+    except SystemExit:
+        ok(True, f"bad next_earnings {bad!r} refused")
 print("pentest regressions")
 fb30 = fresh()
 plan30 = score.run("decision")["plan"]
@@ -1179,7 +1276,7 @@ expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["r
 ok(not fb30.orders, "and nothing was sent to the broker")
 pf.write_text(orig_plan)
 fb30.bars[c30["symbol"]][-1]["c"] *= 1.10
-expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "more than 3% from the planned entry",
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "too far from the plan",
             "an entry far from the live price is refused")
 fb30.bars[c30["symbol"]][-1]["c"] /= 1.10
 expect_exit(lambda: place.check_next_earnings(fb30, str(TODAY), None), "next_earnings", "earnings_checked without a next_earnings date is refused")

@@ -3,16 +3,17 @@
 # API key, or a binary file. It compares against the real key values (Keychain, or .env as a fallback) without
 # ever printing them, and it fails CLOSED: if no key values can be loaded, nothing is committed.
 #   bash scripts/secret_scan.sh              # staged changes (pre-commit)
-#   bash scripts/secret_scan.sh --range REF  # EVERY commit between REF and HEAD, one by one (pre-push), so a key
-#                                            # added in one commit and deleted in the next is still caught
+#   bash scripts/secret_scan.sh --range REF  # EVERY commit between REF and HEAD, one by one, merge commits
+#                                            # included (pre-push), so a key added in one commit and deleted in
+#                                            # the next, or slipped in while resolving a merge, is still caught
 # Matching uses here-strings, never `printf | grep -q` (with pipefail, grep -q's early exit makes printf die of
 # SIGPIPE on big inputs and the match would be lost). Works on macOS bash 3.2.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
 if [ "${1:-}" = "--range" ] && [ -n "${2:-}" ]; then
-  diff=$(git log -p -U0 --no-color --no-ext-diff --format= "$2..HEAD") || exit 2
-  names=$(git log --name-only --format= "$2..HEAD") || exit 2
-  numstat=$(git log --numstat --format= "$2..HEAD") || exit 2
+  diff=$(git log -m -p -U0 --no-color --no-ext-diff --format= "$2..HEAD") || exit 2
+  names=$(git log -m --name-only --format= "$2..HEAD") || exit 2
+  numstat=$(git log -m --numstat --format= "$2..HEAD") || exit 2
 else
   diff=$(git diff --cached -U0 --no-color --no-ext-diff) || exit 2
   names=$(git diff --cached --name-only) || exit 2

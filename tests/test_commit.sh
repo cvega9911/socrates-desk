@@ -124,6 +124,14 @@ out=$(bash scripts/commit.sh 2>&1); rc=$?
 ok '[ $rc -ne 0 ] && ! git --git-dir="$T/remote.git" log --all -p | grep -q PKZZTESTKEYVALUE1234' "a key added then deleted in unpushed commits is still caught (scanned commit by commit)"
 git reset -q --hard origin/main
 
+git checkout -q -b side && echo '{"s":1}' > reports/side.json && git add reports && git commit -q --no-verify -m side
+git checkout -q main && echo '{"m":1}' > reports/main.json && git add reports && git commit -q --no-verify -m main-side
+git merge -q --no-commit --no-ff side 2>/dev/null; echo "PKZZTESTKEYVALUE1234" > reports/merged.txt && git add reports
+git commit -q --no-verify -m "merge with a key slipped in"
+out=$(bash scripts/secret_scan.sh --range origin/main 2>&1); rc=$?
+ok '[ $rc -ne 0 ] && ! printf "%s" "$out" | grep -q PKZZTESTKEYVALUE1234' "a key added while resolving a merge is caught by the push scan"
+git reset -q --hard origin/main; git branch -q -D side
+
 echo "junk" > notes.txt && git add notes.txt
 echo '{"f":6}' >> journal/trades.jsonl
 out=$(bash scripts/commit.sh 2>&1); rc=$?

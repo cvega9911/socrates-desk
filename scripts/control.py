@@ -19,10 +19,15 @@ N_PER_DAY = 5
 MIN_REAL = 20        # matured real trades / planned candidates needed before a verdict is shown
 MIN_CONTROL = 50     # matured controls needed before a verdict is shown
 MIN_DAYS = 10        # distinct decision days needed: trades opened the same day move together
-ALPHA = 0.05         # significance level for a "worse than random" verdict
-ALPHA_BETTER = 0.04  # slightly stricter for "better than random": the daily-bar simulation favours the plan's wider,
-                     # trend-placed stops by about +0.02R even with no skill, so 0.04 keeps false "skill" calls at ~2.5%
-                     # (checked on 9,000 simulated no-skill runs in flat, rising and regime-switching markets)
+# The primary test is read at three looks fixed in advance, never weekly: after the first 13, 26 and 52 closed
+# fortnights. Each look uses exactly those fortnights, so re-reading the review between looks shows the same answer.
+# Per-look thresholds are set so that, with no skill, a false call over ALL three looks happens about 2.5% of the
+# time each way (tests/null_check.py reproduces this). "Better" is a little stricter because the daily-bar
+# simulation leans about +0.02R toward the plan's wider stops even with no skill.
+LOOKS = (13, 26, 52)
+ALPHA = 0.017         # per-look two-sided p for a "worse than random" verdict
+ALPHA_BETTER = 0.014  # per-look two-sided p for a "better than random" verdict
+EXPLORATORY_ALPHA = 0.05   # secondary sections only; they are labelled exploratory
 
 
 def draw(both, blackout, broker, today, verified, backfill=False):
@@ -82,7 +87,7 @@ def resolve(broker, today):
 
 BLOCK_DAYS = 14                  # >= the 10-trading-day horizon, so outcomes in different blocks barely overlap
 BLOCK_EPOCH = dt.date(2026, 1, 5)    # a Monday; blocks are fixed calendar fortnights
-MIN_BLOCKS = 12
+SETTLE_DAYS = 21                 # a fortnight counts once its last day is 21+ days old: every row in it has matured
 
 
 def week_of(date_str):
@@ -96,6 +101,33 @@ def block_of(date_str):
 
 def _mean(xs):
     return sum(xs) / len(xs)
+
+
+def closed_block_limit(today):
+    """Highest block index whose rows have all matured (10 trading days after the block's last day, plus slack)."""
+    return ((dt.date.fromisoformat(today) - BLOCK_EPOCH).days - (BLOCK_DAYS - 1) - SETTLE_DAYS) // BLOCK_DAYS
+
+
+def primary_look(a, b, today, n_perm=10000):
+    """The pre-registered primary test. a = planned rows, b = control rows, both (date, direction, R).
+    Returns (look, info): look is the latest of LOOKS reached (None before the first), info has the test on exactly
+    the first `look` closed fortnights that hold at least one matched pair, plus the counts behind it."""
+    last = closed_block_limit(today)
+    a = [r for r in a if block_of(r[0]) <= last]
+    b = [r for r in b if block_of(r[0]) <= last]
+    keys = {(r[0], r[1]) for r in b}
+    blocks = sorted({block_of(r[0]) for r in a if (r[0], r[1]) in keys})
+    look = max((k for k in LOOKS if k <= len(blocks)), default=None)
+    info = {"closed_blocks": len(blocks)}
+    if look is None:
+        return None, info
+    keep = set(blocks[:look])
+    a_k = [r for r in a if block_of(r[0]) in keep and (r[0], r[1]) in keys]
+    b_k = [r for r in b if block_of(r[0]) in keep]
+    diff, p, nb = compare(a_k, b_k, n_perm)
+    info.update({"diff": diff, "p": p, "n_blocks": nb, "n_planned": len(a_k), "n_controls": len(b_k),
+                 "n_days": len({r[0] for r in a_k}), "next_look": next((k for k in LOOKS if k > look), None)})
+    return look, info
 
 
 def block_diffs(a, b):

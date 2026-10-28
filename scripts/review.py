@@ -9,8 +9,10 @@ Statistics, stated up front so nobody goes fishing:
 - PRIMARY test (5b): do the planned candidates beat the random controls? Both are simulated the same way from the
   same logged levels, so fills, slippage and timing can't tilt the comparison. Each planned trade is measured against
   the controls from the same day and direction, averaged per fortnight, and a sign-flip test runs on the fortnights.
-  Verdict only after 20 planned + 50 controls over 10+ decision days AND 12+ fortnights; "better" at p < 0.04,
-  "worse" at p < 0.05. Checked by simulation: about 2.5% false calls each way when there is no skill.
+  The test is read only at three looks fixed in advance (13, 26 and 52 closed fortnights), each on exactly those
+  fortnights, so weekly re-reading can't go fishing. Per look: "better" at p < 0.014, "worse" at p < 0.017, and only
+  with 20+ matched planned candidates, 50+ controls and 10+ decision days inside the look. With no skill that is
+  about 2.5% false calls each way over all three looks (tests/null_check.py).
 - Everything else (real fills vs controls, planned vs shadow, the score study, factor tables) is EXPLORATORY:
   no multiple-comparison correction, so treat a "significant" result there as a lead, not a finding.
 """
@@ -262,7 +264,7 @@ def _run(offline):
             diff, pv, nb = C.compare(p, sh)
             L.append(f"- Planned minus shadow (direction-matched, {nb} fortnights): {diff:+.2f}R (two-sided p = {pv:.3f}). " +
                      ("Exploratory hint that the score filter separates good from bad setups."
-                      if pv < C.ALPHA and diff > 0 else "No evidence yet that the score filter adds value."))
+                      if pv < C.EXPLORATORY_ALPHA and diff > 0 else "No evidence yet that the score filter adds value."))
     else:
         L.append("- Skipped (needs Alpaca data).")
 
@@ -286,16 +288,22 @@ def _run(offline):
         L.append(f"- Real trades (actual fills, descriptive only): {rs_['n']}, {rs_['avg_R']:+.2f}R avg, win {rs_['win_rate']:.0%}")
     # controls never include stocks whose earnings date was unverified, so neither does this side of the test
     pl = [(r["date"], r["direction"], r["R"]) for r in sim if r["action"] == "planned" and not r["earnings_unverified"]]
-    pl_dates = len({d for d, _, _ in pl})
-    diff, pv, nb = C.compare(pl, ctrl_mat) if pl and ctrl_mat else (0.0, 1.0, 0)
-    if len(pl) >= C.MIN_REAL and len(ctrl_mat) >= C.MIN_CONTROL and pl_dates >= C.MIN_DAYS and nb >= C.MIN_BLOCKS:
-        L.append(f"- Planned candidates ({len(pl)} over {pl_dates} decision days, {nb} fortnights) vs controls "
-                 f"({len(ctrl_mat)}), both simulated the same way, longs vs longs and shorts vs shorts: "
-                 f"difference {diff:+.2f}R. Verdict: {C.verdict(diff, pv)}")
+    look, info = C.primary_look(pl, ctrl_mat, today)
+    looks_txt = ", ".join(str(k) for k in C.LOOKS)
+    if look is None:
+        L.append(f"- Verdict withheld: the test is read only at {looks_txt} closed fortnights (fixed in advance). "
+                 f"Closed fortnights with planned and control data so far: {info['closed_blocks']}. "
+                 "Numbers above are for tracking only.")
+    elif (info["n_planned"] >= C.MIN_REAL and info["n_controls"] >= C.MIN_CONTROL and info["n_days"] >= C.MIN_DAYS):
+        nxt = (f"it stays the same until the look at {info['next_look']} fortnights" if info["next_look"]
+               else "this was the last planned look")
+        L.append(f"- LOOK at {look} fortnights: planned candidates ({info['n_planned']} over {info['n_days']} decision "
+                 f"days) vs controls ({info['n_controls']}), same day and direction, both simulated the same way: "
+                 f"difference {info['diff']:+.2f}R. Verdict: {C.verdict(info['diff'], info['p'])} ({nxt}).")
     else:
-        L.append(f"- Verdict withheld. Needs {C.MIN_REAL}+ matured planned candidates over {C.MIN_DAYS}+ decision days, "
-                 f"{C.MIN_CONTROL}+ matured controls and {C.MIN_BLOCKS}+ fortnights with both; have {len(pl)} over "
-                 f"{pl_dates} days, {len(ctrl_mat)} controls and {nb} fortnights. Numbers above are for tracking only.")
+        L.append(f"- LOOK at {look} fortnights reached, but it holds too little data for a verdict (needs {C.MIN_REAL}+ "
+                 f"matched planned candidates over {C.MIN_DAYS}+ decision days and {C.MIN_CONTROL}+ controls; has "
+                 f"{info['n_planned']} over {info['n_days']} days and {info['n_controls']}). No verdict at this look.")
     L.append("- Caveats: simulations assume a fill at the logged entry and exit on the first stop/target touch in daily bars "
              "(gaps fill at the open); each planned trade is compared with same-day, same-direction controls and the test "
              "treats fortnights as independent, which is close but not exact; one "
@@ -326,7 +334,7 @@ def _run(offline):
         if len(study) >= 200 and days >= 10:
             r_obs, p_val = within_day_perm_p(study)
             verdict_txt = ("exploratory hint that the score predicts forward R beyond the day's market move"
-                           if p_val < C.ALPHA and r_obs > 0 else "no reliable predictive power shown yet")
+                           if p_val < C.EXPLORATORY_ALPHA and r_obs > 0 else "no reliable predictive power shown yet")
             L.append(f"- Score vs R correlation {r_obs:+.3f}; within-day permutation p = {p_val:.3f} ({verdict_txt}).")
         else:
             L.append(f"- Significance test withheld: needs 200+ matured candidate-trades over 10+ decision days (have {len(study)} over {days}).")
