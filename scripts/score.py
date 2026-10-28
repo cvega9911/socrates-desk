@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 
 import broker as BR
 import control as C
@@ -24,6 +25,7 @@ import desk as D
 
 FINNHUB_URL = "https://finnhub.io/api/v1/calendar/earnings"
 EARNINGS_DAYS = 10
+EARNINGS_LOOKAHEAD = 120     # every stock in the universe reports quarterly, so a real answer always has a date in here
 
 
 def load_regime(path):
@@ -72,8 +74,8 @@ def _finnhub_get(session, sym, start, end, key):
 
 def earnings_blackout(b, today):
     """Which stocks report within the next 10 trading days (today included), checked one stock at a time.
-    Returns (blackout, verified, note). A stock is 'verified' only if its own lookup answered cleanly; anything
-    else stays unverified and must be checked by hand before it can be placed."""
+    Returns (blackout, verified, note). A stock is 'verified' only if its own lookup answered AND showed its next
+    report date (an empty answer can't be told apart from missing data). Anything else must be checked by hand."""
     key = os.environ.get("FINNHUB_API_KEY")
     if not key:
         return set(), set(), "no FINNHUB_API_KEY in the Keychain"
@@ -82,15 +84,20 @@ def earnings_blackout(b, today):
     except Exception as e:
         return set(), set(), f"market calendar unavailable ({type(e).__name__})"
     session = BR.retrying_session()
+    horizon = (dt.date.fromisoformat(today) + dt.timedelta(days=EARNINGS_LOOKAHEAD)).isoformat()
     blackout, verified, failed = set(), set(), []
     for sym in D.STOCKS:
         try:
-            rows = _finnhub_get(session, sym, today, end, key)
-        except Exception as e:      # never echo the exception text: it can contain the URL with the token
+            rows = _finnhub_get(session, sym, today, horizon, key)
+        except Exception as e:      # never echo the exception text
             failed.append(f"{sym} ({type(e).__name__})")
             continue
+        dates = sorted(str(x.get("date") or "") for x in rows if x.get("symbol") == sym and str(x.get("date") or "") >= today)
+        if not dates:
+            failed.append(f"{sym} (no upcoming date found)")
+            continue
         verified.add(sym)
-        if any(x.get("symbol") == sym and today <= str(x.get("date") or "") <= end for x in rows):
+        if dates[0] <= end:
             blackout.add(sym)
     note = f"checked {len(verified)}/{len(D.STOCKS)} stocks through {end}"
     if failed:
@@ -151,12 +158,15 @@ def _run(mode, regime_path, exclude, force):
 
     plan_file = D.REPORTS / f"plan_{today}.json"
     rerun_n = 0
-    if mode == "decision" and plan_file.exists():
+    # The journal, not the plan file, is the record that DECISION ran (deleting the plan can't hide a run).
+    ran = [c for c in D.read_jsonl(D.CANDIDATES) if c.get("date") == today and str(c.get("run", "")).startswith("decision")]
+    if mode == "decision" and (ran or plan_file.exists()):
         if not force:
-            raise D.DeskError(f"DECISION ALREADY RAN TODAY ({plan_file.name} exists). Do not rerun it: place the "
-                              "orders in that plan. If the first run crashed or Chris asked for a rerun, use --force "
-                              "(it is logged and shows up in the weekly review).")
-        rerun_n = 1 + len(list(D.REPORTS.glob(f"plan_{today}_superseded*.json")))
+            raise D.DeskError("DECISION ALREADY RAN TODAY. Do not rerun it: place the orders in today's plan. If the "
+                              "first run crashed or Chris asked for a rerun, use --force (it is logged and shows up in the "
+                              "weekly review).")
+        prev = [int(m.group(1)) for c in ran for m in [re.search(r"rerun(\d+)$", str(c.get("run", "")))] if m]
+        rerun_n = 1 + max(prev, default=0)
 
     reg, reg_file, reg_sha, reg_warn = load_regime(regime_path or str(D.REPORTS / f"regime_{today}.json"))
     warnings += reg_warn
@@ -205,6 +215,10 @@ def _run(mode, regime_path, exclude, force):
     blackout, verified, enote = earnings_blackout(b, today)
     if len(verified) < len(D.STOCKS):
         warnings.append(f"Earnings calendar incomplete ({enote}). Unverified stocks are marked EARNINGS UNVERIFIED.")
+    contradicts = sorted(s for s in exclusions if s in verified and s not in blackout)
+    for s in contradicts:
+        warnings.append(f"EXCLUSION CONFLICT: {s} is excluded, but the earnings calendar shows no report in the next "
+                        "10 trading days. It is skipped as asked and flagged in the weekly review.")
 
     prices = b.latest_prices(list(frames)) if live else {}
 
@@ -318,13 +332,15 @@ def _run(mode, regime_path, exclude, force):
             c["block_reason"] = f"R:R {c['rr']} below {D.MIN_RR}" if c["rr"] < D.MIN_RR else None
 
     # quota rule
-    ab = [t for t in D.read_jsonl(D.TRADES) if t.get("tier") in ("A", "B")]
+    ab = [t for t in D.read_jsonl(D.TRADES) if t.get("tier") in ("A", "B")
+          and t.get("status") not in ("rejected", "failed_submit")]      # an order that never existed isn't a trade
     ref = max([t["date_open"] for t in ab], default=None)
     if ref is None and D.START_FILE.exists():
         try:
             ref = json.loads(D.START_FILE.read_text())["date"]
         except Exception:
             ref = today
+            warnings.append("start_date.txt is unreadable; the quota clock starts today. Tell Chris.")
     try:
         idle = D.trading_days_between(b, ref or today, today)
     except Exception as e:
@@ -359,8 +375,8 @@ def _run(mode, regime_path, exclude, force):
 
     # The plan is written before the candidate log, so a crash can never leave logged candidates without a plan
     # (which would force a --force rerun and duplicate rows).
-    if rerun_n:
-        (D.REPORTS / f"plan_{today}.json").replace(D.REPORTS / f"plan_{today}_superseded{rerun_n}.json")
+    if rerun_n and plan_file.exists():
+        plan_file.replace(D.REPORTS / f"plan_{today}_superseded{rerun_n}.json")
     plan_sha = _save(result, f"plan_{today}.json")
     D.append_jsonl(D.CANDIDATES, [{
         "date": today, "run": run_name, "rules_version": rv, "symbol": c["symbol"], "direction": c["direction"],
@@ -368,6 +384,8 @@ def _run(mode, regime_path, exclude, force):
         "target": c["target"], "rr": c["rr"], "tier": c["tier"], "quota": c.get("quota", False),
         "action": c["action"], "block_reason": c.get("block_reason"), "p_target": None,
         "regime_sha": reg_sha, "plan_sha": plan_sha, "bars_feed": feed, "excluded": c["symbol"] in exclusions,
+        "exclusion_conflict": c["symbol"] in contradicts,
+        "earnings_unverified": bool(c.get("earnings_unverified")),
         "py": platform.python_version()} for c in cands])
     return result
 

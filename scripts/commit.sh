@@ -43,9 +43,14 @@ foreign=$(git diff --name-only "$base" "$upstream" -- . ':(exclude)journal' ':(e
 if [ -n "$foreign" ]; then
   fail "GitHub has code or rules changes this Mac hasn't reviewed ($(printf '%s' "$foreign" | tr '\n' ' ')). Chris must pull them by hand."
 fi
-if ! out=$(git rebase -q "$upstream" 2>&1); then
-  git rebase --abort >/dev/null 2>&1
-  fail "could not combine with changes on GitHub: $(printf '%s' "$out" | tail -2 | tr '\n' ' ')"
+if ! git merge-base --is-ancestor "$upstream" HEAD; then
+  if ! out=$(git rebase -q "$upstream" 2>&1); then
+    git rebase --abort >/dev/null 2>&1
+    fail "could not combine with changes on GitHub: $(printf '%s' "$out" | tail -2 | tr '\n' ' ')"
+  fi
+fi
+if [ -n "$(git diff --name-only --diff-filter=U)" ] || [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
+  fail "a merge was left half-finished. Nothing was pushed."
 fi
 
 # 6. Scan everything about to be pushed (not just this run's commit), then push.

@@ -33,13 +33,14 @@ import desk as D
 
 LIVE = {"new", "accepted", "pending_new", "accepted_for_bidding", "held", "partially_filled", "filled",
         "pending_replace", "replaced", "calculated", "done_for_day"}
-DEAD = {"rejected", "canceled", "expired", "suspended", "stopped", "pending_cancel"}
+DEAD = {"rejected", "canceled", "expired", "suspended"}
 _CTRL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
 sleep = time.sleep      # tests replace this
 
 
-def confirm(b, order_id, tries=5):
-    """The order's status once Alpaca reports one, or None."""
+def confirm(b, order_id, tries=5, timeout_s=20.0):
+    """The order's status once Alpaca reports one, or None (bounded by wall-clock time, not just attempts)."""
+    deadline = time.monotonic() + timeout_s
     for _ in range(tries):
         try:
             o = b.order(order_id)
@@ -47,6 +48,8 @@ def confirm(b, order_id, tries=5):
                 return o
         except Exception:
             pass
+        if time.monotonic() >= deadline:
+            break
         sleep(1)
     return None
 

@@ -194,7 +194,7 @@ def trading_days_ahead(b, start, n):
     end = (dt.date.fromisoformat(start) + dt.timedelta(days=n * 2 + 10)).isoformat()
     days = [d for d in b.calendar(start, end) if d > start]
     if len(days) < n:
-        raise DeskError(f"calendar returned only {len(days)} trading days after {start}")
+        raise ValueError(f"calendar returned only {len(days)} trading days after {start}")
     return days[n - 1]
 
 
@@ -203,7 +203,7 @@ def previous_trading_day(b, day=None):
     start = (dt.date.fromisoformat(day) - dt.timedelta(days=10)).isoformat()
     days = [d for d in b.calendar(start, day) if d < day]
     if not days:
-        raise DeskError(f"calendar returned no trading day before {day}")
+        raise ValueError(f"calendar returned no trading day before {day}")
     return days[-1]
 
 

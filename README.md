@@ -62,7 +62,7 @@ The system prompt is `rules/socrates_trading_desk_v1.0.md`. Socrates must always
 
 ## 4. GitHub backup (audit trail)
 
-repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. It only ever commits `journal/`, `reports/` and `start_date.txt`, pulls before pushing, and prints `Saved to GitHub.` only when the push really worked (anything else starts with `BACKUP FAILED` and exits non-zero). Before each commit `scripts/secret_scan.sh` checks the staged changes against the real key values in the Keychain (without printing them), anything shaped like an API key, and gitleaks if it is installed. GitHub Actions (`.github/workflows/checks.yml`) runs gitleaks and both test suites on every push.
+repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. It only ever commits `journal/`, `reports/` and `start_date.txt`, pulls before pushing, and prints `Saved to GitHub.` only when the push really worked (anything else starts with `BACKUP FAILED` and exits non-zero). Before each commit `scripts/secret_scan.sh` checks the staged changes against the real key values in the Keychain (without printing them), anything shaped like an API key, and gitleaks if it is installed. GitHub Actions (`.github/workflows/checks.yml`, actions pinned to exact commits) runs gitleaks and both test suites on every push; that catches a leak after the fact, the local scan is what prevents it. A run never pulls code from GitHub: if `scripts/`, `rules/` or hooks changed there, commit.sh stops with `BACKUP FAILED` until Chris reviews and pulls by hand.
 
 `trades.jsonl` and `control.jsonl` are rewritten in place when a trade or control changes state (atomically, under a lock). `candidates.jsonl` is append-only. A corrupted line is never dropped silently: it is copied to `journal/corrupt_lines.txt` with a warning.
 
@@ -85,7 +85,7 @@ To draw controls for a day where DECISION already ran without them (only while t
 
 ## 8. Rules about the rules
 
-No trading-rule changes until 40 closed A+B trades. A change means: edit the prompt, bump `rules_version.txt` (v1.1), record it in `rules/CHANGELOG.md`, commit. The review compares only trades from the current version. Measurement only changes (logging, reports) are recorded in the changelog but don't change which trades are taken (for continuity purposes).
+No trading-rule changes until 40 closed A+B trades. A change means: edit the prompt, bump `rules_version.txt` AND `RULES_VERSION` in `scripts/desk.py` together (v1.1; the scripts refuse to run if they disagree, so the text file alone can't reset the scorecard), record it in `rules/CHANGELOG.md`, commit. The review compares only trades from the current version. Measurement only changes (logging, reports) are recorded in the changelog but don't change which trades are taken (for continuity purposes).
 
 ## 9. Where the rules come from
 

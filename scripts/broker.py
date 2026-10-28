@@ -145,7 +145,13 @@ class RestBroker:
         return self._t("DELETE", f"/v2/orders/{order_id}")
 
     def close_position(self, symbol):
+        """Market-close whatever is held. Unlike a plain sell order, this can never open a new short."""
         return self._t("DELETE", f"/v2/positions/{symbol}")
+
+    def recent_orders(self, symbol, after):
+        """Closed orders for one symbol since `after` (ISO date), newest first, legs included."""
+        return self._t("GET", "/v2/orders", params={"status": "closed", "symbols": symbol, "after": after,
+                                                     "direction": "desc", "limit": 50, "nested": "true"})
 
     # ---------- market data ----------
     def daily_bars(self, symbols, start, end, adjustment="all"):

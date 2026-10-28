@@ -25,6 +25,7 @@ The scripts in `socrates-desk/scripts/` do all math, scoring, sizing, risk check
 Never compute prices, sizes or scores yourself. Never edit files in `journal/` by hand. Never edit anything in `rules/` or `scripts/`, or `rules_version.txt`. If a script errors, report the exact error to Chris and stop; do not work around it. Two messages are not errors:
 - `REGIME FILE INVALID`: fix the regime file it names, then rerun the same command. This is the only error you fix yourself.
 - `MARKET CLOSED TODAY` / `MARKET NOT OPEN RIGHT NOW`: report it and stop. Nothing was logged.
+- place.py `REFUSED` about the order file itself (p_target out of range, a sentence too short or too long, bad JSON, unknown keys, earnings note): fix that order file and rerun place.py for that symbol once. Any other place.py result that isn't `PLACED`: report the line and move on to the next planned order; don't stop the whole run.
 
 All commands run from the `~/socrates-desk` folder (cd there first). Always use `.venv/bin/python`, never plain `python`.
 
@@ -69,6 +70,7 @@ Each run begins with "RUN MODE: X". Do only that mode.
    - dissent: a specific, falsifiable way it fails ("fails if XLE closes below 92.10 on oil reversal"). General fear is not allowed.
    - p_target: probability that the target is hit before the stop. Start from the neutral-market base rate, 1 ÷ (1 + R:R) (about 0.33 for a 2R target, 0.30 for 2.3R), and adjust by at most 15 points up or down, for reasons you can name. place.py refuses values outside that range. You are scored against the base rate, so staying at the base rate is a fine answer; defaulting to 0.5 is not.
    - If the plan marks a stock EARNINGS UNVERIFIED, look up its next earnings date. If it is more than 10 trading days away, set `"earnings_checked": true` and add `"earnings_note": "<date and source>"` in the order file. If not, do not place it and report why.
+   - After the last order, run: `.venv/bin/python scripts/sync.py` (records instant fills and protects any partial fill).
    - Only `PLACED ... order <id>` means placed. `ORDER REJECTED`, `ORDER NOT PLACED`, `ORDER NOT CONFIRMED` and `ORDER STATUS UNKNOWN` all mean it was NOT placed: report the line and never rerun place.py for that symbol.
 5. Write the trade report (format below). If the plan says NO TRADE, copy that line and add "Would trade if: [specific price, level or event]."
 6. Run: `bash scripts/commit.sh` (report any `BACKUP FAILED` line).
@@ -83,7 +85,7 @@ Each run begins with "RUN MODE: X". Do only that mode.
 ### RUN MODE: WEEKLY REVIEW (Fridays 16:30 ET)
 1. Run: `.venv/bin/python scripts/sync.py`
 2. Run: `.venv/bin/python scripts/review.py`
-3. Read the report it appended to `journal/weekly.md`. Under "8. Proposed rule changes", append your proposals with reasoning by writing them in your reply to Chris (not into the file). Do not apply any change.
+3. Read the report it wrote to `reports/weekly_<YYYY-MM-DD>.md` (the same text is kept in `journal/weekly.md`). Under "8. Proposed rule changes", append your proposals with reasoning by writing them in your reply to Chris (not into the file). Do not apply any change.
 4. If fewer than 20 closed trades exist, say "Sample too small for conclusions" and do not interpret the numbers.
 5. Run: `bash scripts/commit.sh` (report any `BACKUP FAILED` line).
 

@@ -7,8 +7,10 @@ Usage:
 
 Statistics, stated up front so nobody goes fishing:
 - PRIMARY test (5b): do the planned candidates beat the random controls? Both are simulated the same way from the
-  same logged levels, so fills, slippage and timing can't tilt the comparison. Two-sided block permutation test
-  (labels shuffled within each ISO week), alpha 0.05, only after 20 planned + 50 controls over 10+ decision days.
+  same logged levels, so fills, slippage and timing can't tilt the comparison. Longs are compared with control longs
+  and shorts with control shorts inside each fortnight (so the market's direction can't pose as skill), and a
+  two-sided sign-flip test runs on the fortnights, alpha 0.05, only after 20 planned + 50 controls over 10+
+  decision days AND 12+ fortnights. Checked by simulation: about 5% false positives when there is no skill.
 - Everything else (real fills vs controls, planned vs shadow, the score study, factor tables) is EXPLORATORY:
   no multiple-comparison correction, so treat a "significant" result there as a lead, not a finding.
 """
@@ -100,6 +102,7 @@ def simulate_cands(cands, frames):
         res = D.simulate_logged(fr, c["direction"], c["entry"], c["stop"], c["target"], d0)
         if res is not None:
             out.append({"date": c["date"], "action": c.get("action"), "score": c["score"],
+                        "direction": c["direction"], "earnings_unverified": c.get("earnings_unverified", False),
                         "breakdown": c.get("breakdown") or {}, "R": res[0]})
     return out
 
@@ -249,15 +252,15 @@ def _run(offline):
     groups = {"planned": [], "blocked": [], "shadow": []}
     for r in sim:
         if r["action"] in groups:
-            groups[r["action"]].append((C.week_of(r["date"]), r["R"]))
+            groups[r["action"]].append((r["date"], r["direction"], r["R"]))
     if frames:
         for g, rs in groups.items():
-            st = stats_r([r for _, r in rs])
+            st = stats_r([r for _, _, r in rs])
             L.append(f"- {g}: " + (f"{st['n']} matured, {st['avg_R']:+.2f}R avg, win {st['win_rate']:.0%}" if st else "none matured yet"))
         p, sh = groups["planned"], groups["shadow"]
         if len(p) >= 10 and len(sh) >= 10:
-            diff, pv = C.perm_two_sample(p, sh)
-            L.append(f"- Planned minus shadow: {diff:+.2f}R (two-sided p = {pv:.3f}). " +
+            diff, pv, nb = C.compare(p, sh)
+            L.append(f"- Planned minus shadow (direction-matched, {nb} fortnights): {diff:+.2f}R (two-sided p = {pv:.3f}). " +
                      ("Exploratory hint that the score filter separates good from bad setups."
                       if pv < C.ALPHA and diff > 0 else "No evidence yet that the score filter adds value."))
     else:
@@ -272,7 +275,7 @@ def _run(offline):
         for c in ctrl_ok:
             fr = frames.get(c["symbol"])
             if fr and D.matured(fr[0], dt.date.fromisoformat(c["date"])):
-                ctrl_mat.append((C.week_of(c["date"]), c["result_R"]))
+                ctrl_mat.append((c["date"], c["direction"], c["result_R"]))
     L.append(f"- Control entries logged: {len(ctrl)} ({len(ctrl_ok)} resolved, {len(ctrl) - len(ctrl_ok)} still open). "
              "Same universe, entry, stop/target rules, 10-day exit and hard gates as the real trades; random symbol and direction; score ignored.")
     cs = stats_r([c["result_R"] for c in ctrl_ok])
@@ -281,20 +284,21 @@ def _run(offline):
     rs_ = stats_r([t.get("result_R") for t in closed])
     if rs_:
         L.append(f"- Real trades (actual fills, descriptive only): {rs_['n']}, {rs_['avg_R']:+.2f}R avg, win {rs_['win_rate']:.0%}")
-    pl = groups["planned"]
-    plan_days = len({w for w, _ in pl})
-    pl_dates = len({r["date"] for r in sim if r["action"] == "planned"})
-    if len(pl) >= C.MIN_REAL and len(ctrl_mat) >= C.MIN_CONTROL and pl_dates >= C.MIN_DAYS:
-        diff, pv = C.perm_two_sample(pl, ctrl_mat)
-        L.append(f"- Planned candidates ({len(pl)} over {pl_dates} decision days, {plan_days} weeks) vs controls "
-                 f"({len(ctrl_mat)}), both simulated the same way: difference {diff:+.2f}R. Verdict: {C.verdict(diff, pv)}")
+    # controls never include stocks whose earnings date was unverified, so neither does this side of the test
+    pl = [(r["date"], r["direction"], r["R"]) for r in sim if r["action"] == "planned" and not r["earnings_unverified"]]
+    pl_dates = len({d for d, _, _ in pl})
+    diff, pv, nb = C.compare(pl, ctrl_mat) if pl and ctrl_mat else (0.0, 1.0, 0)
+    if len(pl) >= C.MIN_REAL and len(ctrl_mat) >= C.MIN_CONTROL and pl_dates >= C.MIN_DAYS and nb >= C.MIN_BLOCKS:
+        L.append(f"- Planned candidates ({len(pl)} over {pl_dates} decision days, {nb} fortnights) vs controls "
+                 f"({len(ctrl_mat)}), both simulated the same way, longs vs longs and shorts vs shorts: "
+                 f"difference {diff:+.2f}R. Verdict: {C.verdict(diff, pv)}")
     else:
-        L.append(f"- Verdict withheld. Needs {C.MIN_REAL}+ matured planned candidates over {C.MIN_DAYS}+ decision days and "
-                 f"{C.MIN_CONTROL}+ matured controls; have {len(pl)} over {pl_dates} days and {len(ctrl_mat)}. "
-                 "Numbers above are for tracking only.")
+        L.append(f"- Verdict withheld. Needs {C.MIN_REAL}+ matured planned candidates over {C.MIN_DAYS}+ decision days, "
+                 f"{C.MIN_CONTROL}+ matured controls and {C.MIN_BLOCKS}+ fortnights with both; have {len(pl)} over "
+                 f"{pl_dates} days, {len(ctrl_mat)} controls and {nb} fortnights. Numbers above are for tracking only.")
     L.append("- Caveats: simulations assume a fill at the logged entry and exit on the first stop/target touch in daily bars "
-             "(gaps fill at the open); trades opened in the same week move together, which the week-blocked test accounts "
-             "for only partly; one stretch of market is not every regime; a pass here is evidence, not proof.")
+             "(gaps fill at the open); the test treats fortnights as independent, which is close but not exact; one "
+             "stretch of market is not every regime; a pass here is evidence, not proof.")
 
     # 5c. Does the score predict forward results? Every scored candidate, not just traded ones. Exploratory.
     L.append("\n### 5c. Does the score predict forward R? (all scored candidates, matured only) [exploratory]")
@@ -393,7 +397,8 @@ def _run(offline):
         issues.append(f"{d}: DECISION was rerun with --force (only the last plan counts)")
     for c in cands:
         if c.get("excluded"):
-            issues.append(f"{c['date']} {c['symbol']}: excluded by Socrates ({c.get('block_reason') or 'no reason'})")
+            issues.append(f"{c['date']} {c['symbol']}: excluded by Socrates ({c.get('block_reason') or 'no reason'})"
+                          + (" -- the earnings calendar showed no report in the window" if c.get("exclusion_conflict") else ""))
     if not offline:
         issues += verify_against_broker(trades)
     L += [f"- {D.md_safe(i, 400)}" for i in issues] or ["- No violations found."]

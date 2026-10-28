@@ -77,39 +77,61 @@ def resolve(broker, today):
         return done
 
 
+BLOCK_DAYS = 14                  # >= the 10-trading-day horizon, so outcomes in different blocks barely overlap
+BLOCK_EPOCH = dt.date(2026, 1, 5)    # a Monday; blocks are fixed calendar fortnights
+MIN_BLOCKS = 12
+
+
 def week_of(date_str):
     y, w, _ = dt.date.fromisoformat(date_str).isocalendar()
     return f"{y}-W{w:02d}"
 
 
-def perm_two_sample(a, b, n_perm=10000, seed=0):
-    """Is mean(a) different from mean(b)? a and b are lists of (block, R). Labels are shuffled WITHIN each block
-    (ISO week), so trades that moved together in one week can't masquerade as independent evidence.
-    Returns (difference_in_means, two_sided_p). p uses the (k+1)/(n+1) rule, so it is never exactly 0."""
-    if not a or not b:
-        return 0.0, 1.0
-    obs = sum(r for _, r in a) / len(a) - sum(r for _, r in b) / len(b)
+def block_of(date_str):
+    return (dt.date.fromisoformat(date_str) - BLOCK_EPOCH).days // BLOCK_DAYS
+
+
+def _mean(xs):
+    return sum(xs) / len(xs)
+
+
+def block_diffs(a, b):
+    """a, b: lists of (date, direction, R). One number per fortnight: the difference in mean R between a and b,
+    compared WITHIN each direction (longs vs control longs, shorts vs control shorts) and weighted by a's mix.
+    That removes the market's move from the comparison: a long-leaning plan in a rising fortnight is compared with
+    control longs from the same fortnight, not with a 50/50 random mix. Fortnights without matching rows are skipped."""
     blocks = {}
-    for lab, rows in ((1, a), (0, b)):
-        for blk, r in rows:
-            blocks.setdefault(blk, []).append((lab, r))
-    na = len(a)
+    for lab, rows in ((0, a), (1, b)):
+        for d, direction, r in rows:
+            blocks.setdefault(block_of(d), {}).setdefault(direction, ([], []))[lab].append(r)
+    diffs = []
+    for _, dirs in sorted(blocks.items()):
+        usable = {k: v for k, v in dirs.items() if v[0] and v[1]}
+        n = sum(len(v[0]) for v in usable.values())
+        if n:
+            diffs.append(sum(len(pa) / n * (_mean(pa) - _mean(pb)) for pa, pb in usable.values()))
+    return diffs
+
+
+def signflip_test(diffs, n_perm=10000, seed=0):
+    """Two-sided sign-flip permutation test on per-fortnight differences (blocks are treated as the independent
+    units). Returns (mean_difference, p); p uses (k+1)/(n+1), so it is never exactly 0."""
+    if not diffs:
+        return 0.0, 1.0
+    obs = _mean(diffs)
     rng = random.Random(seed)
     hits = 0
     for _ in range(n_perm):
-        sa = sb = 0.0
-        for items in blocks.values():
-            labs = [lab for lab, _ in items]
-            rng.shuffle(labs)
-            for lab, (_, r) in zip(labs, items):
-                if lab:
-                    sa += r
-                else:
-                    sb += r
-        diff = sa / na - sb / (len(a) + len(b) - na)
-        if abs(diff) >= abs(obs) - 1e-12:
+        if abs(sum(x if rng.random() < 0.5 else -x for x in diffs) / len(diffs)) >= abs(obs) - 1e-12:
             hits += 1
     return obs, (hits + 1) / (n_perm + 1)
+
+
+def compare(a, b, n_perm=10000, seed=0):
+    """(mean_difference, p, n_blocks) for a vs b, direction-matched and blocked by fortnight."""
+    d = block_diffs(a, b)
+    diff, p = signflip_test(d, n_perm, seed)
+    return diff, p, len(d)
 
 
 def verdict(diff, p):

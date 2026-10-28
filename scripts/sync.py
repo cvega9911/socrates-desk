@@ -20,7 +20,7 @@ import broker as BR
 import control as C
 import desk as D
 
-TERMINAL = {"filled", "canceled", "expired", "rejected", "replaced", "done_for_day", "stopped", "suspended"}
+TERMINAL = {"filled", "canceled", "expired", "rejected", "replaced", "suspended"}
 sleep = time.sleep      # tests replace this
 
 
@@ -45,14 +45,16 @@ def exit_side(t):
 
 
 def wait_terminal(b, oid, timeout_s=10.0, step=0.5):
-    """Poll until the order (and every leg) is in a final state. Returns the last order seen."""
+    """Poll until the order (and every leg) is in a final state, or the wall-clock deadline passes (slow network
+    calls count against it too). Returns the last order seen."""
+    deadline = time.monotonic() + timeout_s
     o = b.order(oid)
-    waited = 0.0
-    while waited < timeout_s:
+    polls = 0
+    while time.monotonic() < deadline and polls < timeout_s / step:
         if o.get("status") in TERMINAL and all(l.get("status") in TERMINAL for l in o.get("legs") or []):
             return o
         sleep(step)
-        waited += step
+        polls += 1
         o = b.order(oid)
     return o
 
@@ -71,6 +73,21 @@ def filled_exit(orders):
     if not leg:
         return None
     return leg, ("target" if leg.get("type") == "limit" else "stop")
+
+
+def held_qty(b, t):
+    """Shares Alpaca says we hold in this symbol right now (fresh read, not the start-of-run snapshot)."""
+    p = next((p for p in b.positions() if p["symbol"] == t["symbol"]), None)
+    return abs(int(float(p.get("qty", t["shares"])))) if p else 0
+
+
+def find_close_fill(b, t, today):
+    """After a close whose reply was lost: the filled exit order for this symbol today, if there is one."""
+    side = exit_side(t)
+    for o in b.recent_orders(t["symbol"], today):
+        if o.get("status") == "filled" and o.get("side") == side and o.get("id") not in (t.get("order_id"),):
+            return o
+    return None
 
 
 def protect(b, t, alerts, why):
@@ -123,39 +140,66 @@ def handle_partial(b, t, o, notes, alerts):
                  f"rest cancelled, stop {t['stop']} / target {t['target']} placed for {qty} sh")
 
 
-def time_stop(b, t, o, notes, alerts):
+def time_stop(b, t, o, today, notes, alerts):
+    """Cancel the stop/target, confirm they're gone, then market-close. Whatever goes wrong after the cancel, the
+    position ends up either closed or protected again, never left without a stop."""
     live = [x["id"] for x in exit_orders(b, t, o) if x.get("status") not in TERMINAL and x.get("id")]
     final = cancel_and_wait(b, live)
-    done = filled_exit(exit_orders(b, t, b.order(t["order_id"])))
-    if done:        # the stop or target filled while we were cancelling: that is the exit
-        leg, reason = done
-        record_exit(t, leg["filled_avg_price"], reason, et_date(leg.get("filled_at")))
-        notes.append(f"{t['symbol']}: {reason} hit at {t['exit_price']} ({t['result_R']}R) during the time stop")
-        return
-    if any(x.get("status") not in TERMINAL for x in final):
-        t["time_stop_due"] = True
-        alerts.append(f"{t['symbol']}: time stop due but its stop/target would not cancel. Position untouched (still "
-                      "protected); retried at the next CLOSE run.")
-        return
     try:
+        done = filled_exit(exit_orders(b, t, b.order(t["order_id"])))
+        if done:        # the stop or target filled while we were cancelling: that is the exit
+            leg, reason = done
+            record_exit(t, leg["filled_avg_price"], reason, et_date(leg.get("filled_at")))
+            notes.append(f"{t['symbol']}: {reason} hit at {t['exit_price']} ({t['result_R']}R) during the time stop")
+            return
+        if any(x.get("status") not in TERMINAL for x in final):
+            t["time_stop_due"] = True
+            alerts.append(f"{t['symbol']}: time stop due but its stop/target would not cancel. Position untouched (still "
+                          "protected); retried at the next CLOSE run.")
+            return
+        if held_qty(b, t) == 0:
+            raise BR.NotFound("no position")
         c = b.close_position(t["symbol"])
-    except BR.NotFound:
-        alerts.append(f"RECONCILE {t['symbol']}: time stop due but Alpaca shows no position. Check manually.")
-        t["time_stop_due"] = True
-        return
     except Exception as e:
         t["time_stop_due"] = True
-        if protect(b, t, alerts, f"Time-stop market close failed ({type(e).__name__})"):
-            alerts.append(f"{t['symbol']}: TIME STOP FAILED ({type(e).__name__}: {e}). Stop {t['stop']} and target "
-                          f"{t['target']} were put back; the close is retried at the next CLOSE run.")
+        _recover_close(b, t, today, e, notes, alerts)
         return
     t.update({"status": "closing", "close_order_id": c["id"], "time_stop_due": False})
     c2 = wait_terminal(b, c["id"], timeout_s=5.0)
     if c2.get("status") == "filled":
         record_exit(t, c2["filled_avg_price"], "time", et_date(c2.get("filled_at")))
         notes.append(f"{t['symbol']}: 10-day time stop, closed at {t['exit_price']} ({t['result_R']}R)")
+    elif c2.get("status") in TERMINAL:
+        t.update({"status": "open", "close_order_id": None, "time_stop_due": True})
+        if protect(b, t, alerts, f"Time-stop close order ended '{c2.get('status')}'"):
+            alerts.append(f"{t['symbol']}: time-stop close order ended '{c2.get('status')}'. Stop/target put back; the "
+                          "close is retried at the next CLOSE run.")
     else:
         notes.append(f"{t['symbol']}: 10-day time stop, close order sent ({c['id']}); fill recorded on next sync")
+
+
+def _recover_close(b, t, today, err, notes, alerts):
+    """The time stop failed after the stop/target were cancelled. Find out what actually happened."""
+    try:
+        qty = held_qty(b, t)
+    except Exception:
+        qty = None
+    if qty == 0:        # the position is gone: maybe the close went through and only the reply was lost
+        try:
+            f = find_close_fill(b, t, today)
+        except Exception:
+            f = None
+        if f:
+            record_exit(t, f["filled_avg_price"], "time", et_date(f.get("filled_at")))
+            notes.append(f"{t['symbol']}: 10-day time stop, closed at {t['exit_price']} ({t['result_R']}R) "
+                         "(confirmed from Alpaca's order history)")
+        else:
+            alerts.append(f"RECONCILE {t['symbol']}: time stop interrupted ({type(err).__name__}) and Alpaca shows no "
+                          "position and no closing fill today. Check manually.")
+        return
+    if protect(b, t, alerts, f"Time stop interrupted ({type(err).__name__})"):
+        alerts.append(f"{t['symbol']}: TIME STOP FAILED ({type(err).__name__}: {err}). Stop {t['stop']} and target "
+                      f"{t['target']} were put back; the close is retried at the next CLOSE run.")
 
 
 def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
@@ -178,10 +222,10 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
             notes.append(f"{t['symbol']}: time-stop exit filled at {t['exit_price']} ({t['result_R']}R)")
         elif st in TERMINAL:
             t.update({"status": "open", "time_stop_due": True, "close_order_id": None})
-            if t["symbol"] in positions:
-                protect(b, t, alerts, f"Time-stop close order ended '{st}'")
-                alerts.append(f"{t['symbol']}: time-stop close order ended '{st}'. Stop/target put back; the close is "
-                              "retried at the next CLOSE run.")
+            if held_qty(b, t):
+                if protect(b, t, alerts, f"Time-stop close order ended '{st}'"):
+                    alerts.append(f"{t['symbol']}: time-stop close order ended '{st}'. Stop/target put back; the close "
+                                  "is retried at the next CLOSE run.")
             else:
                 alerts.append(f"RECONCILE {t['symbol']}: close order ended '{st}' and Alpaca shows no position. Check manually.")
         else:
@@ -202,12 +246,12 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
                 t.update({"status": "unfilled", "date_close": today, "exit_reason": st})
                 notes.append(f"{t['symbol']}: entry {st}, marked unfilled")
             return
-        elif not (close_mode or stale):
-            if st == "partially_filled":
-                notes.append(f"{t['symbol']}: entry partly filled ({filled_qty} sh); settled at the CLOSE run")
-            return
         elif st == "partially_filled":
+            # Alpaca's bracket legs don't protect a partial entry, so settle it right away: keep the filled
+            # shares, cancel the rest, and give the filled shares their own stop/target.
             handle_partial(b, t, o, notes, alerts)
+            return
+        elif not (close_mode or stale):
             return
         else:
             final = cancel_and_wait(b, [o["id"]])[0]
@@ -234,8 +278,19 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
         notes.append(f"{t['symbol']}: {reason} hit at {t['exit_price']} ({t['result_R']}R, ${t['pnl']})")
         return
     if t["symbol"] not in positions:
+        positions.update({p["symbol"]: p for p in b.positions()})      # it may have filled after our first read
+    if t["symbol"] not in positions:
         alerts.append(f"RECONCILE {t['symbol']}: journal says open but Alpaca shows no position and no exit fill. Check manually.")
         return
+    # Every held position must have a live stop. If its bracket legs or OCO died (cancelled by hand, rejected,
+    # expired), put the stop and target back now instead of waiting for someone to notice.
+    exits = exit_orders(b, t, o)
+    if not any(x.get("status") not in TERMINAL for x in exits) and not (close_mode and t.get("time_stop_due") and market_open):
+        if protect(b, t, alerts, "Its stop/target orders were no longer live"):
+            alerts.append(f"{t['symbol']}: had NO live stop/target (orders ended: "
+                          f"{', '.join(sorted({str(x.get('status')) for x in exits})) or 'none'}). Put back stop "
+                          f"{t['stop']} / target {t['target']} for {t['shares']} sh.")
+        o = b.order(t["order_id"])
     if not close_mode:
         return
     try:
@@ -251,7 +306,7 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
             notes.append(f"{t['symbol']}: 10-day time stop due, but the market is closed right now. Stop/target left in "
                          "place; the close runs at the next CLOSE.")
             return
-        time_stop(b, t, o, notes, alerts)
+        time_stop(b, t, o, today, notes, alerts)
 
 
 def run(close_mode=False):

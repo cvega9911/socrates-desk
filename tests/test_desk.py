@@ -70,6 +70,7 @@ class FakeBroker:
         self.cancel_stuck = False      # cancels are accepted but never take effect
         self.calendar_fails = False
         self.order_fails = set()
+        self.close_lost_reply = False
         self.ocos = []
 
     def clock(self):
@@ -156,6 +157,15 @@ class FakeBroker:
                     l["status"] = "canceled"
 
     def close_position(self, s):
+        if self.close_lost_reply:          # the sale happens, the reply never arrives
+            self.close_lost_reply = False
+            self.n += 1
+            oid = f"close{self.n}"
+            px = float(self.pos[s]["current_price"])
+            self.orders[oid] = {"id": oid, "symbol": s, "side": "sell", "status": "filled", "filled_avg_price": str(px),
+                                "filled_at": f"{TODAY}T19:55:00Z", "legs": []}
+            del self.pos[s]
+            raise BR.BrokerError("DELETE /v2/positions -> network error: ReadTimeout")
         if self.close_fails:
             raise BR.BrokerError(f"DELETE /v2/positions/{s} -> 403: insufficient qty available")
         if s not in self.pos:
@@ -163,10 +173,14 @@ class FakeBroker:
         self.n += 1
         oid = f"close{self.n}"
         px = float(self.pos[s]["current_price"])
-        self.orders[oid] = {"id": oid, "symbol": s, "status": "filled", "filled_avg_price": str(px),
+        self.orders[oid] = {"id": oid, "symbol": s, "side": "sell", "status": "filled", "filled_avg_price": str(px),
                             "filled_at": f"{TODAY}T19:55:00Z", "legs": []}
         del self.pos[s]
         return {"id": oid}
+
+    def recent_orders(self, symbol, after):
+        return [o for o in self.orders.values() if o.get("symbol") == symbol and o.get("status") == "filled"
+                and str(o["id"]).startswith("close")]
 
     def daily_bars(self, symbols, start, end, adjustment="all"):
         return {s: self.bars[s] for s in symbols if s in self.bars}
@@ -480,11 +494,11 @@ print(rep)
 ok("Win rate 36.0%" in rep, "win rate computed (9/25)")
 ok("+0.08R" in rep, "expectancy computed ((9*2-16)/25 = +0.08R)")
 ok("5b. Random baseline" in rep and "Random controls (all resolved): 80" in rep, "random baseline section reports controls")
-ok("Verdict:" in rep and "PRIMARY TEST" in rep, "primary verdict shown once 20 planned (10+ days) + 50 controls exist")
+ok("PRIMARY TEST" in rep and "fortnights" in rep, "primary test section reports its fortnight count")
 ok("Brier score" in rep and "Brier skill" in rep and "neutral base rate" in rep, "calibration reported with the base-rate anchor check")
 ok("5c. Does the score predict forward R" in rep and "matured candidate-trades" in rep, "score study section reports matured candidates")
 ok("Factor regime:" in rep and "Score 7:" in rep and "Significance test withheld" in rep, "score buckets and factor lines shown; significance withheld on small samples")
-ok("Planned candidates (23 over 23 decision days" in rep, "primary test compares simulated planned candidates with controls")
+ok("Verdict withheld" in rep and "12+ fortnights" in rep, "no verdict until 12+ fortnights of data (5 weeks here)")
 ok("planned: " in rep and "resolved" in rep, "shadow book simulated")
 ok("Sample too small" not in rep, "no small-sample warning at 25 trades")
 ok("planned but never placed" in rep, "flags planned-but-not-placed candidates")
@@ -506,17 +520,29 @@ young = [{"date": str(TODAY - dt.timedelta(days=3)), "symbol": "SPY", "direction
 spy_df = D.bars_to_df(fr.bars["SPY"])
 ok(review.score_study(young, {"SPY": (spy_df, spy_df)}) == [], "candidates younger than 10 trading days are excluded (no early-exit bias)")
 rr3 = __import__("random").Random(5)
-good = [(f"w{i % 6}", rr3.gauss(0.6, 1.0)) for i in range(120)]
-base_ = [(f"w{i % 6}", rr3.gauss(0.0, 1.0)) for i in range(120)]
-same = [(f"w{i % 6}", rr3.gauss(0.0, 1.0)) for i in range(120)]
-d1, pp1 = control.perm_two_sample(good, base_, n_perm=2000)
-d2, pp2 = control.perm_two_sample(same, base_, n_perm=2000)
-ok(d1 > 0.3 and pp1 < 0.01 and pp1 > 0, f"two-sample block permutation detects a real edge (diff {d1:+.2f}, p={pp1:.4f}, never 0)")
-ok(pp2 > 0.05, f"two-sample block permutation stays quiet on noise (p={pp2:.3f})")
-one_week_a = [("w1", 1.0)] * 30
-other_week_b = [("w2", -1.0)] * 60
-_, pblk = control.perm_two_sample(one_week_a, other_week_b, n_perm=500)
-ok(pblk > 0.5, "trades and controls from different weeks can't be passed off as evidence (block shuffle)")
+dd0 = dt.date(2026, 1, 5)
+def rows_(edge, mkt, lean):
+    out_a, out_b = [], []
+    for i in range(200):
+        day = (dd0 + dt.timedelta(days=i)).isoformat()
+        m = mkt[i // 14]
+        sa = 1 if rr3.random() < lean else -1
+        out_a.append((day, "long" if sa > 0 else "short", sa * m + edge + rr3.gauss(0, 1)))
+        for _ in range(2):
+            sb = rr3.choice([1, -1])
+            out_b.append((day, "long" if sb > 0 else "short", sb * m + rr3.gauss(0, 1)))
+    return out_a, out_b
+mkt = [rr3.gauss(0, 2) for _ in range(20)]
+a1, b1 = rows_(0.6, mkt, 1.0)
+d1, pp1, nb1 = control.compare(a1, b1, n_perm=2000)
+ok(d1 > 0.3 and pp1 < 0.01 and pp1 > 0 and nb1 >= 12, f"the primary test detects a real edge (diff {d1:+.2f}, p={pp1:.4f}, {nb1} fortnights, p never 0)")
+a2, b2 = rows_(0.0, [abs(x) + 2 for x in mkt], 1.0)
+d2, pp2, _ = control.compare(a2, b2, n_perm=2000)
+ok(pp2 > 0.05, f"a long-only plan in a rising market is NOT called skill (direction-matched; p={pp2:.3f})")
+one = [("2026-01-06", "long", 1.0)] * 30
+other = [("2026-03-02", "long", -1.0)] * 60
+_, _, nbx = control.compare(one, other, n_perm=200)
+ok(nbx == 0, "plans and controls from different fortnights are never compared with each other")
 ok("no evidence" in control.verdict(0.2, 0.5) and "evidence of skill" in control.verdict(0.3, 0.01)
    and "hurting" in control.verdict(-0.3, 0.01) and "no evidence" in control.verdict(0.3, 0.06), "verdict wording (two-sided)")
 
@@ -642,7 +668,7 @@ def fake_finnhub(session, sym, start, end, key):
         raise ConnectionError(f"https://finnhub.io/api?token={key} timed out")
     if sym == "META":
         return [{"symbol": "META", "date": start}]
-    return []
+    return [{"symbol": sym, "date": (dt.date.fromisoformat(start) + dt.timedelta(days=60)).isoformat()}]
 
 
 real_fh = score._finnhub_get
@@ -779,10 +805,9 @@ o13.update({"status": "partially_filled", "filled_qty": str(half), "filled_avg_p
             "filled_at": f"{TODAY}T15:00:00Z"})
 fb13.pos[t13["symbol"]] = {"symbol": t13["symbol"], "current_price": str(t13["planned_entry"])}
 sync.run()
-ok(D.read_jsonl(D.TRADES)[0]["status"] == "pending", "a partial fill is left alone until the CLOSE run")
-sync.run(close_mode=True)
 t13 = D.read_jsonl(D.TRADES)[0]
-ok(t13["status"] == "open" and t13["shares"] == half and t13.get("partial_fill"), "at CLOSE the filled part becomes the position")
+ok(t13["status"] == "open" and t13["shares"] == half and t13.get("partial_fill"),
+   "a partial fill is settled at the first sync (bracket legs don't protect a partial entry)")
 ok(o13["status"] == "canceled", "the unfilled rest of the entry is cancelled")
 ok(t13.get("exit_order_id") and fb13.orders[t13["exit_order_id"]]["qty"] == half,
    "the filled shares get a stop + target (OCO) for exactly the filled quantity")
@@ -825,6 +850,7 @@ fb14.close_fails = False
 sync.run(close_mode=True)
 t14 = D.read_jsonl(D.TRADES)[0]
 ok(t14["status"] == "closed" and t14["exit_reason"] == "time", "the next CLOSE run retries the time stop and closes it")
+ok(not any("POSITION HAS NO STOP" in a for a in res["alerts"]), "and the alerts never contradict themselves")
 ok(t14["exit_order_id"] in fb14.cancelled, "the replacement OCO is cancelled before the retry closes the position")
 
 fb15 = fresh()
@@ -929,6 +955,69 @@ except BR.BrokerError as e:
 ok(net_ok, "a network failure surfaces as a BrokerError the scripts handle, not a raw crash")
 del os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
 
+
+
+print("second-review regressions")
+fb40 = fresh()
+open_old_trade(fb40, days=2)
+oid40 = next(iter(fb40.orders))
+for l in fb40.orders[oid40]["legs"]:
+    l["status"] = "canceled"                 # someone cancelled the stop/target by hand
+res = sync.run()
+t40 = D.read_jsonl(D.TRADES)[0]
+ok(t40.get("exit_order_id") and any("had NO live stop" in a for a in res["alerts"]),
+   "a held position whose stop/target died gets them put back on the next sync, with an alert")
+fb40.orders[t40["exit_order_id"]]["status"] = "rejected"
+fb40.orders[t40["exit_order_id"]]["legs"][0]["status"] = "rejected"
+res = sync.run()
+t40b = D.read_jsonl(D.TRADES)[0]
+ok(t40b["exit_order_id"] != t40["exit_order_id"], "a protective OCO that is later rejected is noticed and replaced")
+
+fb41 = fresh()
+oid41 = open_old_trade(fb41)
+real_order = fb41.order
+calls41 = {"n": 0}
+def flaky_order(oid):
+    if oid == oid41 and any(x.endswith("sl") for x in fb41.cancelled):
+        calls41["n"] += 1
+        if calls41["n"] >= 1:
+            raise BR.BrokerError("GET order -> network error: ReadTimeout")
+    return real_order(oid)
+fb41.order = flaky_order
+res = sync.run(close_mode=True)
+t41 = D.read_jsonl(D.TRADES)[0]
+ok("XLF" in fb41.pos and t41.get("exit_order_id") and any("TIME STOP FAILED" in a for a in res["alerts"]),
+   "a time stop that crashes after cancelling the stop puts the stop back and says so")
+
+fb42 = fresh()
+open_old_trade(fb42)
+fb42.close_lost_reply = True
+res = sync.run(close_mode=True)
+t42 = D.read_jsonl(D.TRADES)[0]
+ok(t42["status"] == "closed" and t42["exit_reason"] == "time" and not fb42.ocos,
+   "a close that went through but lost its reply is confirmed from order history (no stray OCO, no stuck trade)")
+
+fb43 = fresh()
+score.run("decision")
+(TMP / "reports" / f"plan_{TODAY}.json").unlink()
+expect_exit(lambda: score.run("decision"), "DECISION ALREADY RAN", "deleting the plan file can't hide that DECISION ran")
+r43 = score.run("decision", force=True)
+r44 = score.run("decision", force=True)
+runs = {c["run"] for c in D.read_jsonl(D.CANDIDATES)}
+ok(runs == {"decision", "decision-rerun1", "decision-rerun2"}, f"forced reruns are numbered from the journal ({sorted(runs)})")
+
+fb45 = fresh()
+os.environ["FINNHUB_API_KEY"] = "tok"
+score._finnhub_get = lambda session, sym, start, end, key: [] if sym == "AAPL" else [{"symbol": sym, "date": (TODAY + dt.timedelta(days=70)).isoformat()}]
+bl45, ver45, note45 = score.earnings_blackout(fb45, TODAY.isoformat())
+ok("AAPL" not in ver45 and "MSFT" in ver45 and "no upcoming date" in note45,
+   "an empty earnings answer is 'unknown', not 'no earnings' (verified only when a next date is found)")
+write_regime({"exclude": {"MSFT": "earnings 2026-10-29 (made up)"}})
+r45 = score.run("decision")
+score._finnhub_get = real_fh
+del os.environ["FINNHUB_API_KEY"]
+ok(any("EXCLUSION CONFLICT: MSFT" in w for w in r45["warnings"]), "excluding a stock the calendar shows clean is flagged loudly")
+ok([c for c in D.read_jsonl(D.CANDIDATES) if c["symbol"] == "MSFT"][0]["exclusion_conflict"], "and recorded for the weekly review")
 
 print("pentest regressions")
 fb30 = fresh()
