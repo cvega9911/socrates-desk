@@ -6,7 +6,9 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
+import tempfile
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -77,6 +79,21 @@ def rules_version():
     return v
 
 
+_INVISIBLE = re.compile("[\u0000-\u0008\u000b-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]")
+
+
+def plain_text(val, limit=TEXT_MAX):
+    """Free text for the journal: no control, zero-width or right-to-left override characters, single-spaced, capped."""
+    val = " ".join(_INVISIBLE.sub(" ", str(val)).split())
+    return val[:limit]
+
+
+def md_safe(val, limit=300):
+    """Text from the agent or the web, made inert for markdown/HTML (GitHub, Obsidian)."""
+    val = plain_text(val, limit).replace("<", "\u2039").replace(">", "\u203a")
+    return re.sub(r"([\\`*_\[\]()<>!|#])", r"\\\1", val)
+
+
 def warn(msg):
     """Loud warning on stderr (keeps --json output on stdout valid)."""
     print(f"WARNING: {msg}", file=sys.stderr)
@@ -98,7 +115,8 @@ def keychain_get(name):
 
 
 def load_env():
-    """Secrets come from the macOS Keychain first; socrates-desk/.env is only a fallback."""
+    """Secrets come from the macOS Keychain first; socrates-desk/.env is only a fallback, and only for the three
+    secret names. Nothing else in .env is read, so a planted .env can't set a proxy or CA bundle and siphon the keys."""
     for name in SECRET_NAMES:
         if not os.environ.get(name):
             v = keychain_get(name)
@@ -110,7 +128,9 @@ def load_env():
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+                k = k.strip()
+                if k in SECRET_NAMES:
+                    os.environ.setdefault(k, v.strip().strip('"').strip("'"))
 
 
 _BROKER = None
@@ -205,7 +225,7 @@ def journal_lock(timeout_s=120):
             _lock_depth -= 1
         return
     JOURNAL.mkdir(parents=True, exist_ok=True)
-    fh = open(LOCK_FILE, "a+")
+    fh = os.fdopen(os.open(LOCK_FILE, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600), "r+")
     deadline = dt.datetime.now().timestamp() + timeout_s
     while True:
         try:
@@ -229,6 +249,8 @@ def journal_lock(timeout_s=120):
 
 
 def _quarantine(path, lineno, line):
+    if len(line) > 2000:
+        line = line[:2000] + f"...[{len(line) - 2000} more characters]"
     with open(CORRUPT_FILE, "a") as f:
         f.write(json.dumps({"file": Path(path).name, "line": lineno, "text": line,
                             "found": dt.datetime.now(ET).isoformat(timespec="seconds")}) + "\n")
@@ -253,7 +275,7 @@ def read_jsonl(path):
         except json.JSONDecodeError:
             if seen is None:
                 seen = CORRUPT_FILE.read_text() if CORRUPT_FILE.exists() else ""
-            if json.dumps(line) not in seen:
+            if json.dumps(line[:2000])[:-1] not in seen:
                 _quarantine(path, i, line)
     return rows
 
@@ -285,15 +307,30 @@ def append_jsonl(path, rows):
             os.fsync(f.fileno())
 
 
-def write_jsonl(path, rows):
-    with journal_lock():
-        tmp = Path(str(path) + ".tmp")
-        with open(tmp, "w") as f:
-            f.write("".join(json.dumps(r) + "\n" for r in rows))
+def atomic_write(path, text):
+    """Write a file so a crash leaves either the old or the new version. The temp file has an unpredictable name
+    (no symlink games) and lives next to the target so the rename is atomic."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
             f.flush()
             os.fsync(f.fileno())
-        tmp.replace(path)
-        _fsync_dir(path)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+    _fsync_dir(path)
+
+
+def write_jsonl(path, rows):
+    with journal_lock():
+        atomic_write(path, "".join(json.dumps(r) + "\n" for r in rows))
 
 
 ACTIVE = ("submitting", "pending", "open", "closing")
@@ -345,8 +382,10 @@ def validate_regime(reg):
                 if sym not in STOCKS:
                     errors.append(f"exclude.{sym}: only single stocks can be excluded (earnings); "
                                   "ETFs have no earnings, so excluding one would be a veto")
-                elif not isinstance(why, str) or len(why.strip()) < 10:
-                    errors.append(f"exclude.{sym}: give the earnings date and source, e.g. \"earnings 2026-10-29 (nasdaq.com)\"")
+                elif not isinstance(why, str) or len(why.strip()) < 10 or not re.search(r"\d{4}-\d{2}-\d{2}", why):
+                    errors.append(f"exclude.{sym}: give the earnings date (YYYY-MM-DD) and source, e.g. \"earnings 2026-10-29 (nasdaq.com)\"")
+                elif len(why) > 200:
+                    errors.append(f"exclude.{sym}: keep the reason under 200 characters")
     return errors, warns
 
 

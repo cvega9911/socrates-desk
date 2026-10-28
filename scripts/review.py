@@ -119,6 +119,35 @@ def max_drawdown(closed, start_equity):
     return mdd
 
 
+def verify_against_broker(trades):
+    """Cross-check closed trades against Alpaca's own order records, so an edited journal can't hide a result."""
+    out = []
+    try:
+        b = D.broker()
+    except Exception as e:
+        return [f"could not check the journal against Alpaca ({type(e).__name__})"]
+    for t in trades:
+        if t.get("status") != "closed" or not t.get("order_id"):
+            continue
+        try:
+            o = b.order(t["order_id"])
+            fill = float(o.get("filled_avg_price") or 0)
+            if fill and t.get("entry_fill") and abs(fill - float(t["entry_fill"])) > 0.01 and not t.get("partial_fill"):
+                out.append(f"{t['trade_id']}: journal entry {t['entry_fill']} != Alpaca fill {fill}")
+            exits = list(o.get("legs") or [])
+            for k in ("exit_order_id", "close_order_id"):
+                if t.get(k):
+                    e = b.order(t[k])
+                    exits += [e] + list(e.get("legs") or [])
+            prices = [float(x["filled_avg_price"]) for x in exits
+                      if x.get("status") == "filled" and x.get("filled_avg_price")]
+            if prices and not any(abs(p - float(t["exit_price"])) <= 0.01 for p in prices):
+                out.append(f"{t['trade_id']}: journal exit {t['exit_price']} matches no Alpaca exit fill {prices}")
+        except Exception as e:
+            out.append(f"{t['trade_id']}: could not check against Alpaca ({type(e).__name__})")
+    return out
+
+
 def write_weekly(today, report):
     """Replace today's section in journal/weekly.md if it exists, otherwise append it."""
     D.JOURNAL.mkdir(parents=True, exist_ok=True)
@@ -130,9 +159,7 @@ def write_weekly(today, report):
         new = old[:i] + report.rstrip("\n") + "\n" + (old[j:] if j >= 0 else "")
     else:
         new = old + report
-    tmp = D.WEEKLY.with_suffix(".md.tmp")
-    tmp.write_text(new)
-    tmp.replace(D.WEEKLY)
+    D.atomic_write(D.WEEKLY, new)
 
 
 def run(offline=False):
@@ -367,7 +394,9 @@ def _run(offline):
     for c in cands:
         if c.get("excluded"):
             issues.append(f"{c['date']} {c['symbol']}: excluded by Socrates ({c.get('block_reason') or 'no reason'})")
-    L += [f"- {i}" for i in issues] or ["- No violations found."]
+    if not offline:
+        issues += verify_against_broker(trades)
+    L += [f"- {D.md_safe(i, 400)}" for i in issues] or ["- No violations found."]
 
     L.append("\n### 8. Proposed rule changes")
     L.append("- (Socrates: list proposals here with reasoning. Do NOT apply. Changes need 40 closed A+B trades, Chris's approval, and a version bump.)")
@@ -375,7 +404,7 @@ def _run(offline):
     report = "\n".join(L) + "\n"
     write_weekly(today, report)
     D.REPORTS.mkdir(parents=True, exist_ok=True)
-    (D.REPORTS / f"weekly_{today}.md").write_text(report)
+    D.atomic_write(D.REPORTS / f"weekly_{today}.md", report)
 
     if not offline and start:
         _tearsheet(start)

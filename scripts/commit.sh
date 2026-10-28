@@ -32,11 +32,24 @@ if ! git diff --cached --quiet; then
   git commit -qm "desk: $(date '+%Y-%m-%d %H:%M')" || fail "git commit failed (a hook blocked it?)."
 fi
 
-# 5. Bring in anything changed on GitHub first, then push. Earlier unpushed commits go up too.
-if ! out=$(git pull -q --rebase --autostash 2>&1); then
+# 5. Bring in what's new on GitHub. Only data may arrive this way: code, rules or hooks that changed on GitHub
+#    are never pulled into a run (they would execute on this Mac); Chris reviews and pulls those by hand.
+if ! out=$(git fetch -q 2>&1); then
+  fail "could not reach GitHub: $(printf '%s' "$out" | tail -2 | tr '\n' ' ')"
+fi
+upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null) || fail "this branch has no upstream on GitHub."
+base=$(git merge-base HEAD "$upstream") || fail "could not compare with GitHub."
+foreign=$(git diff --name-only "$base" "$upstream" -- . ':(exclude)journal' ':(exclude)reports' ':(exclude)start_date.txt')
+if [ -n "$foreign" ]; then
+  fail "GitHub has code or rules changes this Mac hasn't reviewed ($(printf '%s' "$foreign" | tr '\n' ' ')). Chris must pull them by hand."
+fi
+if ! out=$(git rebase -q "$upstream" 2>&1); then
   git rebase --abort >/dev/null 2>&1
   fail "could not combine with changes on GitHub: $(printf '%s' "$out" | tail -2 | tr '\n' ' ')"
 fi
+
+# 6. Scan everything about to be pushed (not just this run's commit), then push.
+bash scripts/secret_scan.sh --range "$upstream" || fail "the secret scan blocked the push (see above)."
 if ! out=$(git push -q 2>&1); then
   fail "push to GitHub failed: $(printf '%s' "$out" | tail -2 | tr '\n' ' ')"
 fi

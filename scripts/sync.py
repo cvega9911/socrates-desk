@@ -191,6 +191,7 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
     if t["status"] == "pending":
         st = o.get("status")
         filled_qty = int(float(o.get("filled_qty") or 0))
+        stale = (t.get("date_open") or today) < today     # entries are day orders in spirit: never let one live on
         if st == "filled":
             adopt_fill(t, o)
             notes.append(f"{t['symbol']}: entry filled at {t['entry_fill']}")
@@ -201,7 +202,7 @@ def handle(b, t, positions, today, close_mode, market_open, notes, alerts):
                 t.update({"status": "unfilled", "date_close": today, "exit_reason": st})
                 notes.append(f"{t['symbol']}: entry {st}, marked unfilled")
             return
-        elif not close_mode:
+        elif not (close_mode or stale):
             if st == "partially_filled":
                 notes.append(f"{t['symbol']}: entry partly filled ({filled_qty} sh); settled at the CLOSE run")
             return

@@ -20,7 +20,9 @@ Options:
   --dry-run            show what would be sent without sending it
 """
 import argparse
+import hashlib
 import json
+import math
 import re
 import sys
 import time
@@ -72,7 +74,9 @@ def smoke_test():
 def clean_text(name, val):
     if not isinstance(val, str):
         raise D.DeskError(f"REFUSED: {name} must be text.")
-    val = " ".join(_CTRL.sub(" ", val).split())
+    if len(val) > D.TEXT_MAX * 2:
+        raise D.DeskError(f"REFUSED: {name} is {len(val)} characters; keep it under {D.TEXT_MAX}.")
+    val = D.plain_text(val, limit=10 ** 6)
     if len(val) < 10:
         raise D.DeskError(f"REFUSED: {name} must be a real sentence.")
     if len(val) > D.TEXT_MAX:
@@ -102,6 +106,59 @@ def load_order_file(path):
     return data
 
 
+def verify_plan(pj, plan_text, c, b, today):
+    """The plan must be exactly what score.py wrote (fingerprint logged in the journal), and the order itself must
+    make sense on its own, so a hand-edited or forged plan file can never place an arbitrary order."""
+    sha = hashlib.sha256(plan_text.encode()).hexdigest()
+    logged = {r.get("plan_sha") for r in D.read_jsonl(D.CANDIDATES)
+              if r.get("date") == today and r.get("run") == pj.get("run", "decision")}
+    if sha not in logged:
+        raise D.DeskError("REFUSED: plan file does not match the plan score.py logged today (it was edited or "
+                          "replaced). Nothing sent. Tell Chris.")
+    def num(k):
+        v = c.get(k)
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) or v <= 0:
+            raise D.DeskError(f"REFUSED: plan value {k}={v!r} is not a positive number.")
+        return float(v)
+    entry, stop, target = num("entry"), num("stop"), num("target")
+    shares = c.get("shares")
+    if c["symbol"] not in D.UNIVERSE or c.get("direction") not in ("long", "short") or c.get("tier") not in ("A", "B"):
+        raise D.DeskError("REFUSED: plan entry is outside the universe / direction / tier rules.")
+    if isinstance(shares, bool) or not isinstance(shares, int) or shares < 1:
+        raise D.DeskError(f"REFUSED: plan share count {shares!r} is invalid.")
+    if not ((c["direction"] == "long" and stop < entry < target) or (c["direction"] == "short" and target < entry < stop)):
+        raise D.DeskError("REFUSED: stop/target are on the wrong side of the entry.")
+    rr = abs(target - entry) / abs(entry - stop)
+    if rr < D.MIN_RR - 0.01 or abs(rr - float(c.get("rr", -1))) > 0.02:
+        raise D.DeskError(f"REFUSED: R:R {rr:.2f} doesn't match the plan ({c.get('rr')}) or is below {D.MIN_RR}.")
+    equity = float(b.account()["equity"])
+    plan_eq = float(c.get("equity_at_plan") or equity)
+    if abs(plan_eq - equity) / equity > 0.05:
+        raise D.DeskError("REFUSED: account equity moved more than 5% since the plan was made. Tell Chris.")
+    if shares > D.size(plan_eq, D.RISK_PCT[c["tier"]], entry, stop):
+        raise D.DeskError("REFUSED: the plan's share count is larger than the risk rules allow.")
+    px = b.latest_prices([c["symbol"]]).get(c["symbol"], {})
+    ref = px.get("last") or ((px.get("bid", 0) + px.get("ask", 0)) / 2)
+    if ref and abs(ref - entry) / entry > 0.03:
+        raise D.DeskError(f"REFUSED: {c['symbol']} is trading at {ref}, more than 3% from the planned entry {entry}. "
+                          "Nothing sent; report it as a skipped order.")
+
+
+def check_earnings_note(b, today, note):
+    """An earnings date written by hand must be a real date beyond the 10-trading-day blackout window."""
+    m = re.search(r"\d{4}-\d{2}-\d{2}", note or "")
+    if not m:
+        raise D.DeskError('REFUSED: "earnings_checked" needs "earnings_note" with the next earnings date as YYYY-MM-DD '
+                          'and the source, e.g. "next earnings 2026-11-20 (investor.nvidia.com)".')
+    try:
+        window_end = D.trading_days_ahead(b, today, 10)
+    except Exception as e:
+        raise D.DeskError(f"MARKET CALENDAR UNAVAILABLE ({type(e).__name__}); can't check the earnings date. Tell Chris.")
+    if m.group(0) <= window_end:
+        raise D.DeskError(f"REFUSED: earnings on {m.group(0)} is inside the 10-trading-day blackout (through "
+                          f"{window_end}). Do not place it; report why.")
+
+
 def _update(trade_id, **fields):
     rows = D.read_jsonl(D.TRADES)
     for r in rows:
@@ -125,7 +182,11 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
     plan_file = D.REPORTS / f"plan_{today}.json"
     if not plan_file.exists():
         raise D.DeskError(f"REFUSED: no plan for today ({plan_file.name}). Run score.py --mode decision first.")
-    pj = json.loads(plan_file.read_text())
+    plan_text = plan_file.read_text()
+    try:
+        pj = json.loads(plan_text)
+    except ValueError:
+        raise D.DeskError("REFUSED: today's plan file is not valid JSON. Tell Chris.")
     if pj.get("date") != today or pj.get("rules_version") != rv:
         raise D.DeskError("REFUSED: the plan file is not today's plan for this rules version.")
     c = next((x for x in pj.get("plan", []) if x["symbol"] == symbol), None)
@@ -168,6 +229,9 @@ def _place(symbol, thesis, invalidation, dissent, p_target, earnings_checked, dr
         raise D.DeskError(f"MARKET CLOCK UNAVAILABLE ({type(e).__name__}). Nothing sent. Tell Chris.")
     if not (trading_day and is_open):
         raise D.DeskError("REFUSED: the market is not open right now. Nothing sent.")
+    verify_plan(pj, plan_text, c, b, today)
+    if c.get("earnings_unverified"):
+        check_earnings_note(b, today, earnings_note)
 
     if not retry_submitting:
         D.append_jsonl(D.TRADES, [{

@@ -13,6 +13,7 @@ Options:
 """
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import platform
@@ -26,19 +27,27 @@ EARNINGS_DAYS = 10
 
 
 def load_regime(path):
-    """Returns (regime_dict, path_or_None, sha_or_None, warnings). Refuses to score on an invalid file."""
+    """Returns (regime_dict, relative_path_or_None, sha_or_None, warnings). Refuses to score on an invalid file."""
     if not (path and os.path.exists(path)):
         return {}, None, None, []
+    rp = os.path.realpath(path)
+    if os.path.dirname(rp) != os.path.realpath(D.REPORTS) or not os.path.basename(rp).startswith("regime_") \
+            or not rp.endswith(".json"):
+        raise D.DeskError("REGIME FILE INVALID: it must be reports/regime_<YYYY-MM-DD>.json inside the desk folder.")
+    if os.path.getsize(rp) > 100_000:
+        raise D.DeskError("REGIME FILE INVALID: the file is over 100 KB. Keep it to the format in the rules.")
     try:
-        with open(path) as f:
+        with open(rp) as f:
             reg = json.load(f)
-    except (OSError, json.JSONDecodeError) as e:
-        raise D.DeskError(f"REGIME FILE INVALID: {path} is not valid JSON ({e}). Fix the file and rerun.")
+    except (OSError, ValueError, RecursionError) as e:
+        raise D.DeskError(f"REGIME FILE INVALID: {os.path.basename(rp)} is not valid JSON ({type(e).__name__}). "
+                          "Fix the file and rerun.")
+    path = os.path.relpath(rp, D.ROOT)
     errors, warns = D.validate_regime(reg)
     if errors:
         raise D.DeskError("REGIME FILE INVALID: " + path + "\n  - " + "\n  - ".join(errors) +
                           "\nFix the file and rerun score.py (this is the one error you fix yourself).")
-    return reg, path, D.sha256_file(path), [f"regime file: {w}" for w in warns]
+    return reg, path, D.sha256_file(rp), [f"regime file: {w}" for w in warns]
 
 
 def regime_points(reg, symbol, direction):
@@ -51,7 +60,9 @@ def regime_points(reg, symbol, direction):
 
 
 def _finnhub_get(session, sym, start, end, key):
-    r = session.get(FINNHUB_URL, params={"symbol": sym, "from": start, "to": end, "token": key}, timeout=20)
+    # token in a header, not the URL, so it can never appear in a logged or printed URL
+    r = session.get(FINNHUB_URL, params={"symbol": sym, "from": start, "to": end},
+                    headers={"X-Finnhub-Token": key}, timeout=20, allow_redirects=False)
     r.raise_for_status()
     rows = r.json().get("earningsCalendar")
     if not isinstance(rows, list):
@@ -153,7 +164,7 @@ def _run(mode, regime_path, exclude, force):
         warnings.append("No regime file: regime = 1 (neutral) for everything. Write reports/regime_<date>.json first.")
 
     # exclusions: the regime file's "exclude" block (with reasons) plus --exclude (stocks only)
-    exclusions = {s: why.strip() for s, why in (reg.get("exclude") or {}).items()}
+    exclusions = {s: D.plain_text(why, 200) for s, why in (reg.get("exclude") or {}).items()}
     for s in exclude:
         if s not in D.STOCKS:
             raise D.DeskError(f"REFUSED: --exclude {s}: only single stocks can be excluded (for earnings). "
@@ -350,22 +361,22 @@ def _run(mode, regime_path, exclude, force):
     # (which would force a --force rerun and duplicate rows).
     if rerun_n:
         (D.REPORTS / f"plan_{today}.json").replace(D.REPORTS / f"plan_{today}_superseded{rerun_n}.json")
-    _save(result, f"plan_{today}.json")
+    plan_sha = _save(result, f"plan_{today}.json")
     D.append_jsonl(D.CANDIDATES, [{
         "date": today, "run": run_name, "rules_version": rv, "symbol": c["symbol"], "direction": c["direction"],
         "score": c["score"], "breakdown": c["breakdown"], "entry": c["entry"], "stop": c["stop"],
         "target": c["target"], "rr": c["rr"], "tier": c["tier"], "quota": c.get("quota", False),
         "action": c["action"], "block_reason": c.get("block_reason"), "p_target": None,
-        "regime_sha": reg_sha, "bars_feed": feed, "excluded": c["symbol"] in exclusions,
+        "regime_sha": reg_sha, "plan_sha": plan_sha, "bars_feed": feed, "excluded": c["symbol"] in exclusions,
         "py": platform.python_version()} for c in cands])
     return result
 
 
 def _save(result, name):
-    D.REPORTS.mkdir(parents=True, exist_ok=True)
-    tmp = D.REPORTS / (name + ".tmp")
-    tmp.write_text(json.dumps(result, indent=2))
-    tmp.replace(D.REPORTS / name)
+    """Write a report atomically; returns the sha256 of what was written (the plan's fingerprint)."""
+    text = json.dumps(result, indent=2)
+    D.atomic_write(D.REPORTS / name, text)
+    return hashlib.sha256(text.encode()).hexdigest()
 
 
 def line(c):

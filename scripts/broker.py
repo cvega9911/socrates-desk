@@ -7,6 +7,7 @@ Retries: GETs are retried on connection errors, timeouts, 429 and 5xx with backo
 never blindly retried (a retried order could double up); place.py and sync.py recover those by looking the
 order up by its client_order_id instead.
 """
+import logging
 import os
 import time
 
@@ -17,6 +18,7 @@ from urllib3.util.retry import Retry
 PAPER_URL = "https://paper-api.alpaca.markets"   # never change this to the live URL
 DATA_URL = "https://data.alpaca.markets"
 TIMEOUT = 30
+logging.getLogger("urllib3").setLevel(logging.ERROR)   # retry warnings print full URLs; keep them quiet
 
 
 class BrokerError(RuntimeError):
@@ -29,6 +31,7 @@ class NotFound(BrokerError):
 
 def retrying_session():
     s = requests.Session()
+    s.trust_env = False      # ignore proxy / CA-bundle / .netrc settings from the environment: keys only go to Alpaca
     retry = Retry(total=4, connect=4, read=4, status=4, backoff_factor=1.5,
                   status_forcelist=(429, 500, 502, 503, 504), allowed_methods=frozenset({"GET"}),
                   respect_retry_after_header=True, raise_on_status=False)
@@ -52,13 +55,15 @@ class RestBroker:
     def _req(self, method, url, **kw):
         for attempt in range(3):
             try:
-                r = self.s.request(method, url, timeout=TIMEOUT, **kw)
+                r = self.s.request(method, url, timeout=TIMEOUT, allow_redirects=False, **kw)
             except requests.RequestException as e:
                 # GETs were already retried by the session; POST/DELETE are not retried here on purpose.
                 raise BrokerError(f"{method} {url} -> network error: {type(e).__name__}: {e}") from e
             if r.status_code == 429 and method != "GET":   # rate limited: the request was not processed, safe to resend
                 time.sleep(2 * (attempt + 1))
                 continue
+            if 300 <= r.status_code < 400:     # never follow a redirect: the key headers would go along with it
+                raise BrokerError(f"{method} {url} -> unexpected redirect {r.status_code}")
             if r.status_code == 404:
                 raise NotFound(f"{method} {url} -> 404: {r.text[:300]}")
             if r.status_code >= 400:

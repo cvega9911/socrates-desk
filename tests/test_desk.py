@@ -590,7 +590,7 @@ for bad, needle in (({"themes": {"Energy": {"long": 2}}}, "unknown theme"),
                     ({"themes": {"energy": {"long": 3}}}, "whole number"),
                     ({"symbols": {"ZZZ": {"long": 2}}}, "unknown symbol"),
                     ({"exclude": {"XLE": "earnings 2026-10-29 (nasdaq)"}}, "only single stocks"),
-                    ({"exclude": {"META": "x"}}, "earnings date and source")):
+                    ({"exclude": {"META": "x"}}, "earnings date"), ({"exclude": {"META": "earnings soon, nasdaq.com"}}, "YYYY-MM-DD")):
     e2, _ = D.validate_regime(bad)
     ok(any(needle in e for e in e2), f"regime file rejected: {needle}")
 fresh()
@@ -928,6 +928,113 @@ except BR.BrokerError as e:
     net_ok = "network error" in str(e)
 ok(net_ok, "a network failure surfaces as a BrokerError the scripts handle, not a raw crash")
 del os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
+
+
+print("pentest regressions")
+fb30 = fresh()
+plan30 = score.run("decision")["plan"]
+c30 = plan30[0]
+pf = TMP / "reports" / f"plan_{TODAY}.json"
+orig_plan = pf.read_text()
+forged = json.loads(orig_plan)
+forged["plan"][0]["shares"] = forged["plan"][0]["shares"] * 50
+pf.write_text(json.dumps(forged, indent=2))
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "does not match the plan",
+            "a hand-edited plan file (50x the shares) is refused")
+ok(not fb30.orders, "and nothing was sent to the broker")
+pf.write_text(orig_plan)
+fb30.bars[c30["symbol"]][-1]["c"] *= 1.10
+expect_exit(lambda: place.place(c30["symbol"], *PLAN_TEXT, round(1 / (1 + c30["rr"]), 2), True), "more than 3% from the planned entry",
+            "an entry far from the live price is refused")
+fb30.bars[c30["symbol"]][-1]["c"] /= 1.10
+expect_exit(lambda: place.check_earnings_note(fb30, str(TODAY), None), "earnings_note", "earnings_checked without a dated note is refused")
+soon = D.trading_days_ahead(fb30, str(TODAY), 3)
+expect_exit(lambda: place.check_earnings_note(fb30, str(TODAY), f"next earnings {soon} (ir site)"), "inside the 10-trading-day blackout",
+            "a hand-checked earnings date inside the window is refused")
+later = (TODAY + dt.timedelta(days=60)).isoformat()
+place.check_earnings_note(fb30, str(TODAY), f"next earnings {later} (ir site)")
+ok(True, "a hand-checked earnings date beyond the window is accepted")
+
+(TMP / ".env").write_text("HTTPS_PROXY=http://evil:8080\nREQUESTS_CA_BUNDLE=/tmp/evil.pem\nALPACA_API_KEY=PKFROMENV\n")
+for k in ("HTTPS_PROXY", "REQUESTS_CA_BUNDLE", "ALPACA_API_KEY"):
+    os.environ.pop(k, None)
+real_kc = D.keychain_get
+D.keychain_get = lambda name: None
+D.load_env()
+D.keychain_get = real_kc
+ok("HTTPS_PROXY" not in os.environ and "REQUESTS_CA_BUNDLE" not in os.environ and os.environ.get("ALPACA_API_KEY") == "PKFROMENV",
+   "a planted .env can only supply the three key names (no proxy / CA bundle to siphon the keys)")
+os.environ.pop("ALPACA_API_KEY", None)
+(TMP / ".env").unlink()
+ok(BR.retrying_session().trust_env is False, "HTTP sessions ignore proxy and CA settings from the environment")
+
+
+class Redirect:
+    status_code, text = 302, ""
+
+
+os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"] = "PKTEST", "SECRET"
+rb2 = BR.RestBroker()
+rb2.s.request = lambda *a, **k: Redirect()
+try:
+    rb2.account()
+    redir = False
+except BR.BrokerError as e:
+    redir = "redirect" in str(e)
+ok(redir, "a redirect is refused, so the key headers are never sent to another host")
+del os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
+
+outside_reg = TMP / "regime_evil.json"
+outside_reg.write_text("{}")
+expect_exit(lambda: score.load_regime(str(outside_reg)), "must be reports/regime_", "a regime file outside reports/ is refused")
+deep = TMP / "reports" / "regime_deep.json"
+deep.write_text("[" * 100000 + "]" * 100000)
+expect_exit(lambda: score.load_regime(str(deep)), "REGIME FILE INVALID", "a pathological regime file is a clean refusal, not a crash")
+deep.unlink()
+
+fb31 = fresh()
+write_regime({"exclude": {"AAPL": "earnings 2026-10-30 [click](http://evil.example) <img src=x onerror=alert(1)>"}})
+score.run("decision")
+D.write_jsonl(D.TRADES, [])
+review.run(offline=True)
+wk_txt = D.WEEKLY.read_text()
+ok("](http" not in wk_txt and "<img" not in wk_txt, "agent or web text can't inject links or HTML into weekly.md")
+
+fb32 = fresh()
+plan32 = score.run("decision")["plan"]
+c32 = plan32[0]
+place.place(c32["symbol"], *PLAN_TEXT, round(1 / (1 + c32["rr"]), 2), True)
+rows32 = D.read_jsonl(D.TRADES)
+rows32[0]["date_open"] = (TODAY - dt.timedelta(days=3)).isoformat()
+D.write_jsonl(D.TRADES, rows32)
+sync.run()
+ok(D.read_jsonl(D.TRADES)[0]["status"] == "unfilled" and rows32[0]["order_id"] in fb32.cancelled,
+   "an entry left over from an earlier day is cancelled by any sync (never fills days later at a stale price)")
+
+fb33 = fresh()
+oid33 = open_old_trade(fb33, days=2)
+fb33.orders[oid33]["legs"][0].update({"status": "filled", "filled_avg_price": "53.0", "filled_at": f"{TODAY}T18:00:00Z"})
+sync.run()
+rows33 = D.read_jsonl(D.TRADES)
+rows33[0]["exit_price"], rows33[0]["result_R"] = 60.0, 10.0       # someone "improves" the result by hand
+D.write_jsonl(D.TRADES, rows33)
+issues33 = review.verify_against_broker(rows33)
+ok(any("matches no Alpaca exit fill" in i for i in issues33), "an edited result in the journal is caught against Alpaca's records")
+
+lock_target = TMP / "victim.txt"
+lock_target.write_text("keep me")
+D.LOCK_FILE.unlink(missing_ok=True)
+os.symlink(lock_target, D.LOCK_FILE)
+try:
+    with D.journal_lock():
+        pass
+    sym_ok = False
+except OSError:
+    sym_ok = True
+ok(sym_ok and lock_target.read_text() == "keep me", "the lock file refuses to follow a planted symlink")
+D.LOCK_FILE.unlink()
+D.write_jsonl(D.TRADES, [{"x": 1}])
+ok(not list((TMP / "journal").glob("*.tmp")), "atomic writes leave no temp files behind")
 
 shutil.rmtree(TMP)
 print(f"\nALL {passed} CHECKS PASSED")
