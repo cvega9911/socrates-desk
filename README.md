@@ -7,10 +7,10 @@ A paper-trading research experiment run by Socrates (a locally deployed Hermes a
 ```
 socrates-desk/
   rules/      the system prompt (v1.0, read-only) + CHANGELOG.md
-  scripts/    score.py, place.py, sync.py, review.py, control.py, commit.sh (+ broker.py, desk.py helpers)
+  scripts/    score.py, place.py, sync.py, review.py, control.py, commit.sh, secret_scan.sh (+ broker.py, desk.py helpers)
   journal/    candidates.jsonl, trades.jsonl, control.jsonl, weekly.md  (written only by scripts)
   reports/    daily briefings, plans, regime files, weekly reports
-  tests/      offline test suite (no Alpaca needed)
+  tests/      offline test suites (no Alpaca needed): test_desk.py and test_commit.sh
 ```
 
 ## 1. Install (once, on the machine that runs your agent)
@@ -20,9 +20,10 @@ cd ~/socrates-desk
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 chmod 444 rules/*.md
+git config core.hooksPath .githooks      # turns on the versioned secret-scan pre-commit hook
 ```
 
-### Secrets (macOS Keychain, infisical or comparable secrets manager, no .env file)
+### Secrets (macOS Keychain preferred; a git-ignored .env file is only a fallback)
 
 Run each line, and paste the key when it prompts (nothing shows as you type/paste; that's normal). Use your **paper** Alpaca keys (Alpaca dashboard -> Paper account -> API Keys). Never put the key in the command itself; it would be saved in your shell history.
 
@@ -37,12 +38,13 @@ Check it worked (prints the first 4 characters only):
 security find-generic-password -s socrates-desk -a ALPACA_API_KEY -w | cut -c1-4
 ```
 
-To replace a key later, add `-U` to the add command. The Keychain is locked after a reboot until you log in, so turn on automatic login for the Mac Mini's user (System Settings -> Users & Groups) or scheduled runs will fail after a power cut. A `.env` file (KEY=value lines) still works as a fallback on non-Mac machines; it is git-ignored.
+To replace a key later, add `-U` to the add command. The Keychain is locked after a reboot until you log in, so turn on automatic login for the Mac Mini's user (System Settings -> Users & Groups) or scheduled runs will fail after a power cut. A `.env` file (KEY=value lines) still works as a fallback on non-Mac machines; it is git-ignored. Keychain items added this way can be read by any program running as the same Mac user, so use paper-only keys (never live keys) for this desk.
 
 ## 2. Test before going live
 
 ```bash
-.venv/bin/python tests/test_desk.py                 # should end: ALL 84 CHECKS PASSED
+.venv/bin/python tests/test_desk.py                 # should end: ALL ... CHECKS PASSED
+bash tests/test_commit.sh                           # should end: ALL ... COMMIT CHECKS PASSED
 .venv/bin/python scripts/place.py --smoke-test      # 1-share SPY order far below market, confirms it, cancels it
 .venv/bin/python scripts/score.py --mode briefing   # scores the universe with real data
 ```
@@ -60,7 +62,9 @@ The system prompt is `rules/socrates_trading_desk_v1.0.md`. Socrates must always
 
 ## 4. GitHub backup (audit trail)
 
-repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. A gitleaks pre-commit hook blocks any commit that contains something shaped like a key.
+repo: github.com/cvega9911/socrates-desk. `scripts/commit.sh` runs at the end of every run, so every change is saved with a timestamp. It only ever commits `journal/`, `reports/` and `start_date.txt`, pulls before pushing, and prints `Saved to GitHub.` only when the push really worked (anything else starts with `BACKUP FAILED` and exits non-zero). Before each commit `scripts/secret_scan.sh` checks the staged changes against the real key values in the Keychain (without printing them), anything shaped like an API key, and gitleaks if it is installed. GitHub Actions (`.github/workflows/checks.yml`) runs gitleaks and both test suites on every push.
+
+`trades.jsonl` and `control.jsonl` are rewritten in place when a trade or control changes state (atomically, under a lock). `candidates.jsonl` is append-only. A corrupted line is never dropped silently: it is copied to `journal/corrupt_lines.txt` with a warning.
 
 ## 5. Obsidian (reading the desk)
 
@@ -68,15 +72,15 @@ Obsidian -> "Open folder as vault" -> pick `socrates-desk`. No plugin needed on 
 
 ## 6. The random control group (automatic)
 
-Every DECISION run also draws 5 random trades (random symbol and direction, same entry/stop/target rules, same hard gates, score ignored) into `journal/control.jsonl`. They are never traded. `sync.py` resolves them on daily bars as they hit a target, a stop, or the 10-day time stop. The draw is seeded by date and rules version, so it can't be cherry-picked. Nothing to run? Socrates' prompt doesn't change.
+Every DECISION run also draws 5 random trades (random symbol and direction, same entry/stop/target rules, same hard gates, score ignored) into `journal/control.jsonl`. They are never traded. `sync.py` resolves them on split-adjusted daily bars as they hit a target, a stop, or the 10-day time stop. The draw is seeded by date and rules version, so the same day always gives the same draw on the same Python version (logged on each row); the rules version is pinned in the code, so it can't be bumped to reset the scorecard. Stocks whose earnings date couldn't be verified are never drawn.
 
 To draw controls for a day where DECISION already ran without them (only while the market is open): `.venv/bin/python scripts/score.py --mode controls`
 
 ## 7. What the Friday review tells you
 
-- **5b Random baseline:** do real trades beat random ones? Verdict only from trades/controls opened 15+ days ago (so early exits don't skew it), after 20+ matured real trades and 50+ matured controls.
-- **5c Score study:** simulates every scored candidate (about 31 a day, not just the 5 traded) for 10 days and shows average R by score and by each factor, including Socrates' regime points. Significance test (shuffled within each day) after 200+ matured candidates over 10+ days.
-- **6 Calibration:** Socrates' p_target is anchored to the neutral base rate 1/(1+R:R); place.py refuses values more than 15 points away, and the review scores him against the base rate.
+- **5b Random baseline (the one primary test):** do the planned candidates beat random ones? Both are simulated the same way from the logged levels, so fills and timing can't tilt it. Two-sided block permutation test (shuffled within each ISO week), alpha 0.05, only after 20+ matured planned candidates over 10+ decision days and 50+ matured controls. Real fills are shown alongside, descriptive only.
+- **5c Score study (exploratory):** simulates every scored candidate (about 31 a day, not just the 5 traded) for 10 days and shows average R by score and by each factor, including Socrates' regime points. Significance test (shuffled within each day) after 200+ matured candidates over 10+ days. Many tables are read at once with no correction, so a hit here is a lead, not a finding.
+- **6 Calibration:** Socrates' p_target is anchored to the neutral base rate 1/(1+R:R); place.py refuses values more than 15 points away, and the review scores him against the base rate on trades that ended at the target or the stop (time-stop exits and pre-rule trades are counted but left out).
 - The SPY comparison (section 3) mostly reflects market exposure, not skill. Judge the edge on R and on 5b/5c.
 
 ## 8. Rules about the rules
