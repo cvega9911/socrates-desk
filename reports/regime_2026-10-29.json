@@ -1,0 +1,184 @@
+{
+ "date": "2026-10-29",
+ "themes": {
+   "broad": {
+     "long": 2,
+     "short": 0,
+     "why": "S&P 7,743.98 (+0.28%, 19 new 52w highs), Nasdaq 26,549.85 (+0.27%), Dow 52,475.10 (+0.19%) — 3rd consecutive index gain on a Fed HOLD (Reuters/CNBC 10/28). Trend up intact; regime supports the long. PCE risk (08:30 ET, hot 3.7% forecast) is a single-event risk, not a regime break."
+   },
+   "tech": {
+     "long": 2,
+     "short": 0,
+     "why": "Chip complex bid: Nasdaq +0.27% with 75 new highs (Reuters 10/28), Fed HOLD easing rate worry. But AMZN/AAPL report within 10 trading days (excluded). Regime supports tech long on trend + relative strength."
+   },
+   "consumer": {
+     "long": 1,
+     "short": 1,
+     "why": "No clean consumer-only read: hot PCE (3.7% YoY forecast) pressures discretionary, but broad tape positive. AAPL (11/02) excluded. Net neutral."
+   },
+   "energy": {
+     "long": 2,
+     "short": 0,
+     "why": "Pullback ON THE DAY — WTI ~$101.38 (-1.36%), Brent ~$114.05 (-1.1%) on Mideast diplomacy hopes (TradingEconomics/Reuters 10/29) — but multi-month uptrend intact, WTI +12.12% MoM, +60.7% YoY. Regime still supports the long; the dip is an entry opportunity, not a regime break."
+   },
+   "financials": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y ~5.01% (TradingEconomics 10/29, down slightly on the day) + hot PCE print (3.7% YoY forecast) => hawkish bias keeps NIM elevated. Fed HOLD at 3.75-4.00%. Regime supports financials long."
+   },
+   "defensive": {
+     "long": 1,
+     "short": 1,
+     "why": "A hot PCE print (3.7% YoY forecast, hawkish) cuts the flight-to-safety premium — gold/silver soft on the day. Equities near records. Regime mild-against defensives but not decisive; neutral."
+   },
+   "cyclicals": {
+     "long": 2,
+     "short": 0,
+     "why": "Q3 GDP advance + PCE printed 08:30 ET 10/29; broad tape positive for 3 straight sessions on a Fed HOLD (Reuters/CNBC 10/28). Regime supports cyclical long on risk-on."
+   },
+   "bonds": {
+     "long": 0,
+     "short": 2,
+     "why": "10Y ~5.01% near the 52-wk high 5.37% (CNBC US10Y), and PCE headline forecast 3.7% YoY / core 3.1% (MarketWatch 10/29) — a hot inflation print is regime-against the bond LONG. Needs a hawkish-miss surprise to reverse."
+   },
+   "metals": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$3,998-4,024/oz, silver ~$52.98/oz (-1.6% on the day) (goldbroker/usagold 10/29) — soft on the day as a hot PCE print and firmer dollar curb the haven bid. Elevated off prior highs but softening; neutral."
+   },
+   "dollar": {
+     "long": 2,
+     "short": 0,
+     "why": "DXY ~102.16-102.21, +12-mo +2.64%, off the 52-wk high 102.94 (TradingEconomics 10/29). A hot PCE print (3.7% YoY forecast) + hawkish Fed hold support the dollar. Regime supports the long."
+   }
+ },
+ "symbols": {
+   "XLE": {
+     "long": 2,
+     "short": 0,
+     "why": "WTI ~$101.38 / Brent ~$114.05 (TradingEconomics/Reuters 10/29), day pullback but +12% MoM uptrend intact. Regime supports the long; the dip is entry, not a break."
+   },
+   "XOM": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: XOM/ExxonMobil reports BEFORE THE OPEN 10/30 (thinkmarkets Q4 2026 earnings calendar 10/29) — inside the 10-trading-day window => excluded via --exclude XOM."
+   },
+   "USO": {
+     "long": 2,
+     "short": 0,
+     "why": "Oil regime's clean multi-month uptrend: WTI +12% MoM, Brent ~$114 (TradingEconomics/Reuters 10/29). Day dip on Mideast diplomacy is an entry. Regime supports the long."
+   },
+   "XLF": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y ~5.01% + hot PCE forecast 3.7% YoY (TradingEconomics/MarketWatch 10/29) => elevated NIM + hawkish regime supports financials long; no offsetting signal."
+   },
+   "JPM": {
+     "long": 2,
+     "short": 0,
+     "why": "Benefits from the high-yield NIM regime (10Y ~5.01%, TradingEconomics 10/29); already reported (10/13, >10 trading days out from next). No event risk. Regime supports the long."
+   },
+   "TLT": {
+     "long": 0,
+     "short": 2,
+     "why": "10Y ~5.01% near 52-wk high 5.37% (CNBC US10Y 10/29) + hot PCE forecast (3.7% YoY) => regime against the bond long; needs a hawkish-miss surprise."
+   },
+   "IEF": {
+     "long": 0,
+     "short": 2,
+     "why": "Same as TLT: 10Y ~5.01% near highs + hot PCE forecast => regime against the bond long."
+   },
+   "GLD": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$3,998-4,024/oz, soft on the day as the firm dollar + hot PCE curb the haven bid (goldbroker/usagold 10/29). Elevated but softening; neutral."
+   },
+   "SLV": {
+     "long": 1,
+     "short": 1,
+     "why": "Silver ~$52.98/oz, -1.6% on the day (goldbroker 10/29); no clean metals signal. Neutral."
+   },
+   "GDX": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold miners follow spot gold, which is soft on the day but still elevated (usagold/goldbroker 10/29). No clean signal. Neutral."
+   },
+   "UUP": {
+     "long": 2,
+     "short": 0,
+     "why": "DXY ~102.16, +12-mo +2.64% (TradingEconomics 10/29), hot PCE forecast + hawkish hold support the dollar. Regime supports the long."
+   },
+   "IWM": {
+     "long": 2,
+     "short": 0,
+     "why": "Broad tape risk-on: S&P/Nasdaq/Dow all closed higher 3 sessions straight on a Fed HOLD (Reuters/CNBC 10/28). Regime supports small-caps long on a risk-on tape."
+   },
+   "QQQ": {
+     "long": 2,
+     "short": 0,
+     "why": "Nasdaq 26,549.85 (+0.27%, 75 new highs) + chip strength on a Fed HOLD (Reuters/CNBC 10/28). Fed easing rate worry lifts megacap. Regime supports the long."
+   },
+   "XLK": {
+     "long": 2,
+     "short": 0,
+     "why": "Chip complex bid into a Fed HOLD, rate-worry eased (Reuters 10/28). Regime supports the tech long on trend + relative strength."
+   },
+   "SMH": {
+     "long": 2,
+     "short": 0,
+     "why": "Semis on a bid: Nasdaq +0.27%, Fed HOLD, AVGO last beat on 9/2 (public.com). No in-window AVGO event. Regime supports the semis long."
+   },
+   "NVDA": {
+     "long": 2,
+     "short": 0,
+     "why": "Chip complex bid on a Fed HOLD + renewed AI momentum (Reuters/CNBC 10/28); next earnings ~11/17 (WallStreetHorizon 10/29) is beyond the 10-trading-day window. Regime supports the long."
+   },
+   "AVGO": {
+     "long": 2,
+     "short": 0,
+     "why": "Semis on a bid; AVGO last reported 9/2 (beat), next est. 12/9 (MarketBeat 10/29) — beyond the window. No event risk. Regime supports the long."
+   },
+   "TSLA": {
+     "long": 1,
+     "short": 1,
+     "why": "TSLA last reported 10/21 (>10 trading days out from next); no name-specific tilt into a hot PCE. Risk-on tape is mild support but not decisive. Neutral."
+   },
+   "AAPL": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: AAPL/Apple reports AFTER THE CLOSE 11/02 (thinkmarkets Q4 2026 earnings calendar 10/29) — inside the 10-trading-day window => excluded via --exclude AAPL."
+   },
+   "AMZN": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: AMZN/Amazon reports AFTER THE CLOSE TODAY 10/29 (openingbelldailynews/thinkmarkets 10/29) — inside the 10-trading-day window (0 days) => excluded via --exclude AMZN."
+   },
+   "MSFT": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE already cleared: MSFT reported after the close 10/28 (~1 trading day ago, >0 window from today it has printed). No forward report within 10 trading days; left neutral/neutral as a no-score symbol, no exclusion needed."
+   },
+   "GOOGL": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE already cleared: GOOGL/Alphabet reported after the close 10/28 (~1 trading day ago). No forward report within 10 trading days; left neutral/neutral, no exclusion needed."
+   },
+   "META": {
+     "long": 1,
+     "short": 1,
+     "why": "META last reported 10/21 (>10 trading days out from next); risk-on tape is mild support but not decisive. Neutral."
+   }
+ },
+ "exclude": {
+   "AMZN": "earnings 2026-10-29 after close (openingbelldailynews/thinkmarkets Q4 2026 calendar, checked 2026-10-29) — 0 trading days, inside window",
+   "XOM": "earnings 2026-10-30 before open (thinkmarkets Q4 2026 calendar, checked 2026-10-29) — ~1 trading day, inside window",
+   "AAPL": "earnings 2026-11-02 after close (thinkmarkets Q4 2026 calendar, checked 2026-10-29) — ~4 trading days, inside window"
+ },
+ "catalysts": [
+   "TIER-1 PCE COMPLEX — PRINTED 08:30 ET 10/29 (SEPT): headline PCE Price Idx YoY forecast 3.7% vs prev 3.4%; core PCE YoY 3.1% vs prev 3.0%; MoM headline 0.5% vs prev 0.3% (MarketWatch calendar 10/29). Already printed at the 08:45 briefing => it is information (a hot print = hawkish regime already reflected above), NOT a reason to wait at the 10:15 DECISION run. Personal Income + Outlays (SEP) same print; personal income drives the consumer discretionary read.",
+   "Q3 2026 GDP ADVANCE ESTIMATE — PRINTED 08:30 ET 10/29 alongside PCE (BEA 10/29, financecalendar 10/29): NY Fed nowcast ~2.7%. Already printed; a solid GDP supports the cyclical/risk-on regime above.",
+   "NO CPI / NO PPI this week: CPI SEP +0.6% MoM (BLS 10/14) and PPI SEP +1.3% final demand (BLS 10/15) already printed earlier this month; PCE replaces PPI on the inflation calendar.",
+   "FRI 10/30 10:15 AM: Employment Cost Index (quarterly) — tertiary; next NFP is Fri 11/06.",
+   "EARNINGS GATE for the 10:15 DECISION run (inside the 10-trading-day window ending ~11/13): AMZN 10/29 after close, XOM 10/30 pre-open, AAPL 11/02 after close => EXCLUDE all three via --exclude. NVDA (~11/17), AVGO (~12/9), JPM (next ~Jan), TSLA/META (next ~Jan) are all BEYOND the window — NOT excluded."
+ ]
+}
