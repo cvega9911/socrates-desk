@@ -20,7 +20,7 @@ mkdir -p scripts journal reports
 cp "$SRC/scripts/commit.sh" "$SRC/scripts/secret_scan.sh" scripts/
 echo "v1.0" > rules_version.txt
 touch journal/trades.jsonl
-printf 'ALPACA_API_KEY=PKZZTESTKEYVALUE1234\nALPACA_SECRET_KEY=zzSecretValueForTests0123456789abcdefgh\nFINNHUB_API_KEY=zzfinnhubtesttoken99\n' > .env
+printf 'ALPACA_API_KEY=PKZZTESTKEYVALUE1234\nALPACA_SECRET_KEY=zzSecretValueForTests0123456789abcdefgh\nFINNHUB_API_KEY=zzfinnhubtesttoken99\n' > .env  # gitleaks:allow
 echo ".env" > .gitignore
 git add -A && git commit -qm init && git push -q -u origin main 2>/dev/null
 

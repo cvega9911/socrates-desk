@@ -1,0 +1,12 @@
+# The commit tests write a fake .env with made-up keys to prove the secret scan blocks them.
+# These exact fake values are allowed. Anything else that looks like a key is still flagged.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "fake keys used only by tests/test_commit.sh"
+regexes = [
+  '''PKZZTESTKEYVALUE1234''',
+  '''zzSecretValueForTests0123456789abcdefgh''',
+  '''zzfinnhubtesttoken99''',
+]
