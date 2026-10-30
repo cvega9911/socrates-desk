@@ -1,0 +1,180 @@
+{
+  "date": "2026-10-30",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 101370.58,
+  "spy_ret20": 0.007,
+  "regime_file": "reports/regime_2026-10-30.json",
+  "regime_sha": "bf27a53de28adffa",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-11-13",
+  "exclusions": {
+    "AAPL": "earnings 2026-11-02 after close (apple.com IR + trefis.com 10/30, checked 2026-10-30) \u2014 ~3 trading days, inside window"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AAPL, XOM"
+  ],
+  "trading_days_since_last_AB": 3,
+  "run": "decision",
+  "day_pnl_pct": 0.0124,
+  "halted": false,
+  "open_positions": 5,
+  "open_risk_dollars": 2478.1,
+  "plan": [],
+  "blocked": [
+    {
+      "symbol": "XLE",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 70.02,
+      "stop": 67.18,
+      "target": 75.7,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent $112.59 (+1.62%) / WTI $103.50 (+1.47%) on 10/30 (TradingEconomics 10/30); multi-month uptrend intact. Regime supports the long.",
+      "atr": 1.42,
+      "close": 68.71,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 186.31,
+      "stop": 180.01,
+      "target": 198.92,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "Gold spot ~$3,971/oz (-1.49%, MarketWatch 10/30) \u2014 the flight-to-safety bid is OFF despite the tech selloff. No clean defensives read => neutral.",
+      "atr": 3.15,
+      "close": 184.04,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 357.72,
+      "stop": 367.97,
+      "target": 337.22,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold spot ~$3,971/oz (-1.49%, MarketWatch 10/30) soft on the day; elevated off prior highs. Neutral.",
+      "atr": 5.13,
+      "close": 368.57,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 44.41,
+      "stop": 47.29,
+      "target": 38.65,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver follows spot gold, which is soft on the day (MarketWatch 10/30). No clean metals signal. Neutral.",
+      "atr": 1.44,
+      "close": 47.28,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 77.17,
+      "stop": 82.94,
+      "target": 65.63,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold miners follow spot gold, soft on the day (~$3,971/oz, MarketWatch 10/30). No clean signal. Neutral.",
+      "atr": 2.88,
+      "close": 81.33,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "IEF",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 91.56,
+      "stop": 92.03,
+      "target": 90.15,
+      "rr": 3.0,
+      "tier": "shadow",
+      "theme": "bonds",
+      "regime_why": "Same as TLT: 10Y ~4.94% elevated + hawkish regime => regime against the bond long.",
+      "atr": 0.47,
+      "close": 91.25,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
