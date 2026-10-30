@@ -1,0 +1,182 @@
+{
+ "date": "2026-10-30",
+ "themes": {
+   "broad": {
+     "long": 1,
+     "short": 1,
+     "why": "First down day on the week: S&P 500 ~-0.30%, Dow ~52,343 (-0.25%), Nasdaq -1.38% intraday on a tech-led earnings selloff, breadth still positive (MarketWatch/Bloomberg 10/29-10/30). Uptrend not broken but the tape is softening; no clean directional read => neutral."
+   },
+   "tech": {
+     "long": 1,
+     "short": 1,
+     "why": "Second consecutive tech-earnings selloff: Nasdaq -1.38%, chips and mega-cape under pressure ('Tech Stock Selloff Deepens on Earnings', Bloomberg 10/29) while 10Y ~4.94% (CNBC US10Y 10/30) stays elevated. Long-term uptrend intact (Nasdaq +12.78% YTD, Yahoo 10/30) => mixed, neutral."
+   },
+   "consumer": {
+     "long": 1,
+     "short": 1,
+     "why": "AMZN reported after the close 10/29; TSLA/XLY soft (XLY previously shorted in the book). No name-specific signal beyond the tech drag => neutral."
+   },
+   "energy": {
+     "long": 2,
+     "short": 0,
+     "why": "OIL BID ON THE DAY: Brent $112.59 (+1.62% vs prev, TradingEconomics 10/30), WTI $103.50 (+1.47%, TradingEconomics 10/30); 'Oil Rises' (Bloomberg 10/29). Multi-month uptrend intact. Regime supports the long."
+   },
+   "financials": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y ~4.94% (CNBC US10Y 10/30) + a hawkish regime (hot PCE 3.7% printed 10/29, Fed on hold) keep NIMs elevated; JPM next earnings 01/14/2027 (wallstreethorizon 10/29) is out of window. Regime supports the financials long."
+   },
+   "defensive": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$3,971/oz (-1.49%, MarketWatch 10/30) — the flight-to-safety bid is OFF despite the tech selloff. No clean defensives read => neutral."
+   },
+   "cyclicals": {
+     "long": 1,
+     "short": 1,
+     "why": "Soft broad tape and a rotation away from mega-cap risk (indexes down on the day, Bloomberg 10/29) but positive breadth and no data shock. Mixed => neutral."
+   },
+   "bonds": {
+     "long": 0,
+     "short": 2,
+     "why": "10Y ~4.94% (CNBC US10Y 10/30) still elevated (fell only from 5.01% on 10/29) in a hawkish regime; regime is against the bond LONG. Needs a hawkish-miss surprise to reverse."
+   },
+   "metals": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$3,971/oz (-1.49%, MarketWatch 10/30) softens the haven bid; silver/gold-miners follow. Elevated but softening => neutral."
+   },
+   "dollar": {
+     "long": 1,
+     "short": 1,
+     "why": "DXY ~101.8 (Barron's/CNBC 10/30, day high 101.905) — soft on the day with gold down and risk-off, but still firm around 102. No clean directional read => neutral."
+   }
+ },
+ "symbols": {
+   "XLE": {
+     "long": 2,
+     "short": 0,
+     "why": "Brent $112.59 (+1.62%) / WTI $103.50 (+1.47%) on 10/30 (TradingEconomics 10/30); multi-month uptrend intact. Regime supports the long."
+   },
+   "XOM": {
+     "long": 1,
+     "short": 1,
+     "why": "XOM reported pre-open 10/30 (Q3 2026 per 10/29 regime calendar); no forward report inside the 10-trading-day window. No name-specific tilt beyond energy => neutral."
+   },
+   "USO": {
+     "long": 2,
+     "short": 0,
+     "why": "Oil regime's clean multi-month uptrend: Brent $112.59 / WTI $103.50 on 10/30 (TradingEconomics 10/30), 'Oil Rises' (Bloomberg 10/29). Regime supports the long."
+   },
+   "XLF": {
+     "long": 2,
+     "short": 0,
+     "why": "10Y ~4.94% + hawkish regime (CNBC US10Y 10/30; PCE 3.7% 10/29) => elevated NIMs support the banks long; no offsetting name signal."
+   },
+   "JPM": {
+     "long": 2,
+     "short": 0,
+     "why": "Benefits from the high-yield NIM regime (10Y ~4.94%, CNBC 10/30); next earnings 01/14/2027 (wallstreethorizon 10/29) is well beyond the 10-trading-day window. No event risk. Regime supports the long."
+   },
+   "TLT": {
+     "long": 0,
+     "short": 2,
+     "why": "10Y ~4.94% still elevated in a hawkish regime (CNBC US10Y 10/30) => regime against the bond long; needs a hawkish-miss surprise."
+   },
+   "IEF": {
+     "long": 0,
+     "short": 2,
+     "why": "Same as TLT: 10Y ~4.94% elevated + hawkish regime => regime against the bond long."
+   },
+   "GLD": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold spot ~$3,971/oz (-1.49%, MarketWatch 10/30) soft on the day; elevated off prior highs. Neutral."
+   },
+   "SLV": {
+     "long": 1,
+     "short": 1,
+     "why": "Silver follows spot gold, which is soft on the day (MarketWatch 10/30). No clean metals signal. Neutral."
+   },
+   "GDX": {
+     "long": 1,
+     "short": 1,
+     "why": "Gold miners follow spot gold, soft on the day (~$3,971/oz, MarketWatch 10/30). No clean signal. Neutral."
+   },
+   "UUP": {
+     "long": 1,
+     "short": 1,
+     "why": "DXY ~101.8, soft on the day with gold down and risk-off (Barron's/CNBC 10/30) but still firm near 102. Neutral."
+   },
+   "IWM": {
+     "long": 1,
+     "short": 1,
+     "why": "First down day on the week with a tech-led selloff but positive breadth (Bloomberg/MarketWatch 10/29-10/30). No clean small-cap read => neutral."
+   },
+   "QQQ": {
+     "long": 1,
+     "short": 1,
+     "why": "Nasdaq Composite -1.38% on a tech-earnings selloff, 10Y ~4.94% elevated (Bloomberg/CNBC 10/30) but +12.78% YTD (Yahoo 10/30). Mixed => neutral."
+   },
+   "XLK": {
+     "long": 1,
+     "short": 1,
+     "why": "Chip/mega-cape complex under pressure on a 2nd-day tech selloff + 10Y ~4.94% (Bloomberg/CNBC 10/30); long-term uptrend intact. Neutral."
+   },
+   "SMH": {
+     "long": 1,
+     "short": 1,
+     "why": "Semis caught in the tech-earnings selloff (Bloomberg 10/29); AVGO next est. ~12/09 is out of window. Soft but uptrend intact => neutral."
+   },
+   "NVDA": {
+     "long": 1,
+     "short": 1,
+     "why": "Caught in the semiconductor selloff (Bloomberg 10/29); next earnings ~11/17-18 (CMEG 10/29) is beyond the 10-trading-day window. No event risk; mixed tape => neutral."
+   },
+   "AVGO": {
+     "long": 1,
+     "short": 1,
+     "why": "Semis under pressure on the tech selloff; AVGO last reported 9/02, next est. ~12/09 (CMEG 10/29) — beyond the window. No event risk. Neutral."
+   },
+   "TSLA": {
+     "long": 1,
+     "short": 1,
+     "why": "TSLA last reported 10/21 (CMEG 10/29, >10 trading days out from next); soft tape is mild pressure but no name-specific tilt => neutral."
+   },
+   "AMZN": {
+     "long": 1,
+     "short": 1,
+     "why": "AMZN reported after the close 10/29 (thinkmarkets 10/29); no forward report inside the 10-trading-day window. No name signal beyond the tech drag => neutral."
+   },
+   "MSFT": {
+     "long": 1,
+     "short": 1,
+     "why": "MSFT reported after the close 10/28 (~2 trading days ago); next report is out of window. Caught in the soft tech tape. Neutral."
+   },
+   "GOOGL": {
+     "long": 1,
+     "short": 1,
+     "why": "GOOGL reported after the close 10/28; next report out of window. Soft tech tape. Neutral."
+   },
+   "META": {
+     "long": 1,
+     "short": 1,
+     "why": "META last reported 10/21 (CMEG 10/29, >10 trading days out from next); soft tape is mild pressure only => neutral."
+   },
+   "AAPL": {
+     "long": 0,
+     "short": 0,
+     "why": "EARNINGS GATE: AAPL/Apple reports AFTER THE CLOSE 11/02/2026 (apple.com IR + trefis.com 10/30) — inside the 10-trading-day window => excluded via --exclude AAPL."
+   }
+ },
+ "exclude": {
+   "AAPL": "earnings 2026-11-02 after close (apple.com IR + trefis.com 10/30, checked 2026-10-30) — ~3 trading days, inside window"
+ },
+ "catalysts": [
+   "NO TIER-1 EVENT TODAY: no CPI/PPI/FOMC decision/NFP/PCE on 10/30. Yesterday's PCE (3.7% YoY headline / 3.1% core) already printed 08:30 ET 10/29 (MarketWatch 10/29) — that is reflected in the regime above, not a reason to wait at the 10:15 DECISION run.",
+   "FRI 10/30 08:30 AM ET: Employment Cost Index Q3 (benefits QoQ prev +1.0%, wages QoQ prev +0.9%) and NY Fed MCT + Nowcast — tertiary. Baker Hughes Total Rigs Count 01:00 PM ET (603 prev) — tertiary. No NFP/PMI final/Jobless Claims today.",
+   "NEXT TIER-1: NFP 09:30 AM ET Fri 11/06 (consensus +29K vs prev +40.0K, TradingEconomics) and JOLTs 11/03; FOMC Minutes + FOMC decision further out. Flag these in the DECISION run as they approach.",
+   "EARNINGS GATE for the 10:15 DECISION run (10-trading-day window now through ~11/16-17): AAPL 11/02 after close => EXCLUDE. NVDA (~11/17-18) is at/just beyond the window edge (stays consistent with 10/29, NOT excluded). TSLA/META/JPM/AVGO/MSFT/GOOGL/AMZN/XOM have NO forward report inside the window => NOT excluded.",
+   "TECH SELLOFF: 2nd consecutive day — Nasdaq -1.38% intraday on mega-cape/tech earnings, breadth still positive (Bloomberg 10/29). Treat as a rotation, not a regime break; monitor whether it cascades into a breadth loss on 10/30 close."
+ ]
+}
