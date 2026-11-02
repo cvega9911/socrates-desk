@@ -1,0 +1,8 @@
+{
+  "symbol": "QQQ",
+  "p_target": 0.33,
+  "thesis": "Tech short on the October AI de-rating: QQQ scores 9/10 (trend 1, rel-strength 2, regime 2, R:R 2.0, 5d momentum 1, volume 1) and the regime is tech-short-2 because Nasdaq fell -5.3% for October and -2.0% on 10/30 on an AI-led selloff (Investopedia/Yahoo 10/30; marketsday) with 10Y elevated at a 7-week-low ~4.93% (VantageMarkets 11/02) pressuring duration.",
+  "invalidation": "QQQ closes daily above 726.05 (the 10-day swing stop), confirming the tech downtrend has broken and the AI de-rating is exhausted.",
+  "dissent": "Fails if the tech selloff is a buy-the-dip rotation and QQQ reasserts its trend by closing above its 10-day swing 719.24 on rising volume, or if 10Y yields re-hawk and the bond rally reverses, re-supporting growth.",
+  "earnings_checked": false
+}

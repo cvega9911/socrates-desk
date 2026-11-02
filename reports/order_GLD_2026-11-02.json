@@ -1,0 +1,8 @@
+{
+  "symbol": "GLD",
+  "p_target": 0.33,
+  "thesis": "Gold short on the 1-year-low liquidation: GLD scores 10/10 (trend 2, rel-strength 2, regime 2, R:R 2.0, 5d momentum 1, volume 1) and the regime is metals-long/short-2 because spot gold is at a 1-year low ~$3,913/oz on 11/02 (Yahoo 11/02, Investopedia 10/30) with the haven bid off as yields fall and the bond rallies.",
+  "invalidation": "GLD closes daily above 374.12 (the 10-day swing stop), confirming the gold liquidation has rolled over and the long-term down-trend has broken.",
+  "dissent": "Fails if geopolitics re-ignites (a renewed Iran strike) or the DXY sells off further and the haven bid returns, pushing gold back above $3,913/oz and GLD above its 30-day support.",
+  "earnings_checked": false
+}

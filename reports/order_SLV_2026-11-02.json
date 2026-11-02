@@ -1,0 +1,8 @@
+{
+  "symbol": "SLV",
+  "p_target": 0.33,
+  "thesis": "Silver short riding spot metals liquidation: SLV scores 10/10 (trend 2, rel-strength 2, regime 2, R:R 2.0, 5d momentum 1, volume 1) and the regime is metals-into-the-short because spot gold (its anchor) is at a 1-year low ~$3,913/oz on 11/02 (Yahoo 11/02) and the haven bid that supported the 10/30 neutral is gone as 10Y rolls to a 7-week low.",
+  "invalidation": "SLV closes daily above 49.25 (the 10-day swing stop), confirming the metals liquidation has rolled over into a bid-back.",
+  "dissent": "Fails if a haven bid returns on a fresh geopolitical shock or a dollar sell-off, lifting spot silver with gold and SLV above its 30-day support.",
+  "earnings_checked": false
+}

@@ -1,0 +1,8 @@
+{
+  "symbol": "SMH",
+  "p_target": 0.33,
+  "thesis": "Semis short on the AI/tech de-rating: SMH scores 10/10 (trend 2, rel-strength 2, regime 2, R:R 2.0, 5d momentum 1, volume 1), and the regime files metals-and-tech both against the long on Nasdaq -5.3% for October and Intel -30% (Investopedia/Yahoo 10/30, TradingEconomics 11/02); a yielding tape with 10Y at a 7-week low ~4.93% (VantageMarkets 11/02) keeps duration pressure on chipmakers.",
+  "invalidation": "SMH closes daily above 571.00 (the 10-day swing stop), reasserting the semiconductor uptrend and invalidating the AI de-rating premise.",
+  "dissent": "Fails if the AI demand narrative reasserts and SMH closes above its 10-day swing 565.58 on rising volume, triggering a chip rebound — or if the 10Y yield rollover reverses and re-hawkens duration.",
+  "earnings_checked": false
+}
