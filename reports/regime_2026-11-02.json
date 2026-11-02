@@ -1,0 +1,183 @@
+{
+  "date": "2026-11-02",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "Biggest single-day loss since June on 10/30: S&P 500 7,580.07 (-0.6%), Dow 51,770.31 (-1.09%), Nasdaq -518.34 (-2.0%) on an AI-led selloff (Yahoo ^GSPC / CNBC / AP 10/30; marketsday 10/30). Uptrend still intact (S&P near record) but momentum sharply negative => neutral, risk-off underway."
+    },
+    "tech": {
+      "long": 0,
+      "short": 2,
+      "why": "Nasdaq -5.3% for October and -2.0% on 10/30; Intel -30%, 'AI stocks lost $5 trillion' (Investopedia/Yahoo 10/30); 10Y still ~4.93% (VantageMarkets 11/02) elevated vs duration. Regime is against the tech long."
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "AMZN reported after close 10/29 and AAPL reports after close 11/02 (both excluded; apple.com IR 11/02); XLY soft in the risk-off tape but no name-specific signal => neutral."
+    },
+    "energy": {
+      "long": 1,
+      "short": 1,
+      "why": "OIL REVERSAL: Brent -6.17% to ~$106.43 and WTI -6.63% to ~$97.21 on 11/02 as the Iran-strike premium bled off (TradingEconomics 11/02). Multi-month uptrend intact (+6% MoM, +64% YoY, TradingEconomics 11/02) but a sharp momentum reversal => neutral; no clean directional read today."
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y rolled to a 7-week low ~4.93% on 11/02 (VantageMarkets 11/02), trimming the NIM-expansion thesis that supported the banks long; 10Y still elevated supports NIMs long-term. JPM next earnings 01/14/2027 (wallstreethorizon 11/02) is out of the 10-trading-day window. Downgraded from 2 to 1 on the yield rollover => neutral."
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-off AI rotation bids healthcare/defensives (XLV already in the book), but the haven bid is OFF: gold at a 1-year low ~$3,913/oz on 11/02 (Yahoo 11/02) => no clean defensive read => neutral."
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-off tape and a broad index selloff on 10/30 pressure cyclicals, but no data shock and positive underlying breadth => mild risk-off, neutral."
+    },
+    "bonds": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y FELL to a 7-week low ~4.93% on 11/02 (VantageMarkets 11/02; FRED DGS10 4.98 on 10/29) => a bond rally that supports the TLT/IEF long. FLIP from the 10/30 regime (0/2) on the yield rollover."
+    },
+    "metals": {
+      "long": 0,
+      "short": 2,
+      "why": "GOLD AT A 1-YEAR LOW ~$3,913/oz on 11/02 — 'opens at its lowest point in over a year' (Yahoo 11/02); 'Gold Hits One-Year Low' (Investopedia 10/30). A liquidation/roll-over that turns metals against the long => regime supports the GLD/SLV/GDX short."
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY ~101.6-101.8, softening ('weakened over the past month,' down 0.19% intraday, TradingEconomics 11/02; Polymarket ~101.60). A soft DXY with falling yields reads as deleveraging rather than a clean UUP short => neutral."
+    }
+  },
+  "symbols": {
+    "XLE": {
+      "long": 1,
+      "short": 1,
+      "why": "Energy reversal: Brent -6.17% / WTI -6.63% on 11/02 (TradingEconomics 11/02) but the +6% MoM / +64% YoY multi-month uptrend is intact => neutral; the long's premise is now fighting a sharp reversal."
+    },
+    "XOM": {
+      "long": 1,
+      "short": 1,
+      "why": "No forward XOM report inside the 10-trading-day window (energy theme carries the signal). Caught in the oil reversal but no name-specific tilt => neutral."
+    },
+    "USO": {
+      "long": 1,
+      "short": 1,
+      "why": "Oil reversed -6% on 11/02 (TradingEconomics 11/02) on a geopolitical unwind; the multi-month uptrend is intact but momentum just turned. USO is already held — neutral, no new-direction read."
+    },
+    "XLF": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y rolled to a 7-week low ~4.93% (VantageMarkets 11/02), trimming NIM-expansion conviction; 10Y still elevated => neutral, downgraded from the 10/30 long-2."
+    },
+    "JPM": {
+      "long": 1,
+      "short": 1,
+      "why": "Same as XLF: a 7-week-low 10Y trims the rate-sensitive bank long, but elevated absolute yields still support NIMs; next earnings 01/14/2027 is out of the window => neutral."
+    },
+    "TLT": {
+      "long": 2,
+      "short": 0,
+      "why": "Bond RALLY FLIP: 10Y at a 7-week low ~4.93% on 11/02 (VantageMarkets 11/02) supports the long-term bond long; regime NOW supports TLT, reversing the 10/30 0/2."
+    },
+    "IEF": {
+      "long": 2,
+      "short": 0,
+      "why": "Same as TLT: the 7-week-low 10Y on 11/02 (VantageMarkets 11/02) is a yield rollover that supports the intermediate-bond long."
+    },
+    "GLD": {
+      "long": 0,
+      "short": 2,
+      "why": "GOLD AT A 1-YEAR LOW ~$3,913/oz on 11/02 (Yahoo 11/02; Investopedia 10/30 'Gold Hits One-Year Low') => regime supports the GLD short."
+    },
+    "SLV": {
+      "long": 0,
+      "short": 2,
+      "why": "Silver follows spot gold, which is at a 1-year low ~$3,913/oz on 11/02 (Yahoo 11/02) => regime supports the SLV short."
+    },
+    "GDX": {
+      "long": 0,
+      "short": 2,
+      "why": "Gold miners follow spot gold at a 1-year low on 11/02 (Yahoo 11/02) => regime supports the GDX short."
+    },
+    "UUP": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY ~101.6-101.8 softening with a falling yield (TradingEconomics 11/02) reads as deleveraging, not a clean UUP trade => neutral."
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "Broad index selloff on 10/30 softens small caps, but underlying breadth is positive and no data shock => neutral."
+    },
+    "QQQ": {
+      "long": 0,
+      "short": 2,
+      "why": "Nasdaq -5.3% for October and -2.0% on 10/30 on the AI/tech selloff (Investopedia/Yahoo 10/30) => regime is against the QQQ long."
+    },
+    "XLK": {
+      "long": 0,
+      "short": 2,
+      "why": "Chip/mega-cape complex in the AI selloff; 10Y still ~4.93% (VantageMarkets 11/02) => regime against the tech long."
+    },
+    "SMH": {
+      "long": 0,
+      "short": 2,
+      "why": "Semis in the AI selloff (Intel -30%, Yahoo 10/30); AVGO next est. ~12/09 is out of the window => regime against the semis long."
+    },
+    "NVDA": {
+      "long": 1,
+      "short": 1,
+      "why": "Caught in the semis selloff but next earnings ~11/17-18 are just beyond the 10-trading-day window (CMEG, consistent with 10/30, NOT excluded); mixed tape => neutral."
+    },
+    "AVGO": {
+      "long": 1,
+      "short": 1,
+      "why": "Semis under pressure; AVGO next est. ~12/09 (wallstreethorizon) is out of the window, no event risk => neutral."
+    },
+    "TSLA": {
+      "long": 1,
+      "short": 1,
+      "why": "No forward TSLA report inside the 10-trading-day window; soft tape is mild pressure only => neutral."
+    },
+    "AMZN": {
+      "long": 1,
+      "short": 1,
+      "why": "AMZN reported after the close 10/29; its next quarterly report is beyond the 10-trading-day window. No name signal beyond the risk-off tape => neutral."
+    },
+    "MSFT": {
+      "long": 1,
+      "short": 1,
+      "why": "MSFT reported after the close 10/28; next report out of the window. Soft tech tape => neutral."
+    },
+    "GOOGL": {
+      "long": 1,
+      "short": 1,
+      "why": "GOOGL reported after the close 10/28; next report out of the window. Soft tech tape => neutral."
+    },
+    "META": {
+      "long": 1,
+      "short": 1,
+      "why": "META's next report is beyond the 10-trading-day window (consistent with 10/30); soft tape is mild pressure only => neutral."
+    },
+    "AAPL": {
+      "long": 0,
+      "short": 0,
+      "why": "EARNINGS GATE: AAPL reports AFTER THE CLOSE 2026-11-02 (apple.com IR + earnings-call page, checked 11/02) — inside the 10-trading-day window => excluded via --exclude AAPL."
+    }
+  },
+  "exclude": {
+    "AAPL": "earnings 2026-11-02 after close (apple.com IR + apple.com/earnings-call, checked 2026-11-02) — 0 trading days, inside window"
+  },
+  "catalysts": [
+    "NO TIER-1 US EVENT TODAY: no CPI/PPI/FOMC decision/NFP/PCE on 11/02. US calendar is tertiary only — 08:30 ET Q3 Prelim Productivity & Costs + Fed speech Hammack 08:50 (MarketWatch 11/02); 10:00 ET Construction Spending/Factory Orders/JOLTS (all published/tertiary). Next TIER-1: NFP Fri 11/06 (consensus +29K vs prev +65K, TradingEconomics). Flag NFP as it approaches at the 10:15 DECISION run.",
+    "EARNINGS GATE for the 10:15 DECISION run (10-trading-day window from 11/02 runs through ~11/16-17): AAPL 11/02 after close => EXCLUDE. NVDA est. ~11/17-18 is just BEYOND the window edge (stays consistent with 10/30, NOT excluded). TSLA/META/JPM/AVGO/MSFT/GOOGL/AMZN/XOM have NO forward report inside the window => NOT excluded.",
+    "OIL REVERSAL (dominant macro story): Brent -6.17% to ~$106.43 and WTI -6.63% to ~$97.21 on 11/02 as the Iran-strike premium bled off (TradingEconomics 11/02) — a sharp reversal of the 10/30 +2-3% geopolitical bid. The multi-month uptrend is intact, so energy is read neutral, not a regime break, but the USO long already in the book is now fighting headwinds.",
+    "GOLD LIQUIDATION: gold ~$3,913/oz at a 1-YEAR LOW on 11/02 (Yahoo 11/02) — the haven bid that backed the 10/30 neutral is OFF; metals are the one theme the regime is now clearly against (long 0 / short 2).",
+    "BOND RALLY: 10Y to a 7-week low ~4.93% on 11/02 (VantageMarkets 11/02) flips the bonds theme to long 2/0 (vs 0/2 on 10/30) and trims the financials/energy long conviction; a yielding, dollar-soft, risk-off tape.",
+    "TECH SELLOFF: biggest single-day loss since June (10/30), Nasdaq -5.3% for October (Investopedia/Yahoo 10/30); the AI/tech complex is the clearest regime-supported short (QQQ/XLK/SMH long 0/short 2). Score these vs the held IWM/short structure at DECISION."
+  ]
+}
