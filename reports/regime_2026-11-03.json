@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-03",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "Election-day tape is a rotation, not a break: Monday 11/02 SPY -0.5%, QQQ -1.4%, Dow +0.4% — out of tech, into value/industrials (The Adaptive Trader substack 11/03; CNBC 11/03 pre-market +0.2% broad index). S&P 500 ~7,541, Nasdaq had its worst month in a year (CNN markets 11/02). Midterms today are historically mild positives ex-election-day (Yahoo Finance 11/02) => neutral, watch the post-election leg."
+    },
+    "tech": {
+      "long": 0,
+      "short": 2,
+      "why": "Rotation OUT of tech confirmed: QQQ -1.4% Monday 11/02, Nasdaq worst month in a year (CNBC/The Adaptive Trader 11/03; CNN 11/02). 10Y 4.91% (TradingEconomics 11/02) still heavy on duration. Regime against the tech long => supports QQQ/XLK/SMH short."
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "Election-day value rotation lifts cyclicals/consumer-staple-tilt, but no name-specific signal in-window (no consumer name reporting in the 10-trading-day window) => neutral."
+    },
+    "energy": {
+      "long": 1,
+      "short": 1,
+      "why": "Oil still elevated: WTI $98.51 (MarketWatch 11/03 06:52 ET), Brent >$105 (Polymarket Nov-3 5pm contracts 11/03). Fresh off the 11/02 -6-7% reversal as the Iran-strike premium bled off (TradingEconomics 11/02). Elevated-price, soft-momentum => neutral; the USO long already in the book is fighting a stalled trend."
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y 4.91% (TradingEconomics 11/02) still supports NIMs, but election-day value rotation into banks is a one-way bid; JPM next earnings 01/14/2027 out of window. No clean directional read => neutral."
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-off election-day tape bids defensives, but the haven bid is OFF: gold at a ~1-year low ~$3,935/oz with the yield falling (Fortune 11/02). Mixed defensive read => neutral."
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "Election-day rotation INTO value/cyclicals (Dow +0.4% Monday) is a short bid, but no data shock and JOLTS is the only scheduled release => neutral, watch JOLTS 10:00 ET."
+    },
+    "bonds": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y 4.91% on 11/02 (TradingEconomics 11/02; CNBC 4.917% intraday) near a 7-week low after the prior rollover, and the yield curve is compressing on a soft DXY and election-day risk-off => regime supports the TLT/IEF long. Carry-over from 11/02 2/0."
+    },
+    "metals": {
+      "long": 0,
+      "short": 2,
+      "why": "GOLD at a ~1-year low ~$3,935/oz on 11/02, down from $4,218 a month ago (-6.7%) (Fortune 11/02). Haven bid off, yields falling, silver follows its anchor => regime supports the GLD/SLV/GDX short. Carry-over from 11/02 0/2."
+    },
+    "dollar": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY ~101.44-101.85, lowest since September 11/02 (TradingEconomics 11/02; Investing.com 11/02). A soft dollar on a yielding, risk-off tape reads as deleveraging, not a clean UUP short => neutral."
+    }
+  },
+  "symbols": {
+    "XLE": {
+      "long": 1,
+      "short": 1,
+      "why": "WTI still $98.51 (MarketWatch 11/03) but fresh off the 11/02 -6.6% reversal; elevated price, stalled momentum => neutral."
+    },
+    "XOM": {
+      "long": 1,
+      "short": 1,
+      "why": "No forward XOM report in the 10-trading-day window; no name-specific signal => neutral."
+    },
+    "USO": {
+      "long": 1,
+      "short": 1,
+      "why": "Oil elevated ($98.51 WTI, MarketWatch 11/03) but momentum stalled after the 11/02 reversal; USO already held. No new-direction read => neutral."
+    },
+    "XLF": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y 4.91% supports NIMs, election-day value rotation is a one-way bid => neutral."
+    },
+    "JPM": {
+      "long": 1,
+      "short": 1,
+      "why": "Same as XLF; next earnings 01/14/2027 out of window => neutral."
+    },
+    "TLT": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y 4.91% near a 7-week low with a compressing curve (TradingEconomics/CNBC 11/02) => regime supports the long-term bond long. Carry-over from 11/02 2/0."
+    },
+    "IEF": {
+      "long": 2,
+      "short": 0,
+      "why": "Same as TLT: the falling-yield, soft-dollar tape supports the intermediate-bond long."
+    },
+    "GLD": {
+      "long": 0,
+      "short": 2,
+      "why": "Gold at a ~1-year low ~$3,935/oz, -6.7% over the month (Fortune 11/02), haven bid off => regime supports the GLD short."
+    },
+    "SLV": {
+      "long": 0,
+      "short": 2,
+      "why": "Silver follows spot gold at a ~1-year low (Fortune 11/02) => regime supports the SLV short."
+    },
+    "GDX": {
+      "long": 0,
+      "short": 2,
+      "why": "Miners follow spot gold at a ~1-year low (Fortune 11/02) => regime supports the GDX short."
+    },
+    "UUP": {
+      "long": 1,
+      "short": 1,
+      "why": "DXY ~101.4-101.9 softenest-since-Sept on a yielding tape (TradingEconomics 11/02) reads as deleveraging => neutral."
+    },
+    "IWM": {
+      "long": 1,
+      "short": 1,
+      "why": "Election-day value rotation can lift small caps but small caps are rate-sensitive and 10Y is still 4.91% => neutral."
+    },
+    "QQQ": {
+      "long": 0,
+      "short": 2,
+      "why": "Rotation out of tech confirmed: QQQ -1.4% Monday, Nasdaq worst month in a year (CNBC/The Adaptive Trader 11/03) => regime against the QQQ long."
+    },
+    "XLK": {
+      "long": 0,
+      "short": 2,
+      "why": "Tech de-rating: QQQ -1.4% Monday, 10Y 4.91% (TradingEconomics 11/02) => regime against the tech long."
+    },
+    "SMH": {
+      "long": 0,
+      "short": 2,
+      "why": "Semis in the tech-de-rating tape (QQQ -1.4% Monday); NVDA 11/17 is excluded from the tradeable set, no support for the semis long => regime against it."
+    },
+    "NVDA": {
+      "long": 0,
+      "short": 0,
+      "why": "EARNINGS GATE: NVDA reports 2026-11-17 after close (NVIDIA IR + wallstreethorizon 11/03) — within/at the 10-trading-day window from 11/03 => excluded via regime exclude."
+    },
+    "AVGO": {
+      "long": 1,
+      "short": 1,
+      "why": "Semis under pressure in the de-rating tape but AVGO next report is out of the 10-trading-day window; no clean directional read => neutral."
+    },
+    "TSLA": {
+      "long": 1,
+      "short": 1,
+      "why": "No forward TSLA report in the 10-trading-day window; soft tape is mild pressure only => neutral."
+    },
+    "AMZN": {
+      "long": 1,
+      "short": 1,
+      "why": "AMZN next quarterly report is beyond the 10-trading-day window; no name signal => neutral."
+    },
+    "MSFT": {
+      "long": 1,
+      "short": 1,
+      "why": "MSFT reported after the close 10/28; next report out of the window; tech tape pressure => neutral."
+    },
+    "GOOGL": {
+      "long": 1,
+      "short": 1,
+      "why": "GOOGL reported 10/28; next report out of the window; tech tape pressure => neutral."
+    },
+    "META": {
+      "long": 1,
+      "short": 1,
+      "why": "META's next report is beyond the 10-trading-day window; soft tape is mild pressure only => neutral."
+    },
+    "AAPL": {
+      "long": 0,
+      "short": 0,
+      "why": "EARNINGS GATE: AAPL reported AFTER THE CLOSE 2026-11-02 (apple.com IR, 11/02) — just inside the window edge, score.py auto-blackout; left excluded for the run."
+    }
+  },
+  "exclude": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + wallstreethorizon, checked 2026-11-03) — 10 trading days from 11/03, at the window edge"
+  },
+  "catalysts": [
+    "NO TIER-1 US EVENT TODAY: no CPI/PPI/FOMC decision/NFP/PCE on 11/03. Tertiary only — 10:00 ET JOLTS Sept-2026 job openings (BLS.gov/jlt 11/03; financecalendar 11/03; prior Aug value 7.079M, a 5-mo low). JOLTS does not change rate-path conviction strongly enough to be a tier-1 event, but it is the first data of the day and can move small caps/financials — flag at the 10:15 DECISION run.",
+    "MIDTERMS TODAY (Tuesday, Nov 3 2026) — the dominant event. Historically ex-election-day the market is constructive (Yahoo Finance 11/02), but election-day itself is often choppy with a value/tech rotation. Today's print: rotation INTO the Dow/value (+0.4% Monday) and OUT of tech (QQQ -1.4% Monday, CNBC/The Adaptive Trader 11/03). No tier-1 economic trigger, but it is the tape to watch at DECISION.",
+    "EARNINGS GATE for the 10:15 DECISION run (10-trading-day window from 11/03 through ~11/17): NVDA 11/17 after close is AT the window edge => EXCLUDE via regime (NVIDIA IR/wallstreethorizon 11/03). AAPL just reported 11/02 (auto-blackout by score.py). NVDA/XOM/AVGO/TSLA/MSFT/GOOGL/AMZN/META/JPM: no forward report inside the window except NVDA => not excluded. AMD reports 11/03 but is NOT in the tradable universe.",
+    "TECH DE-RATING (dominant regime theme): rotation out of tech confirmed Monday 11/02 — QQQ -1.4%, Nasdaq worst month in a year, Dow +0.4% (CNBC/The Adaptive Trader 11/03); 10Y 4.91% (TradingEconomics 11/02) keeps duration pressure on chipmakers. Regime is metals-and-tech against the long (long 0 / short 2) => the SMH/GLD/SLV/GDX/QQQ shorts carry the score.",
+    "METALS LIQUIDATION: gold at a ~1-year low ~$3,935/oz, -6.7% over the month (Fortune 11/02), haven bid off as the yield falls => the one theme the regime is clearly against the long (metals 0/2).",
+    "BOND RALLY: 10Y 4.91% near a 7-week low with a compressing curve (TradingEconomics/CNBC 11/02) on a soft DXY and election-day risk-off => bonds long 2/0; the TLT/IEF long is regime-supported.",
+    "OIL ELEVATED BUT STALLED: WTI $98.51 / Brent >$105 (MarketWatch 11/03; Polymarket 11/03) but fresh off the 11/02 -6-7% reversal as the Iran-strike premium bled off => energy neutral; the USO long in the book is fighting a stalled trend.",
+    "DOLLAR: DXY ~101.4-101.9, lowest since September (TradingEconomics/Investing.com 11/02) — a soft dollar on a yielding, risk-off tape reads as deleveraging, keeps UUP neutral."
+  ]
+}
