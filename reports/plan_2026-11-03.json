@@ -1,0 +1,211 @@
+{
+  "date": "2026-11-03",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 101196.15,
+  "spy_ret20": -0.0293,
+  "regime_file": "reports/regime_2026-11-03.json",
+  "regime_sha": "e2cd34837d33832c",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-11-17",
+  "exclusions": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + wallstreethorizon, checked 2026-11-03) \u2014 10 trading days from 11/03, at the window edge"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): NVDA"
+  ],
+  "trading_days_since_last_AB": 1,
+  "run": "decision",
+  "day_pnl_pct": -0.0007,
+  "halted": false,
+  "open_positions": 4,
+  "open_risk_dollars": 1985.05,
+  "plan": [
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 185.22,
+      "stop": 178.69,
+      "target": 198.28,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "Risk-off election-day tape bids defensives, but the haven bid is OFF: gold at a ~1-year low ~$3,935/oz with the yield falling (Fortune 11/02). Mixed defensive read => neutral.",
+      "atr": 3.27,
+      "close": 184.6,
+      "quota": false,
+      "shares": 77,
+      "risk_dollars": 502.81,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 101196.15
+    }
+  ],
+  "blocked": [
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 44.95,
+      "stop": 48.26,
+      "target": 38.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver follows spot gold at a ~1-year low (Fortune 11/02) => regime supports the SLV short.",
+      "atr": 1.66,
+      "close": 45.57,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 4: already 2 positions in theme 'metals'"
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 78.07,
+      "stop": 84.5,
+      "target": 65.2,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold at a ~1-year low (Fortune 11/02) => regime supports the GDX short.",
+      "atr": 3.22,
+      "close": 79.15,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 4: already 2 positions in theme 'metals'"
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 685.93,
+      "stop": 716.38,
+      "target": 625.03,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Rotation out of tech confirmed: QQQ -1.4% Monday, Nasdaq worst month in a year (CNBC/The Adaptive Trader 11/03) => regime against the QQQ long.",
+      "atr": 15.23,
+      "close": 681.09,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 4: already 2 positions in theme 'tech'"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 176.54,
+      "stop": 186.93,
+      "target": 155.77,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Tech de-rating: QQQ -1.4% Monday, 10Y 4.91% (TradingEconomics 11/02) => regime against the tech long.",
+      "atr": 5.19,
+      "close": 174.22,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 4: already 2 positions in theme 'tech'"
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 43.47,
+      "stop": 42.26,
+      "target": 45.9,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "Risk-off election-day tape bids defensives, but the haven bid is OFF: gold at a ~1-year low ~$3,935/oz with the yield falling (Fortune 11/02). Mixed defensive read => neutral.",
+      "atr": 0.61,
+      "close": 43.67,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "AMZN",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 246.74,
+      "stop": 263.46,
+      "target": 229.36,
+      "rr": 1.04,
+      "tier": "shadow",
+      "theme": "consumer",
+      "regime_why": "AMZN next quarterly report is beyond the 10-trading-day window; no name signal => neutral.",
+      "atr": 8.36,
+      "close": 245.63,
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
