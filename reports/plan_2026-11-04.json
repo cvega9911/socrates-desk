@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-04",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 100462.79,
+  "spy_ret20": -0.0318,
+  "regime_file": "reports/regime_2026-11-04.json",
+  "regime_sha": "89816b1aca1a53f3",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-11-18",
+  "exclusions": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + wallstreethorizon, checked 2026-11-03) \u2014 9 trading days from 11/04, inside the 10-trading-day window"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): NVDA"
+  ],
+  "trading_days_since_last_AB": 1,
+  "run": "decision",
+  "day_pnl_pct": -0.0073,
+  "halted": false,
+  "open_positions": 5,
+  "open_risk_dollars": 2487.86,
+  "plan": [],
+  "blocked": [
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 179.16,
+      "stop": 189.08,
+      "target": 159.33,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "FLIPPED FROM 0/2: semiconductor-led 11/03 rally (AMD/Supermicro) removes the clean tech-de-rating setup => the XLK short loses support.",
+      "atr": 4.96,
+      "close": 176.51,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 186.08,
+      "stop": 179.86,
+      "target": 198.52,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "The gold rebound (+~2.9%) partially restores the haven bid (see metals), but no clean defensive leg on the tape => neutral.",
+      "atr": 3.11,
+      "close": 184.02,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 121.59,
+      "stop": 117.69,
+      "target": 129.39,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "consumer",
+      "regime_why": "No in-window consumer-name signal and a mixed post-midterm tape => neutral.",
+      "atr": 1.95,
+      "close": 117.33,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 91.07,
+      "stop": 88.04,
+      "target": 97.12,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "The gold rebound (+~2.9%) partially restores the haven bid (see metals), but no clean defensive leg on the tape => neutral.",
+      "atr": 1.51,
+      "close": 88.95,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLB",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 53.05,
+      "stop": 51.51,
+      "target": 56.13,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "cyclicals",
+      "regime_why": "No data shock; ISM Non-Manufacturing (Services PM) at 10:00 ET is the day's first big non-tier-1 print and can rotate the risk tape => neutral, watch ISM Services at the 10:15 DECISION run.",
+      "atr": 0.77,
+      "close": 52.59,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "TLT",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 80.91,
+      "stop": 82.17,
+      "target": 77.13,
+      "rr": 3.0,
+      "tier": "shadow",
+      "theme": "bonds",
+      "regime_why": "FLIPPED FROM 2/0: bond rally stalled, 10Y rolled up ~6bp off the 7-week low to ~4.95-4.97% (TradingEconomics/YCharts/CNBC 11/04); still within the monthly downtrend => neutral-to-against the long.",
+      "atr": 0.82,
+      "close": 81.11,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
