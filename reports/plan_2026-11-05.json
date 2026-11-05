@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-05",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 101712.76,
+  "spy_ret20": -0.0134,
+  "regime_file": "reports/regime_2026-11-05.json",
+  "regime_sha": "50ac7f9940c015b0",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-11-19",
+  "exclusions": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon + Yahoo Finance calendar, checked 2026-11-05) -- ~8 trading days from 11/05, inside the 10-trading-day window"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): NVDA"
+  ],
+  "trading_days_since_last_AB": 2,
+  "run": "decision",
+  "day_pnl_pct": 0.0092,
+  "halted": false,
+  "open_positions": 5,
+  "open_risk_dollars": 2487.86,
+  "plan": [],
+  "blocked": [
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 659.85,
+      "stop": 689.24,
+      "target": 601.07,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MIXED: Nasdaq +1.44% relief rally vs a Democratic-control AI/data-center regulation worry (Bloomberg 11/03-11/04) => two-sided; the QQQ short in the book is fighting the tape.",
+      "atr": 14.7,
+      "close": 691.95,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 166.38,
+      "stop": 176.13,
+      "target": 146.87,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Chip rally on 11/04 vs the regulation counter-current => mixed; the XLK short is fighting the tape.",
+      "atr": 4.88,
+      "close": 176.5,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 58.93,
+      "stop": 57.26,
+      "target": 62.26,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "10Y at a ~2-month low (TradingEconomics 11/05) is a NIM headwind, offset by the risk-on tape => neutral.",
+      "atr": 0.83,
+      "close": 59.2,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 191.65,
+      "stop": 185.25,
+      "target": 204.46,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "Risk-on rotation usually drags defensives, but the gold/rebouned haven bid and sub-5% 10Y keep a haven undercurrent. No clean directional leg => neutral.",
+      "atr": 3.2,
+      "close": 189.66,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 43.89,
+      "stop": 42.68,
+      "target": 46.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "Risk-on rotation usually drags defensives, but the gold/rebouned haven bid and sub-5% 10Y keep a haven undercurrent. No clean directional leg => neutral.",
+      "atr": 0.61,
+      "close": 43.61,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "XLE",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 1,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 64.16,
+      "stop": 62.43,
+      "target": 69.35,
+      "rr": 3.0,
+      "tier": "shadow",
+      "theme": "energy",
+      "regime_why": "WTI down ~8.7% on 11/03 to ~$88 on Iran-war-ending hopes (WSJ 11/04), inside a down trend => regime against the energy long.",
+      "atr": 1.73,
+      "close": 63.52,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
