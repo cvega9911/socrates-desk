@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-05",
+  "themes": {
+    "broad": {
+      "long": 2,
+      "short": 0,
+      "why": "U.P FROM 1/1. Political risk RESOLVED: Democratic sweep of both chambers (midterms 11/03) removed the uncertainty premium => 11/04 close Dow +3.03% to 53,356.12 (best day in 18 months, +1,569.40), S&P 500 +1.58% to 7,688.62 near records, Nasdaq +1.44% to 25,736.51 (CNBC/WSJ/Investopedia 11/04). Regime strongly favors the broad long; runs against the QQQ short in the book."
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "MIXED. Nasdaq +1.44% on 11/04 relief rally, but Bloomberg (11/03-11/04) flagged 'AI-related stocks faced selling pressure amid concerns over how Democratic control could affect future investments in data-center development' => a regulation counter-current to the chips rally. Net tape up but the regime is two-sided; the SMH/QQQ/XLK tech shorts in the book are fighting the tape but have a macro excuse. Neutral."
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No in-window consumer-name signal; XLY/AMZN/TSLA get the risk-on tape but no name-specific read => neutral."
+    },
+    "energy": {
+      "long": 0,
+      "short": 1,
+      "why": "DOWN TREND. WTI collapsed -8.7% on 11/03 to ~$88/bbl as Iran-war-ending hopes unwound Middle East supply-disruption fears (WSJ 11/04 'crude drops 8.7% on hopes of Iran war ending'); Brent ~$95.89 (TradingEconomics 11/05), down 4.66% on the month. A +2.7% bounce on 11/05 (CNN commodities 11/04) sits INSIDE the down trend => regime is against the energy long; the held USO long is now the book's single biggest active risk."
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "10Y at a ~2-month low (~4.85% intraday / 4.91% close, TradingEconomics 11/05) is a NIM headwind for banks, but the risk-on tape is a growth tailwind => two-sided. JPM next earnings 01/13-01/14/2027 is out of the 10-trading-day window => neutral (no name signal)."
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-on rotation usually drags defensives, but the gold/rebouned haven bid and sub-5% 10Y keep a haven undercurrent. No clean directional leg => neutral."
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "ISM Manufacturing PMI 55.5 in October (4th-fastest expansion in ~4 years, TradingEconomics 11/02) supports industrials (XLI), but ISM Services 54.5 (3-month low, ISM 11/04) tempers it => mixed, neutral with a positive lean for XLI on the manufacturing data."
+    },
+    "bonds": {
+      "long": 2,
+      "short": 0,
+      "why": "UP FROM 1/1. 10-year rolled to a NEAR 2-MONTH LOW ~4.85% intraday / 4.91% close on 11/05, as the Democratic win eased political uncertainty and 'strengthened demand for both bonds and equities' (TradingEconomics 11/05 'US 10-Year Yield Hits Near Two-Month Low'). A rate-DOWN leg strongly favors the TLT/IEF long and runs against the bond short; flipped back to favor the long after a 1-day 1/1 stall on 11/04."
+    },
+    "metals": {
+      "long": 2,
+      "short": 0,
+      "why": "UP FROM 1/1. Gold extended to $4,124.76/oz on 11/05 (+1.53%, +$62.31, goldprice.org 05:16 ET), holding above $4,000 on a weak dollar + falling yields + haven bid; silver also up. This is a clean regime-supported METALS LONG; the GLD/SLV/GDX shorts in the book are running directly into it."
+    },
+    "dollar": {
+      "long": 0,
+      "short": 2,
+      "why": "UP FROM 1/2. DXY ~101.4, DOWN 0.16% on the session and weakest since September region; 'Dollar Weakens After Democratic Victory' (TradingEconomics 11/05). A falling dollar strongly favors the UUP short and is the common tailwind behind the gold/energy-weak tape."
+    }
+  },
+  "symbols": {
+    "XLE": {"long": 0, "short": 1, "why": "WTI down ~8.7% on 11/03 to ~$88 on Iran-war-ending hopes (WSJ 11/04), inside a down trend => regime against the energy long."},
+    "XOM": {"long": 0, "short": 1, "why": "Crude collapse unwinds the Middle East strike premium; no in-window XOM report => regime against the XOM/energy long."},
+    "USO": {"long": 0, "short": 1, "why": "Held long, WTI ~$88 after the -8.7% single-day plunge (day ~4 of 10); the collapse extends the loss => regime against the USO long, the book's active risk."},
+    "XLF": {"long": 1, "short": 1, "why": "10Y at a ~2-month low (TradingEconomics 11/05) is a NIM headwind, offset by the risk-on tape => neutral."},
+    "JPM": {"long": 1, "short": 1, "why": "Same as XLF; next earnings 01/13-01/14/2027 (Wall Street Horizon / Zacks) out of the 10-trading-day window => neutral."},
+    "TLT": {"long": 2, "short": 0, "why": "Flip UP FROM 1/1: 10Y at a near 2-month low ~4.85% intraday / 4.91% (TradingEconomics 11/05) => regime strongly favors the bond long."},
+    "IEF": {"long": 2, "short": 0, "why": "Same as TLT: intermediate-bond long now strongly regime-supported on the rate-down, 2-month-low-yield leg."},
+    "GLD": {"long": 2, "short": 0, "why": "UP FROM 1/1: spot gold $4,124.76/oz on 11/05 (+1.53%, goldprice.org), weak dollar + falling yields + haven bid => regime supports the metal long; the GLD short is fighting it and is underwater."},
+    "SLV": {"long": 2, "short": 0, "why": "UP FROM 1/1: silver up on the same metals regime (weak dollar, rate-down) => supports the SLV long; the SLV short is underwater."},
+    "GDX": {"long": 2, "short": 0, "why": "UP FROM 1/1: miners follow the spot-gold extension above $4,000 => supports the GDX long; the GDX short loses support."},
+    "UUP": {"long": 0, "short": 2, "why": "DXY ~101.4, down 0.16%, weakest since September; 'Dollar Weakens After Democratic Victory' (TradingEconomics 11/05) => regime supports the UUP short."},
+    "IWM": {"long": 1, "short": 1, "why": "Small caps are rate-sensitive; the sub-5% 10Y helps but risk-on rotation is broad, not small-cap-specific => neutral."},
+    "QQQ": {"long": 1, "short": 1, "why": "MIXED: Nasdaq +1.44% relief rally vs a Democratic-control AI/data-center regulation worry (Bloomberg 11/03-11/04) => two-sided; the QQQ short in the book is fighting the tape."},
+    "XLK": {"long": 1, "short": 1, "why": "Chip rally on 11/04 vs the regulation counter-current => mixed; the XLK short is fighting the tape."},
+    "SMH": {"long": 1, "short": 1, "why": "Semis up on 11/04 vs the regulation worry; NVDA 11/17 excluded => no clean semis-short regime signal; the SMH short in the book is fighting the tape."},
+    "NVDA": {"long": 0, "short": 0, "why": "EARNINGS GATE: NVDA reports 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon + Yahoo Finance, checked 2026-11-05) -- ~8 trading days from 11/05, inside the 10-trading-day window => excluded via regime exclude."},
+    "AVGO": {"long": 1, "short": 1, "why": "Next AVGO report 12/10/2026 is beyond the 10-trading-day window (Zacks) and the chips tape is mixed (regulation worry) => neutral."},
+    "TSLA": {"long": 1, "short": 1, "why": "No forward TSLA report in the 10-trading-day window; risk-on tape helps but no name signal => neutral."},
+    "AMZN": {"long": 1, "short": 1, "why": "Next AMZN report is beyond the 10-trading-day window (reported 10/29/2026, CNBC) => neutral; risk-on tape only a mild tailwind."},
+    "MSFT": {"long": 1, "short": 1, "why": "MSFT reported in late October; next report out of the 10-trading-day window; risk-on tape only => neutral."},
+    "GOOGL": {"long": 1, "short": 1, "why": "GOOGL reported late October; next report out of window; risk-on tape and the regulation worry two-sided => neutral."},
+    "META": {"long": 1, "short": 1, "why": "META's next report is beyond the 10-trading-day window; risk-on tape only => neutral."},
+    "AAPL": {"long": 1, "short": 1, "why": "AAPL already reported after the close 11/02; its NEXT report is far out of the 10-trading-day window from 11/05 => NOT an earnings blackout; risk-on tape only => neutral."}
+  },
+  "exclude": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon + Yahoo Finance calendar, checked 2026-11-05) -- ~8 trading days from 11/05, inside the 10-trading-day window"
+  },
+  "catalysts": [
+    "NO TIER-1 US EVENT TODAY (11/05): the big labor print NFP is FRI 11/06 08:30 ET (BLS Employment Situation 'for October 2026 is scheduled to be published on Friday, November 6, 2026, at 8:30 a.m. (ET)'); CPI is Nov 10, PPI Nov 13, no FOMC decision this week, no PCE. U. Michigan preliminary sentiment comes ~the same day as NFP (Fri 11/06). Flag NFP at the 11/05 and 11/06 DECISION runs.",
+    "11/05 IS A THIN DATA DAY: the dominant non-tier-1 prints already RELEASED 11/04 -- ADP National Employment +86K (TradingEconomics, beat on a ~69K consensus, matching September's revised gain) and ISM Services PMI 54.5 (Oct 2026, lowest in 3 months vs 54.9 prior / 54.8 consensus; ISM + PrNewswire 11/04). Today's main US release is EIA crude oil inventories ~10:30 ET plus FOMC speakers; the tape-moving macro events are next week's NFP and Michigan.",
+    "HEADLINE OF THE DAY -- POLITICAL RISK RESOLVED RISK-ON: the Democratic sweep of BOTH chambers of Congress on 11/03 removed the midterm uncertainty premium, driving a clean 11/04 risk-on close: Dow +3.03% to 53,356.12 (best day in 18 months), S&P 500 +1.58% to 7,688.62 near records, Nasdaq +1.44% to 25,736.51 (CNBC/WSJ/Investopedia 11/04). Yields fell to a ~2-month low and the dollar weakened -- this regime SUPPORTS longs (broad, tech relief rally), bond longs, metal longs, and the UUP short, and RUNS AGAINST the book's short positions (SMH/QQQ/XLK tech shorts and the GLD/SLV/GDX metals shorts).",
+    "BONDS -- RALLY EXTENDED, FLIP BACK TO LONG: 10-year rolled to a NEAR 2-MONTH LOW ~4.85% intraday / 4.91% close on 11/05 ('US 10-Year Yield Hits Near Two-Month Low,' TradingEconomics 11/05). The bond regime was a 1/1 stall on 11/04 and now flips to 2/0: it strongly favors the TLT/IEF long on the rate-down leg.",
+    "ENERGY -- STILL DOWN THE BIG TREND: WTI -8.7% on 11/03 to ~$88 (WSJ 11/04 'crude drops 8.7% on hopes of Iran war ending'), Brent ~$95.89 down 4.66% on the month (TradingEconomics 11/05); a +2.7% intraday bounce 11/05 sits inside the down trend. The held USO long is the book's single biggest active risk; the regime is against the energy long.",
+    "METALS -- STRONGLY AGAINST THE SHORT BOOK: spot gold $4,124.76/oz 11/05 (+1.53%, +$62.31, goldprice.org 05:16 ET) holds above $4,000 on a weak dollar + falling yields + haven bid; silver up. GLD/SLV/GDX shorts are fighting the tape and are underwater.",
+    "DOLLAR -- WEAK: DXY ~101.4, down 0.16%, weakest since September region; 'Dollar Weakens After Democratic Victory' (TradingEconomics 11/05) => the lone clean regime-supported single-name direction is the UUP short (1/2 theme, 0/2 symbol).",
+    "EARNINGS GATE for the 10:15 DECISION run (10-trading-day window from 11/05 through ~11/19): NVDA 11/17 = ~8 trading days out => EXCLUDE via regime. No other in-window report found today: AVGO next 12/10/2026, JPM 01/13-01/14/2027, and AAPL/MSFT/GOOGL/META/AMZN all reported late Oct / early Nov with next reports out of window; TSLA out of window. exclude = {NVDA} unchanged from 11/04.",
+    "PAPER ACCOUNT CONTEXT: the regime has flipped to favor risk-on, bonds, metals and a weak dollar -- directly against every pillar of the current short book (metals, tech) and further against the held USO long. DECISION should read this as letting the stops/brackets work and NOT adding new shorts into a regime that is fighting them; if it trades, the regime-supported directions are the bond/metals longs and the UUP short."
+  ]
+}
