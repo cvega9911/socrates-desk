@@ -42,6 +42,11 @@ def bdays(n_back, n_fwd=0):
     return days
 
 
+def bar_ts(d):
+    """Alpaca stamps daily bars at midnight New York time, given in UTC: 04:00Z in summer, 05:00Z in winter."""
+    return dt.datetime.combine(d, dt.time(0), tzinfo=D.ET).astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 DRIFT = {"SPY": 0.001, "XLE": 0.004, "XOM": 0.004, "USO": 0.004, "TLT": -0.004, "IEF": -0.003,
          "GDX": -0.005, "SLV": -0.005, "QQQ": -0.001}
 
@@ -59,7 +64,7 @@ class FakeBroker:
                 # a pullback-free trend with a 3-day dip 6 bars ago gives stops room
                 hi, lo = px * 1.008, px * 0.992
                 vol = 1_000_000 * (1.5 if i == len(self.days) - 1 else 1.0)
-                rows.append({"t": f"{d.isoformat()}T04:00:00Z", "o": px, "h": hi, "l": lo, "c": px, "v": vol})
+                rows.append({"t": bar_ts(d), "o": px, "h": hi, "l": lo, "c": px, "v": vol})
             self.bars[s] = rows
         self.equity, self.last_equity = 100000.0, 100000.0
         self.orders, self.pos, self.n = {}, {}, 0
