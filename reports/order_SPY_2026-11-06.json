@@ -1,0 +1,8 @@
+{
+  "symbol": "SPY",
+  "p_target": 0.33,
+  "thesis": "SPY short on a 9/10 score (trend 2, relative strength 2, regime 1, reward/risk 2, 5-day momentum 1, volume 1) — the 11/05 -4.36% single-day reversal off a 7.5%-off-52wk-high index puts SPY in a down-trend with strong negative momentum, so I sell into the 11/06 continuation with a 2.0 R:R bracket.",
+  "invalidation": "Invalidate at the stop 762.03, a single-day reclaim of the 11/05 gap top / a close above 754.95, or the NFP-driven re-hawk failing with 10Y back under 4.75% on falling risk-off demand — any of which proves the down-continuation thesis wrong.",
+  "dissent": "Fails as a short if SPY closes above 750 on 11/06 into the strong NFP (+165K vs 65K) risk-on tape, since the regime counter-current (dollar long, cyclicals positive) argues the -4.36% was a washout not a continuation; 0.33 base rate (1/(1+2.0 R:R)) reflects that this short fights the NFP-beat regime.",
+  "earnings_checked": false
+}
