@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-06",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "MIXED. NFP +165K vs 65K forecast (BLS 11/06 8:30 ET) is a strong positive shock supporting risk-on equities, BUT the S&P 500 just closed 7,353.73 on 11/05 after a -4.36% single-day drop (down ~335 pts, Yahoo Finance 11/05) — a violent unwind after the +3.03% Dow day on 11/04. The tape is fighting the NFP shock; no clean regime direction => neutral."
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "QQQ/XLK/SMH mixed: the 11/05 tape was down hard with the broad market, but NVDA (11/17) remains excluded and the Q4 chip season is still ahead. No clear tech-specific signal => neutral."
+    },
+    "consumer": {
+      "long": 1,
+      "short": 1,
+      "why": "No in-window consumer-name signal; XLY/AMZN/TSLA get the mixed broad tape only => neutral."
+    },
+    "energy": {
+      "long": 0,
+      "short": 1,
+      "why": "STILL DOWNTRENDING. Brent $96.83/bbl (-1.48%, TradingEconomics 11/06), WTI ~$90.69 (businessinsider.com 11/06) — both inside the Iran-war-resolution downtrend that began 11/03 (WTI -8.7% that day). The NFP beat is a cyclical tailwind for energy demand, but it is not enough to reverse the down trend on price => regime against energy long; USO is still the book's active risk."
+    },
+    "financials": {
+      "long": 1,
+      "short": 1,
+      "why": "NFP +165K vs 65K is a positive signal for lending volumes and NIM expansion at banks (XLF/JPM). However, the 10Y at ~4.84% (near 2-month low) was a NIM headwind until the NFP beat, and the S&P 500 just had a -4.36% day. Mixed: positive labor data supports financials longer-term, but today's tape action is uncertain => neutral."
+    },
+    "defensive": {
+      "long": 1,
+      "short": 1,
+      "why": "Risk-on NFP shock should pressure defensives (XLV/XLU/XLP), but the haven bid from the 11/05 tape drop (+ gold near $4,000) keeps a tailwind. No clean directional leg => neutral."
+    },
+    "cyclicals": {
+      "long": 1,
+      "short": 1,
+      "why": "NFP +165K strongly supports cyclicals (XLI/XLB) on the growth leg; but ISM Services 54.5 (3-month low, ISM 11/04) is a temper. Mixed, positive lean for XLI on the NFP shock but not enough to score 2/0."
+    },
+    "bonds": {
+      "long": 0,
+      "short": 2,
+      "why": "FLIP DOWN FROM 2/0 (11/05). NFP +165K vs 65K forecast is a strong positive shock that should push yields UP, selling pressure on TLT/IEF. The 10Y at ~4.84% (near 2-month low on 11/05, TradingEconomics 11/05) now faces a NFP-driven reset. Strong labor = rising yields = regime against the bond long. 0/2."
+    },
+    "metals": {
+      "long": 1,
+      "short": 1,
+      "why": "Gold $4,068.66/oz (TradingEconomics 11/06), still near $4,000 with weak-dollar support fading as DXY up 0.62%. The haven bid from the 11/05 tape drop still provides a floor, but the NFP beat reverses the weak-dollar/rate-down tailwind that supported the metals long on 11/05 => net neutral."
+    },
+    "dollar": {
+      "long": 2,
+      "short": 0,
+      "why": "FLIP UP FROM 0/2 (11/05). DXY 102.18, up 0.62% on 11/06 (TradingEconomics 11/06) on the NFP beat (+165K vs 65K). The strong-labor print reverses the weak-dollar theme of 11/05. Strong economy supports the UUP long; regime against the UUP short."
+    }
+  },
+  "symbols": {
+    "XLE": {"long": 0, "short": 1, "why": "Brent $96.83, WTI ~$90.69 (11/06), in the Iran-war-resolution downtrend => regime against energy long."},
+    "XOM": {"long": 0, "short": 1, "why": "Same as XLE; no in-window XOM report (Jan 29/30, 2027 per public.com) => neutral for earnings, regime against energy long."},
+    "USO": {"long": 0, "short": 1, "why": "Held long, WTI ~$90.69 in the down trend; NFP beat doesn't reverse the commodity trend => regime against USO long, still the book's active risk."},
+    "XLF": {"long": 1, "short": 1, "why": "NFP +165K supports lending volumes/NIM expansion, but 10Y near 2-month low was a NIM headwind and S&P just down -4.36% => net neutral."},
+    "JPM": {"long": 1, "short": 1, "why": "Same as XLF; next earnings 01/14/2027 (Wall Street Horizon) out of 10-trading-day window => neutral on earnings, mixed on regime."},
+    "TLT": {"long": 0, "short": 2, "why": "FLIP DOWN FROM 2/0: NFP +165K vs 65K beat pushes yields up => reg ime strongly against TLT long; bond short is now regime-supported."},
+    "IEF": {"long": 0, "short": 2, "why": "Same as TLT: NFP beat = rising yields => regime against IEF long; IEF short is regime-supported."},
+    "GLD": {"long": 1, "short": 1, "why": "Gold $4,068/oz on 11/06, near $4,000 floor; weak-dollar support fading as DXY +0.62% today, but haven bid intact => neutral; GLD short still fighting the tape (underwater but not yet reversed by data)."},
+    "SLV": {"long": 1, "short": 1, "why": "Silver follows gold regime => neutral; SLV short still fighting the tape."},
+    "GDX": {"long": 1, "short": 1, "why": "Miners follow spot gold => neutral; GDX short still fighting the tape."},
+    "UUP": {"long": 2, "short": 0, "why": "FLIP UP FROM 0/2: DXY 102.18 +0.62% on 11/06 NFP beat (TradingEconomics 11/06) => regime against UUP short; UUP long is regime-supported."},
+    "IWM": {"long": 1, "short": 1, "why": "Strong NFP supports small caps, but S&P 500 just dropped -4.36% (small caps often lead down in broad selloffs) => neutral."},
+    "QQQ": {"long": 1, "short": 1, "why": "QQQ down hard with the 11/05 tape; NVDA 11/17 excluded; no clean direction => neutral."},
+    "XLK": {"long": 1, "short": 1, "why": "Chip tape down on 11/05; no clean direction => neutral."},
+    "SMH": {"long": 1, "short": 1, "why": "Semis down with the tape; NVDA out of the picture (11/17, excluded) => neutral."},
+    "NVDA": {"long": 0, "short": 0, "why": "EARNINGS GATE: NVDA reports 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon + Yahoo Finance, checked 2026-11-06) — ~8 trading days from 11/06, still inside the 10-trading-day window => excluded via regime exclude."},
+    "AVGO": {"long": 1, "short": 1, "why": "Next AVGO report (12/10/2026 per Wall Street Horizon/Zacks) beyond 10-trading-day window => neutral."},
+    "TSLA": {"long": 1, "short": 1, "why": "No forward TSLA report in the 10-trading-day window (Q4 next Jan 27, 2027 per public.com) => neutral."},
+    "AMZN": {"long": 1, "short": 1, "why": "AMZN reported Q3 on 10/29/2026 (CNBC 10/29); next report early 2027, out of window => neutral."},
+    "MSFT": {"long": 1, "short": 1, "why": "MSFT reported F1 Q1 on 10/28; next report ~Jan 27/28, out of 10-trading-day window => neutral."},
+    "GOOGL": {"long": 1, "short": 1, "why": "Alphabet reported Q3 on 10/28/2026 (CNBC); next report out of window => neutral."},
+    "META": {"long": 1, "short": 1, "why": "META reported Q3 on ~10/21/2026 (investor.atmeta.com); next report Jan 27, 2027, out of window => neutral."},
+    "AAPL": {"long": 1, "short": 1, "why": "AAPL reported after close 11/02/2026 (Apple IR); next report ~Jan 28, 2027 (public.com/Wall Street Horizon), out of window => neutral."}
+  },
+  "exclude": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon, checked 2026-11-06) — ~8 trading days from 11/06, inside the 10-trading-day window"
+  },
+  "catalysts": [
+    "NFP RELEASED 11/06 08:30 ET: +165K vs 65K BLS forecast, unemployment 4.1%, avg hourly earnings +0.4% MoM / +3.1% YoY (BLS Employment Situation 'for October 2026', www.bls.gov/news.release/empsit.nr0.htm, USDL-26-1632). BIG BEAT: +100K above the 65K consensus (forex factory). August revised +53K to +186K, September revised +31K to +60K => the labor market is materially stronger than previously reported. This reverses the bonds long regime and supports the dollar long.",
+    "NO OTHER TIER-1 EVENT TODAY: No CPI (that's Nov 10), no PPI (Nov 13), no FOMC decision (Dec 8-9). NFP is the only tier-1 US macro event on 11/06.",
+    "BROAD MARKETS: S&P 500 closed 7,353.73 on 11/05, down -4.36% / -335 pts in a single day (Yahoo Finance history, 11/05). The 52-week high of 7,844.52 (CNBC) means the index is 591 pts (~7.5%) below its intraday high. Violent reversal from the +3.03% Dow day on 11/04.",
+    "10-YEAR YIELD: ~4.84% on 11/05 (TradingEconomics 11/05), near a 2-month low. With NFP +165K released this morning, expect the 10Y to push back UP toward 4.90%+. The bond-regime FLIP from 2/0 to 0/2 is the single most important regime change today.",
+    "DOLLAR: DXY 102.18, up 0.62% on 11/06 (TradingEconomics 11/06), reversing the weak-dollar theme from 11/05. UUP short regime now FLIPS to UUP long: 0/2 => 2/0. Strong labor supports dollar.",
+    "OIL: Brent $96.83 (TradingEconomics 11/06, -1.48% on the day), WTI ~$90.69 (businessinsider.com 11/06). Both in the Iran-war-resolution downtrend that began 11/03. Energy regime still against the long (0/1). The held USO long remains the book's active risk.",
+    "GOLD: $4,068.66/oz on 11/06 (TradingEconomics 11/06), down 0.47% but still near $4,000. Weak-dollar support (which supported the metals long on 11/05) is fading as DXY reverses. Metals regime neutral 1/1 (was 2/0 on 11/05). GLD/SLV/GDX shorts still underwater but the tape pressure is building.",
+    "EARNINGS GATE (10-trading-day window from 11/06 through ~11/20): NVDA 11/17 = ~8 trading days out => EXCLUDE. No other in-window report found: AAPL/MSFT/GOOGL/META/AMZN all reported late Oct/early Nov with next reports in Jan 2027; JPM next 01/14/2027; XOM next ~Jan 29, 2027; TSLA next Jan 27, 2027. AVGO next 12/10, 2026 (out of window). exclude = {NVDA} unchanged.",
+    "REGIME SHIFTS FROM 11/05: BROAD: 2/0 => 1/1 (S&P -4.36% on NFP anticipation, but the data itself is positive). BONDS: 2/0 => 0/2 (NFP beat = yields up = bond short regime). DOLLAR: 0/2 => 2/0 (NFP beat = dollar up = UUP long regime). METALS: 2/0 => 1/1 (weak-dollar support fading, but haven bid intact). All other themes neutral. NET: the regime is now fighting the metals/tech/bond shorts that are underwater in the book, and also fighting the USO long — a difficult tape to trade today."
+  ]
+}
