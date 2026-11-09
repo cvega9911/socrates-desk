@@ -1,0 +1,93 @@
+{
+   "date": "2026-11-09",
+   "themes": {
+     "broad": {
+       "long": 1,
+       "short": 1,
+       "why": "MIXED. S&P 500 closed 7,376.86 on 11/06 (+0.31%, +23.13) — a small green bounce off the 11/05 -4.36% drop, but still ~7.5% below the 7,844.52 52-wk high (CNBC 11/06, CNBC 05/11). Nasdaq in confirmed correction; CPI Tue 11/10 is the swing risk. No clean regime direction => neutral."
+     },
+     "tech": {
+       "long": 0,
+       "short": 2,
+       "why": "STRONG SHORT. Nasdaq in a confirmed correction (-5.52% on 11/05 to 24,315, CBOE 11/06) and Technology was -8.2% for the week (streetstats.finance 11/06). Chip stocks sank globally on AI de-rating (Reuters 11/05). 10Y still elevated at ~4.84% (FRED/CNBC 11/09). Regime strongly against the tech long; tech short regime-supported."
+     },
+     "consumer": {
+       "long": 1,
+       "short": 1,
+       "why": "No in-window consumer-name signal; XLY/AMZN/TSLA get the mixed broad tape + a positive consumer-defensive rotation. No clean direction => neutral."
+     },
+     "energy": {
+       "long": 0,
+       "short": 1,
+       "why": "STILL DOWNTRENDING. Brent $94.62 (-3.76%), WTI $87.96 (-3.16%) on 11/09 (OilPrice.com ticker 11/09); Energy sector -12.0% for the week (streetstats.finance 11/06). The down trend that began 11/03 continues. Regime against energy long; USO remains the book's active risk."
+     },
+     "financials": {
+       "long": 1,
+       "short": 1,
+       "why": "10Y FALLING back to 4.84% (from 4.95% on 11/03, FRED 11/09) is a NIM headwind for lenders; offset by the still-strong labor market. No clean directional leg => neutral."
+     },
+     "defensive": {
+       "long": 2,
+       "short": 0,
+       "why": "FLIP UP. Confirmed risk-off rotation: consumer staples +0.8% and healthcare favored into the week (streetstats.finance 11/06, Morningstar 2026 rotation), Nasdaq in correction, VIX ~25.6 (CBOE 11/06). XLV long is regime-supported."
+     },
+     "cyclicals": {
+       "long": 1,
+       "short": 1,
+       "why": "Energy/industrials weak this week (Energy -12.0%), tempering the NFP positive; no clean cyclical leg => neutral."
+     },
+     "bonds": {
+       "long": 2,
+       "short": 0,
+       "why": "FLIP UP FROM 0/2 (11/06). 10Y 4.84% on 11/09 (FRED release 11/09), DOWN from 4.95% on 11/03 — the post-NFP re-hawk has faded. Falling yields = regime strongly against the bond short; TLT/IEF long is regime-supported."
+     },
+     "metals": {
+       "long": 2,
+       "short": 0,
+       "why": "FLIP UP FROM 1/1 (11/06). Gold ~$4,070-4,097/oz (BullionVault/Yahoo 11/09) and DXY DOWN to 101.81 (-0.47%, TradingEconomics/CNBC 11/09) revives the weak-dollar/haven bid that faded after the 11/06 NFP print. Metals long regime-supported; the open SLV short is fighting the regime."
+     },
+     "dollar": {
+       "long": 0,
+       "short": 2,
+       "why": "FLIP DOWN FROM 2/0 (11/06). DXY 101.81, down 0.47% on 11/09 (TradingEconomics/CNBC 11/09) — the NFP-driven dollar strength has reversed. Regime against the UUP long; UUP short regime-supported."
+     }
+   },
+   "symbols": {
+     "XLE": {"long": 0, "short": 1, "why": "Brent $94.62, WTI $87.96 on 11/09 (OilPrice.com), in the down trend that began 11/03 => regime against energy long."},
+     "XOM": {"long": 0, "short": 1, "why": "Same as XLE; no in-window XOM report (next ~Jan 2027) => neutral on earnings, regime against energy long."},
+     "USO": {"long": 0, "short": 1, "why": "Held long; WTI $87.96 in the down trend (OilPrice 11/09), weakest part of the book => regime against USO long, still the book's active risk."},
+     "XLF": {"long": 1, "short": 1, "why": "10Y falling to 4.84% is a NIM headwind offset by strong labor => net neutral."},
+     "JPM": {"long": 1, "short": 1, "why": "Same as XLF; next earnings 01/14/2027 (Wall Street Horizon) out of the 10-trading-day window => neutral."},
+     "TLT": {"long": 2, "short": 0, "why": "FLIP UP: 10Y 4.84% on 11/09 (FRED), down from 4.95% on 11/03 => regime strongly against the bond short; TLT long regime-supported."},
+     "IEF": {"long": 2, "short": 0, "why": "Same as TLT: falling 10Y => regime against IEF short; IEF long regime-supported."},
+     "GLD": {"long": 2, "short": 0, "why": "FLIP UP: gold ~$4,070-4,097/oz on 11/09 (BullionVault/Yahoo) with DXY DOWN -0.47% => weak-dollar/haven bid returns; GLD long regime-supported."},
+     "SLV": {"long": 2, "short": 0, "why": "Silver follows gold; regime is metals-long-2 after the 11/06 flip => the open SLV short is fighting the regime."},
+     "GDX": {"long": 2, "short": 0, "why": "Miners follow spot gold (~$4,070/oz, weak dollar) => GDX long regime-supported."},
+     "UUP": {"long": 0, "short": 2, "why": "FLIP DOWN: DXY 101.81 -0.47% on 11/09 (TradingEconomics/CNBC) => regime against the UUP long; UUP short regime-supported."},
+     "IWM": {"long": 1, "short": 1, "why": "Nasdaq correction and weak small-cap breadth offset by positive NFP => neutral."},
+     "QQQ": {"long": 0, "short": 2, "why": "Nasdaq in confirmed correction (-5.52% on 11/05, CBOE 11/06); Tech -8.2% wk => regime against the tech long; QQQ short regime-supported."},
+     "XLK": {"long": 0, "short": 2, "why": "Semis/tech hardest hit (-8.2% wk, streetstats 11/06); open XLK short still regime-supported."},
+     "SMH": {"long": 0, "short": 2, "why": "Chip stocks sank globally on AI de-rating (Reuters 11/05); regime strongly against the semi long."},
+     "NVDA": {"long": 0, "short": 0, "why": "EARNINGS GATE: NVDA reports 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon, checked 2026-11-09) — ~6 trading days from 11/09, inside the 10-trading-day window => excluded via regime exclude."},
+     "AVGO": {"long": 0, "short": 2, "why": "Next AVGO report 12/10/2026 out of the 10-trading-day window; chipmaker in the AI de-rating => tech-short-2 regime."},
+     "TSLA": {"long": 1, "short": 1, "why": "No forward TSLA report in the 10-trading-day window (Q4 next ~Jan 27, 2027) => neutral."},
+     "AMZN": {"long": 1, "short": 1, "why": "AMZN reported Q3 10/29/2026; next report early 2027 out of window => neutral."},
+     "MSFT": {"long": 1, "short": 1, "why": "MSFT reported F1 Q1 10/28; next report ~Jan 27/28 out of window => neutral."},
+     "GOOGL": {"long": 1, "short": 1, "why": "Alphabet reported Q3 10/28/2026; next report out of window => neutral."},
+     "META": {"long": 1, "short": 1, "why": "META reported Q3 ~10/21/2026; next report Jan 27, 2027 out of window => neutral."},
+     "AAPL": {"long": 1, "short": 1, "why": "AAPL reported 11/02/2026; next report ~Jan 28, 2027 out of window => neutral."}
+   },
+   "exclude": {
+     "NVDA": "earnings 2026-11-17 after close (NVIDIA IR events page + Wall Street Horizon, checked 2026-11-09) — ~6 trading days from 11/09, inside the 10-trading-day window"
+   },
+   "catalysts": [
+     "NO TIER-1 EVENT TODAY 11/09: CPI is Tue 11/10 08:30 ET (BLS), PPI Fri 11/13 08:30 ET, FOMC minutes Wed 11/18 14:00 ET, next FOMC Dec 8-9 (NY Fed calendar + MarketWatch calendar 11/09). Today's only items are Wholesale Trade 10:00 ET and NY Fed consumer expectations 11:00 ET — not tier 1.",
+     "10-YEAR YIELD: 4.84% on 11/09 (FRED dgs10 release 11/09; CNBC 8:50 ET 4.835%), DOWN from 4.95% on 11/03. The post-NFP re-hawk that flipped bonds to 0/2 on 11/06 has faded => bonds flip back to long-2.",
+     "DOLLAR: DXY 101.81, down 0.47% on 11/09 (TradingEconomics/CNBC 11/09), reversing the 11/06 NFP-driven strength => dollar flips to short-2.",
+     "OIL: Brent $94.62 (-3.76%), WTI $87.96 (-3.16%) on 11/09 (OilPrice.com); Energy -12.0% for the week. Down trend continues => energy long regime-against.",
+     "GOLD/METALS: ~$4,070-4,097/oz on 11/09 (BullionVault/Yahoo) with DXY down => weak-dollar/haven bid returns => metals flip to long-2; the open SLV short is fighting this.",
+     "EQUITIES: S&P 500 closed 7,376.86 on 11/06 (+0.31%) but ~7.5% below its 52-wk high; Nasdaq in a confirmed correction (-5.52% on 11/05), Tech -8.2% for the week, VIX ~25.6 (CBOE 11/06). Defense rotation (XLV long-2) + tech short-2 are the cleanest reads.",
+     "EARNINGS GATE (10-trading-day window 11/09 through ~11/24): NVDA 11/17 = ~6 trading days out => EXCLUDE. No other in-window report: AAPL/MSFT/GOOGL/META/AMZN report in Jan 2027; JPM next 01/14/2027; XOM next ~Jan 2027; TSLA ~Jan 27; AVGO 12/10, 2026 (out of window). exclude = {NVDA} unchanged.",
+     "REGIME SHIFTS FROM 11/06: BONDS 0/2 => 2/0 (yields fell). DOLLAR 2/0 => 0/2 (DXY fell). METALS 1/1 => 2/0 (haven bid returns). DEFENSIVE 1/1 => 2/0 (confirmed risk-off). TECH stays 0/2 (correction). NET: the regime now favors the long side into defensives/bonds/metals and the short side into tech/dollar — but the book is long SLV/long-none on metals (SLV short open) and short QQQ/XLK/SPY (tech/broad shorts), so several open positions fight the new regime."
+   ]
+}
