@@ -103,10 +103,65 @@ def simulate_cands(cands, frames):
             continue        # not matured: early exits would bias the sample
         res = D.simulate_logged(fr, c["direction"], c["entry"], c["stop"], c["target"], d0)
         if res is not None:
-            out.append({"date": c["date"], "action": c.get("action"), "score": c["score"],
-                        "direction": c["direction"], "earnings_unverified": c.get("earnings_unverified", False),
-                        "breakdown": c.get("breakdown") or {}, "R": res[0]})
+            row = {"date": c["date"], "action": c.get("action"), "score": c["score"],
+                   "direction": c["direction"], "earnings_unverified": c.get("earnings_unverified", False),
+                   "breakdown": c.get("breakdown") or {}, "R": res[0], "reason": res[1]}
+            # Measurement only (section 5d): never used to pick or size trades.
+            alt = c.get("alt") or {}
+            row["pullback"] = alt.get("pullback") if alt.get("pullback") is not None \
+                else D.pullback_from_bars(fr[0], d0, c["direction"])
+            wide = D.simulate_logged(fr, c["direction"], c["entry"],
+                                     D.buffered_stop(c["direction"], c["entry"], c["stop"]), c["target"], d0)
+            row["R_wide"] = wide[0] if wide else None
+            row["reason_wide"] = wide[1] if wide else None
+            row["recovered"] = D.stop_recovery(fr, c["direction"], c["entry"], c["stop"], c["target"], d0) \
+                if res[1] == "stop" else None
+            out.append(row)
     return out
+
+
+def avg_line(rs):
+    rs = [r for r in rs if r is not None]
+    return f"{sum(rs)/len(rs):+.2f}R avg, win {sum(r > 0 for r in rs)/len(rs):.0%} (n={len(rs)})" if rs else "none"
+
+
+def price_action_lines(study):
+    """Section 5d. A: the score's 5-day momentum point vs a pullback-in-trend point. B: our stops vs stops 25% wider,
+    and how often a stop-out closed back at the entry within a few days (the 'stop hunt' signature)."""
+    L = []
+    rows = [r for r in study if r.get("pullback") is not None]
+    L.append(f"- A. Momentum point (current score) vs pullback-in-trend point (alternative), {len(rows)} matured candidates:")
+    L.append("    - Momentum 1 (5-day move with the trade): " + avg_line([r["R"] for r in rows if r["breakdown"].get("momentum") == 1]))
+    L.append("    - Pullback 1 (5-day move against it, inside the trend): " + avg_line([r["R"] for r in rows if r["pullback"] == 1]))
+    L.append("    - Neither: " + avg_line([r["R"] for r in rows if r["breakdown"].get("momentum") != 1 and r["pullback"] != 1]))
+    if rows:
+        alt = [dict(r, score=r["score"] - r["breakdown"].get("momentum", 0) + r["pullback"]) for r in rows]
+        days = len({r["date"] for r in rows})
+        cur_r, alt_r = corr([r["score"] for r in rows], [r["R"] for r in rows]), corr([r["score"] for r in alt], [r["R"] for r in alt])
+        L.append(f"    - Score vs forward R correlation: current {cur_r:+.3f}; with pullback instead of momentum {alt_r:+.3f}.")
+        if len(rows) >= 200 and days >= 10:
+            _, p_cur = within_day_perm_p(rows)
+            _, p_alt = within_day_perm_p(alt)
+            L.append(f"    - Within-day permutation p: current {p_cur:.3f}; alternative {p_alt:.3f} "
+                     f"(below {C.EXPLORATORY_ALPHA} = exploratory hint only).")
+        else:
+            L.append(f"    - Significance withheld: needs 200+ matured candidates over 10+ days (have {len(rows)} over {days}).")
+    wide = [r for r in study if r.get("R_wide") is not None]
+    L.append(f"- B. Our stops vs stops {D.STOP_BUFFER_FRAC:.0%} further away (same entry and target; R measured on each "
+             f"version's own risk), {len(wide)} matured candidates:")
+    L.append("    - Current stops: " + avg_line([r["R"] for r in wide]) +
+             f", stopped out {sum(r['reason'] == 'stop' for r in wide)}")
+    L.append("    - Wider stops:   " + avg_line([r["R_wide"] for r in wide]) +
+             f", stopped out {sum(r['reason_wide'] == 'stop' for r in wide)}")
+    rec = [r["recovered"] for r in study if r.get("recovered") is not None]
+    L.append(f"    - Of {len(rec)} stop-outs, {sum(rec)} ({(sum(rec)/len(rec)) if rec else 0:.0%}) closed back at the entry within "
+             f"{D.RECOVERY_DAYS} trading days." if rec else
+             f"    - Stop-outs with {D.RECOVERY_DAYS} days of data after them: none yet.")
+    L.append("- How to read 5d: these only inform a future v1.1, which needs 40 closed trades, Chris's approval and a version "
+             "bump. The logged direction was chosen by the current score, so the pullback rows are a subset test, not a "
+             "full re-score; wider stops mean smaller positions, so compare R, not dollars; consecutive days overlap, so "
+             "the effective sample is smaller than n.")
+    return L
 
 
 def score_study(cands, frames):
@@ -231,7 +286,7 @@ def _run(offline):
         equity = float(b.account()["equity"])
         syms = sorted({c["symbol"] for c in cands} | {c["symbol"] for c in D.read_jsonl(D.CONTROL)} | {"SPY"})
         first = min([c["date"] for c in cands] + [c["date"] for c in D.read_jsonl(D.CONTROL)] + [start["date"]])
-        frames = D.simulation_bars(b, syms, first, today)
+        frames = D.simulation_bars(b, syms, first, today, lookback_days=120)   # 120: room for the 50-day average in 5d
         spy_now = float(frames["SPY"][0]["close"].iloc[-1])
         spy_start = start["spy_close"] / D.split_factor(frames["SPY"][0], frames["SPY"][1],
                                                         dt.date.fromisoformat(start["date"]))
@@ -342,6 +397,15 @@ def _run(offline):
                  "count and the p-value is optimistic; the rr factor changes the size of winning R by construction; "
                  "the regime rows test Socrates' macro research (regime 2 vs 1 vs 0); several tables are read at once, so "
                  "expect some false leads.")
+
+    # 5d. Two price-action ideas, measured on the same candidates. Logged and reported only; v1.0 trades are unchanged.
+    L.append("\n### 5d. Price-action measurements (logged only, not traded) [exploratory]")
+    if not frames:
+        L.append("- Skipped (needs Alpaca data).")
+    elif not study:
+        L.append("- No matured candidates yet.")
+    else:
+        L.extend(price_action_lines(study))
 
     # 6. Calibration: p_target = chance the target is hit BEFORE the stop. Trades that ended on the time stop hit
     # neither, so they are left out (counted below), as are trades from before the base-rate rule (no p_base).

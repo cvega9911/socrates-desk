@@ -81,6 +81,7 @@ To draw controls for a day where DECISION already ran without them (only while t
 - **5b Random baseline (the one primary test):** do the planned candidates beat random ones? Both are simulated the same way from the logged levels, so fills and timing can't tilt it. Each planned trade is compared with the controls drawn the same day in the same direction (so the market's move and direction can't pose as skill); those differences are averaged per fortnight and a sign-flip test runs on the fortnights. The test is only read at three looks set in advance: after 13, 26 and 52 closed fortnights. Each look uses exactly those fortnights, so checking the weekly review in between can't fish for a result. A look needs 20+ matched planned candidates over 10+ decision days and 50+ controls. "Better than random" needs p < 0.014 and "worse" p < 0.017 at a look; with no skill that comes out to a false call about 2.5% of the time or less each way across all three looks (`python tests/null_check.py` reruns that check). Real fills are shown alongside, descriptive only.
 - **5c Score study (exploratory):** simulates every scored candidate (about 31 a day, not just the 5 traded) for 10 days and shows average R by score and by each factor, including Socrates' regime points. Significance test (shuffled within each day) after 200+ matured candidates over 10+ days. Many tables are read at once with no correction, so a hit here is a lead, not a finding.
 - **6 Calibration:** Socrates' p_target is anchored to the neutral base rate 1/(1+R:R); place.py refuses values more than 15 points away, and the review scores him against the base rate on trades that ended at the target or the stop (time-stop exits and pre-rule trades are counted but left out).
+- **5d Price action (exploratory, nothing traded):** two ideas I picked up looking into Smart Money Concepts, tested on the same candidates as 5c. One swaps the 5-day momentum point for a pullback inside the trend (short-term moves tend to reverse, per the sources in section 9). The other reruns every candidate with the stop 25% further out and counts how often a stopped trade closed back at the entry within 5 days, since stops tend to bunch at obvious levels. Neither changes a trade. If one holds up, it's a candidate for v1.1 after 40 closed trades.
 - The SPY comparison (section 3) mostly reflects market exposure, not skill. Judge the edge on R and on 5b/5c.
 
 ## 8. Rules about the rules
@@ -102,6 +103,7 @@ Rules v1.0 is **not a published or consensus strategy.** It is a rules-based swi
 | Fixed % risk sizing, R-multiples | Van Tharp (1998) | Risk management, not an edge |
 | Earnings blackout | Avoid earnings-day gaps that jump stops | Standard risk practice |
 | Score weights, tiers, quota rule, 10-day hold | Design choices for this experiment | None; chosen to make the test run |
+| Pullback point and wider-stop test (5d, measurement only) | Short-term reversal (Lehmann 1990; Jegadeesh 1990); stop orders cluster near obvious levels (Osler 2002). The 2026 study of 44 coded SMC signals found none beat random entry (Tangirala 2026) | Reversal is well studied; stop clustering was shown in currencies over hours, not stocks over days |
 | Random control group, permutation tests | Aronson (2006); White's Reality Check (2000) | Standard method for separating skill from luck |
 | Matured-only results, sample-size gates | Multiple-testing and overfitting warnings (Harvey, Liu & Zhu 2016; Bailey et al. 2017) | Standard method |
 | p_target base rate 1/(1+R:R), Brier score | Hit probability for a target R vs stop of 1 under a driftless random walk; Brier (1950) | Standard math |
@@ -121,6 +123,8 @@ Rules v1.0 is **not a published or consensus strategy.** It is a rules-based swi
 - Park & Irwin (2007). "What Do We Know About the Profitability of Technical Analysis?" *Journal of Economic Surveys* 21(4): 786-826. [RePEc](https://ideas.repec.org/a/bla/jecsur/v21y2007i4p786-826.html)
 - Harvey, Liu & Zhu (2016). "...and the Cross-Section of Expected Returns." *Review of Financial Studies* 29(1).
 - Bailey, Borwein, López de Prado & Zhu (2017). "The Probability of Backtest Overfitting." *Journal of Computational Finance*. [SSRN](https://papers.ssrn.com/abstract=2326253)
+- Osler (2002). "Stop-Loss Orders and Price Cascades in Currency Markets." Federal Reserve Bank of New York Staff Report 150. [NY Fed](https://www.newyorkfed.org/medialibrary/media/research/staff_reports/sr150.html)
+- Tangirala (2026). "Do Smart Money Concepts Predict Returns? Evidence from 44 Formalised Detectors on S&P 500 Daily Bars, 2010-2026." [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7483658)
 - White (2000). "A Reality Check for Data Snooping." *Econometrica* 68(5).
 - Aronson (2006). *Evidence-Based Technical Analysis.* Wiley.
 - Wilder (1978). *New Concepts in Technical Trading Systems.*

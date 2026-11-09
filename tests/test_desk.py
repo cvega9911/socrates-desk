@@ -305,6 +305,12 @@ start = json.loads(D.START_FILE.read_text())
 ok(start["equity"] == 100000.0 and "spy_close" in start, "start_date.txt initialised")
 logged = D.read_jsonl(D.CANDIDATES)
 ok(len(logged) == len(D.UNIVERSE), "one candidate row per symbol logged")
+ok(all(isinstance(c.get("alt"), dict) and c["alt"]["pullback"] in (0, 1) and "ret5" in c["alt"] for c in logged),
+   "each logged candidate carries the measurement-only pullback point and 5-day return")
+ok(all(c["score"] == sum(c["breakdown"].values()) for c in logged),
+   "the pullback point is NOT part of the score (score = the six v1.0 factors only)")
+ok(not any(c["breakdown"]["momentum"] == 1 and c["alt"]["pullback"] == 1 for c in logged),
+   "momentum and pullback points never both fire on the same candidate (they read the 5-day move oppositely)")
 energy_blocked = [c for c in logged if c["action"] == "blocked" and "theme" in (c["block_reason"] or "")]
 print("   blocked by theme:", [c["symbol"] for c in energy_blocked])
 
@@ -1373,6 +1379,58 @@ ok(sym_ok and lock_target.read_text() == "keep me", "the lock file refuses to fo
 D.LOCK_FILE.unlink()
 D.write_jsonl(D.TRADES, [{"x": 1}])
 ok(not list((TMP / "journal").glob("*.tmp")), "atomic writes leave no temp files behind")
+
+
+# ---------------- price-action measurements (5d, logged only) ----------------
+print("price-action measurements")
+fu = {"close": 110.0, "sma50": 100.0, "ret5": -0.02}
+ok(D.pullback_point(fu, "long") == 1 and D.pullback_point(dict(fu, ret5=0.02), "long") == 0,
+   "pullback point: long scores 1 only on a 5-day dip above the 50-day average")
+ok(D.pullback_point({"close": 90.0, "sma50": 100.0, "ret5": 0.03}, "short") == 1 and
+   D.pullback_point({"close": 110.0, "sma50": 100.0, "ret5": 0.03}, "short") == 0,
+   "pullback point: short scores 1 only on a 5-day bounce below the 50-day average")
+ok(abs(D.buffered_stop("long", 100.0, 96.0) - 95.0) < 1e-9 and abs(D.buffered_stop("short", 100.0, 104.0) - 105.0) < 1e-9,
+   "buffered stop sits 25% of the stop distance further away, both directions")
+
+pa_days = [dt.date(2026, 1, 1) + dt.timedelta(days=i) for i in range(80)]
+def pa_frame(closes, lows=None, highs=None):
+    import pandas as _pd
+    lows = lows or [c - 0.5 for c in closes]
+    highs = highs or [c + 0.5 for c in closes]
+    return _pd.DataFrame({"date": pa_days[:len(closes)], "open": closes, "high": highs, "low": lows,
+                          "close": closes, "volume": [1e6] * len(closes)})
+up = [100 + i * 0.5 for i in range(60)] + [128.0, 127.0, 126.0, 125.0, 124.0, 123.0]   # uptrend, then a 5-day dip
+dfp = pa_frame(up)
+d_dip = pa_days[66]
+ok(D.pullback_from_bars(dfp, d_dip, "long") == 1, "pullback rebuilt from bars: dip in an uptrend counts")
+ok(D.pullback_from_bars(dfp, pa_days[40], "long") is None, "pullback rebuilt from bars: too little history gives None")
+
+d0 = pa_days[5]
+path = [100.0] * 6 + [99.0, 94.0, 97.0, 101.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
+lows = [c - 0.5 for c in path]
+lows[7] = 94.0                      # day 2 after d0 trades through a 95 stop
+dfr = pa_frame(path, lows=lows)
+fr_ = (dfr, dfr)
+ok(D.stop_recovery(fr_, "long", 100.0, 95.0, 110.0, d0) is True, "stop recovery: a close back at entry within 5 days is caught")
+path2 = [100.0] * 6 + [99.0, 94.0] + [93.0] * 8
+dfn = pa_frame(path2, lows=[c - 0.5 for c in path2])
+ok(D.stop_recovery((dfn, dfn), "long", 100.0, 95.0, 110.0, d0) is False, "stop recovery: no recovery reports False")
+ok(D.stop_recovery((dfn, dfn), "long", 100.0, 90.0, 110.0, d0) is None, "stop recovery: never stopped gives None")
+short_path = [100.0] * 6 + [101.0, 106.0]
+dfs = pa_frame(short_path, highs=[c + 0.5 for c in short_path])
+ok(D.stop_recovery((dfs, dfs), "short", 100.0, 105.0, 90.0, d0) is None,
+   "stop recovery: not enough days after the stop gives None (not counted)")
+
+fake_study = []
+for i in range(12):
+    fake_study.append({"date": f"2026-10-{1 + i % 6:02d}", "score": 7 + i % 3, "R": (1.0 if i % 2 else -1.0),
+                       "breakdown": {"momentum": i % 2}, "pullback": 1 - i % 2, "R_wide": 0.5, "reason": "stop",
+                       "reason_wide": "time", "recovered": bool(i % 3 == 0)})
+pa_txt = "\n".join(review.price_action_lines(fake_study))
+ok("Momentum 1" in pa_txt and "Pullback 1" in pa_txt and "Significance withheld" in pa_txt,
+   "5d report shows both price-action rows and withholds significance on a small sample")
+ok("Of 12 stop-outs, 4 (33%) closed back at the entry" in pa_txt, "5d report counts stop-out recoveries correctly")
+ok("Wider stops:   +0.50R avg" in pa_txt, "5d report shows the wider-stop simulation")
 
 shutil.rmtree(TMP)
 print(f"\nALL {passed} CHECKS PASSED")

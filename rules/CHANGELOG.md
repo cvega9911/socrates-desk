@@ -46,3 +46,11 @@ trade, or changes to logging/measurement that do not affect which trades are tak
   - Exit orders edited by hand in the dashboard are followed to their replacement; a position counts as protected
     only by a live stop (not a leftover target); re-placed stops never reuse a client order id; P/L uses the shares
     the exit actually sold.
+- 2026-11-09 (measurement only; trades unchanged, still v1.0): two price-action ideas are logged and reported in
+  review section 5d, never used to pick or size trades.
+  - Pullback-in-trend point: 1 when a long is above its 50-day average but down over 5 days (or a short below it
+    but up over 5 days). Logged on every candidate next to the score's momentum point, which reads the 5-day move
+    the opposite way. Older candidates get it rebuilt from the bars that existed on their decision day.
+  - Stop placement: every matured candidate is also simulated with its stop 25% of the stop distance further away,
+    and each stop-out is checked for a close back at the entry within 5 trading days.
+  - Either one can only change the rules in a v1.1 after 40 closed trades, with Chris's approval and a version bump.

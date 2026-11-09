@@ -247,7 +247,8 @@ def _run(mode, regime_path, force):
             total, br = D.score(f, d, pts, rr, is_spy=(s == "SPY"))
             c = {"symbol": s, "direction": d, "score": total, "breakdown": br, "entry": e, "stop": stop,
                  "target": target, "rr": rr, "tier": D.tier_for(total, rr), "theme": D.THEME_OF.get(s),
-                 "regime_why": why, "atr": round(f["atr"], 2), "close": round(f["close"], 2)}
+                 "regime_why": why, "atr": round(f["atr"], 2), "close": round(f["close"], 2),
+                 "alt": {"pullback": D.pullback_point(f, d), "ret5": round(f["ret5"], 4)}}   # measurement only
             if s in D.STOCKS:
                 c["earnings_unverified"] = s not in verified
             both.setdefault(s, {})[d] = c
@@ -406,7 +407,7 @@ def _run(mode, regime_path, force):
         "regime_sha": reg_sha, "plan_sha": plan_sha, "bars_feed": feed, "excluded": c["symbol"] in exclusions,
         "exclusion_conflict": c["symbol"] in contradicts,
         "earnings_unverified": bool(c.get("earnings_unverified")),
-        "shares": c.get("shares"), "risk_dollars": c.get("risk_dollars"),
+        "shares": c.get("shares"), "risk_dollars": c.get("risk_dollars"), "alt": c.get("alt"),
         "py": platform.python_version()} for c in cands])
     return result
 

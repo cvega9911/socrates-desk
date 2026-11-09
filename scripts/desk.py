@@ -516,13 +516,13 @@ def simulate_path(df, direction, entry, stop, target, start_date, horizon=TIME_S
 
 
 # ---------------- simulating logged levels forward ----------------
-def simulation_bars(b, syms, first_date, today):
+def simulation_bars(b, syms, first_date, today, lookback_days=7):
     """Bars for walking LOGGED price levels forward. Logged entries/stops/targets are real (unadjusted) prices, so
     simulate on split-only bars (dividends never move history) and keep raw bars to undo a split that happened
     after the logged date. Completed bars only. Returns {symbol: (split_df, raw_df)}."""
     if not syms:
         return {}
-    start = (dt.date.fromisoformat(first_date) - dt.timedelta(days=7)).isoformat() + "T00:00:00Z"
+    start = (dt.date.fromisoformat(first_date) - dt.timedelta(days=lookback_days)).isoformat() + "T00:00:00Z"
     end = bars_end()
     today_d = dt.date.fromisoformat(today)
     sp = b.daily_bars(syms, start, end, adjustment="split")
@@ -557,3 +557,59 @@ def simulate_logged(frames, direction, entry, stop, target, d0, horizon=TIME_STO
 def matured(df, d0, horizon=TIME_STOP_DAYS):
     """True once d0 has `horizon` completed bars after it, so every outcome is known."""
     return df is not None and len(df[df["date"] > d0]) >= horizon
+
+
+# ---------------- price-action measurements (logged and reported only; NOT part of the score) ----------------
+# Added 2026-11-09 as measurement only. Nothing below changes which trades are taken.
+STOP_BUFFER_FRAC = 0.25   # "what if the stop sat 25% further away": tests whether our stops sit where stops cluster
+RECOVERY_DAYS = 5         # after a stop-out, did price close back at the entry within this many trading days?
+
+
+def pullback_point(f, direction):
+    """1 = a pullback inside the bigger trend (the documented short-term reversal effect), else 0.
+    Long: above the 50-day average but down over the last 5 days. Short: below it but up over the last 5 days.
+    Compare with the score's momentum point, which rewards the opposite (5-day move WITH the direction)."""
+    if direction == "long":
+        return 1 if f["close"] > f["sma50"] and f["ret5"] < 0 else 0
+    return 1 if f["close"] < f["sma50"] and f["ret5"] > 0 else 0
+
+
+def pullback_from_bars(df, d0, direction):
+    """pullback_point rebuilt from the completed bars before decision day d0 (for candidates logged before the
+    point was recorded). Uses only data that existed at the time. None if there isn't enough history."""
+    hist = df[df["date"] < d0]
+    if len(hist) < 51:
+        return None
+    c = hist["close"]
+    f = {"close": float(c.iloc[-1]), "sma50": float(c.tail(50).mean()), "ret5": float(c.iloc[-1] / c.iloc[-6] - 1)}
+    return pullback_point(f, direction)
+
+
+def buffered_stop(direction, entry, stop, frac=STOP_BUFFER_FRAC):
+    """The same stop moved `frac` of the stop distance further from the entry."""
+    d = abs(entry - stop) * frac
+    return stop - d if direction == "long" else stop + d
+
+
+def stop_recovery(frames, direction, entry, stop, target, d0, horizon=TIME_STOP_DAYS, days=RECOVERY_DAYS):
+    """For a logged candidate that would have hit its stop: did a daily close get back to the entry price within
+    `days` trading days after the stop day? True/False, or None if it never stopped out (target first, same order of
+    checks as simulate_path) or the days after the stop are not complete yet."""
+    if not frames or frames[0] is None or frames[0].empty:
+        return None
+    df_split, df_raw = frames
+    f = split_factor(df_split, df_raw, d0)
+    e, s_, t = entry / f, stop / f, target / f
+    for _, bar in df_split[df_split["date"] > d0].head(horizon).iterrows():
+        if direction == "long":
+            hit_stop, hit_tgt = bar["low"] <= s_, bar["high"] >= t
+        else:
+            hit_stop, hit_tgt = bar["high"] >= s_, bar["low"] <= t
+        if hit_stop:
+            after = df_split[df_split["date"] > bar["date"]].head(days)
+            if len(after) < days:
+                return None
+            return bool((after["close"] >= e).any()) if direction == "long" else bool((after["close"] <= e).any())
+        if hit_tgt:
+            return None
+    return None
