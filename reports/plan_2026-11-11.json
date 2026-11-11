@@ -1,0 +1,183 @@
+{
+  "date": "2026-11-11",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 100500.04,
+  "spy_ret20": -0.0361,
+  "regime_file": "reports/regime_2026-11-11.json",
+  "regime_sha": "d01993470b9db749",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-11-25",
+  "exclusions": {
+    "NVDA": "earnings 2026-11-17 after close (NVIDIA IR + fool.com + investing.com, checked 2026-11-11) \u2014 ~4 trading days out, inside the 10-trading-day window"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): NVDA"
+  ],
+  "trading_days_since_last_AB": 3,
+  "run": "decision",
+  "day_pnl_pct": -0.0072,
+  "halted": false,
+  "open_positions": 5,
+  "open_risk_dollars": 2499.39,
+  "plan": [],
+  "blocked": [
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 29.35,
+      "stop": 29.11,
+      "target": 29.84,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY ~102.47-102.52 (marketwatch/Yahoo/CNBC 11/11) pressing the 52-week high on the hot-CPI re-hawk => UUP long strongly regime-supported.",
+      "atr": 0.12,
+      "close": 29.15,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 349.64,
+      "stop": 366.93,
+      "target": 297.78,
+      "rr": 3.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Next AVGO report 12/10/2026 is out of the 10-trading-day window (ends ~11/20 today); chipmaker in the AI de-rating + rising yields => tech-tilt short (mild, 1); no earnings exclusion.",
+      "atr": 17.29,
+      "close": 331.98,
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 522.84,
+      "stop": 504.96,
+      "target": 559.15,
+      "rr": 2.03,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MSFT F1 Q1 reported 10/28/2026; next report ~Jan 27/28 out of the window => neutral.",
+      "atr": 17.29,
+      "close": 533.16,
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 173.3,
+      "stop": 184.94,
+      "target": 150.03,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Semis/tech recovering but still in the AI de-rating with rising yields => open XLK short mildly regime-supported, trimmed from 2.",
+      "atr": 5.82,
+      "close": 168.91,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 58.2,
+      "stop": 56.16,
+      "target": 62.28,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "Hot CPI => NIM-positive but rate-hike equity headwind => net neutral.",
+      "atr": 1.02,
+      "close": 58.29,
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 1,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 166.17,
+      "stop": 176.49,
+      "target": 155.32,
+      "rr": 1.05,
+      "tier": "shadow",
+      "theme": "energy",
+      "regime_why": "Same as XLE; next XOM report ~late Jan 2027 is out of the 10-trading-day window => neutral on the earnings axis, regime still against the energy long.",
+      "atr": 5.16,
+      "close": 164.47,
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
