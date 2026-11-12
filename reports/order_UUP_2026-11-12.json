@@ -1,0 +1,8 @@
+{
+ "symbol": "UUP",
+ "p_target": 0.33,
+ "thesis": "UUP long on a 9/10 score (trend 2, relative strength 2, regime 2, reward/risk 2, 5-day momentum 1, volume 0) — the dollar broke to a fresh 52-week high of 103.08 on 11/12 (CNBC .DXY) on the hot-CPI re-hawk, making UUP the cleanest regime-confirmed long with a 2.0 R:R bracket.",
+ "invalidation": "Invalidated at the stop 29.18, a single-day DXY print back under the ~102.91 prior close, or a retest of the 103.08 high that fails and rejects back down — any of which proves the dollar breakout was a washout, not a continuation.",
+ "dissent": "Fails as a long if UUP closes back under 29.35 on 11/12 as the strong-dollar leg rolls over on soft risk-off demand, since a single hot CPI print can mean a one-day re-hawk rather than a sustained high-real-yield regime; 0.33 base rate (1/(1+2.0 R:R)) is the honest unsythesized probability with no upward adjustment.",
+ "earnings_checked": false
+}
