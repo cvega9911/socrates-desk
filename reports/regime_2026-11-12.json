@@ -1,0 +1,52 @@
+{
+ "date": "2026-11-12",
+ "themes": {
+     "energy": {"long": 0, "short": 1, "why": "WTI still in a downtrend at ~$85.83-86.53 on 11/11 (Forbes $85.83 -0.50% 7:17am; CME $86.53 / $86.00 -0.61% 11/11; investing.com $86.53) versus a 52-week high of $110.48 and ~$98 a week earlier => regime against the energy long; a small day-to-day bounce does not flip the downtrend => mild short (1)."},
+     "bonds": {"long": 0, "short": 2, "why": "10Y rose to ~5.05% intraday 11/12 (CNBC US10Y, 8:41 am EST, +0.061; prev 10/11 FRED close 4.88, TradingEconomics 4.99 on 11/10) on the hot-CPI (11/10) re-hawk with higher-for-longer-rate fears. Rising yields => regime strongly against the TLT/IEF long; the bond short remains the strongest, most confirmed read on the desk."},
+     "tech": {"long": 0, "short": 1, "why": "Nasdaq Composite closed -0.74% to 25,065.87 on 11/10 (Reuters 11/10) after the week's recovery; 10Y ~5.05% crushes long-duration chipmakers in the AI de-rating => tech long against (0); the short leg fights the prior-week bounce so it stays a mild short (1), down from the confirmed-short (2) on 11/11."},
+     "consumer": {"long": 1, "short": 1, "why": "NEUTRAL. Hot CPI (all-items +0.4% MoM, core +0.3% MoM, BLS 11/10) is a purchasing-power headwind for XLY/TSLA, but no in-window consumer-name price leg is confirmed today => neutral; revisit if XLY rolls over."},
+     "financials": {"long": 1, "short": 1, "why": "NEUTRAL. Hot CPI => higher-for-longer rates => wider net interest margins (a lender positive) offset by rate-hike fears that spook equities generally; net no clean directional leg for XLF/JPM. JPM next report ~late Jan/early Feb 2027, out of the 10-trading-day window => neutral on the earnings axis."},
+     "defensive": {"long": 1, "short": 0, "why": "MILD LONG (XLU scored 8/10). The high-real-yield / risk-off backdrop (10Y ~5.05%, equities closing lower) persists a staples/healthcare haven bid for XLV/XLU/XLP; no fresh risk-on leg argues a short, so keep long 1/short 0."},
+     "cyclicals": {"long": 0, "short": 1, "why": "Rising 10Y to ~5.05% (CNBC 11/12) plus a hot-CPI / higher-for-longer backdrop is a headwind for cyclicals/industrials (XLI/XLB) as real yields rise; a modest oil bounce tempers but does not flip it => mild short (1), no clean long."},
+     "broad": {"long": 1, "short": 1, "why": "NEUTRAL. S&P 500 closed -0.38% to 7,520.93 and Nasdaq -0.74% to 25,065.87 on 11/10 (Reuters 11/10) on the hot-CPI print, but the tape had bounced hard the prior week (S&P +0.89% to ~7,586 on 11/11 per Yahoo/TradingEconomics) and runs into the ~7,600 / 200DMA resistance. A close-into-resistance with rising 10Y leaves the broad tape mixed: no clean long leg; shorts fight a live reversal => neutral."},
+     "metals": {"long": 0, "short": 2, "why": "GOLD FELL: futures opened $4,043.70 on 11/11, down ~2.5% on the day (Yahoo 11/11); spot gold ~$3,999 and silver ~$52.39 as a hawkish-Fed / rising-yield regime bites (texmetals.com 11/11), against DXY at a fresh 52-week high of 103.08 (CNBC .DXY 11/12) and 10Y ~5.05% => strong-dollar/high-real-yield pressures precious-metal longs; metals short confirmed (0/2), SLV short regime-supported."},
+     "dollar": {"long": 2, "short": 0, "why": "CONFIRMED 2/0, strengthened. DXY at a FRESH 52-week high of 103.08 set TODAY 11/12 (CNBC .DXY, 52Wk High 103.08 Date 11/12/26); prev close ~102.91-102.93 (investing.com/marketwatch 11/11, +0.66%). Hot-CPI re-hawk drives the dollar to fresh highs => UUP long strongly regime-supported."}
+ },
+ "symbols": {
+     "XLE": {"long": 0, "short": 1, "why": "WTI ~$85.83-86.53 on 11/11 (Forbes/CME/investing.com) in the downtrend from a $110.48 52-wk high => regime against the energy long; small daily bounce does not flip it."},
+     "XOM": {"long": 0, "short": 1, "why": "Same as XLE; next XOM report ~late Jan 2027 is out of the 10-trading-day window => neutral on the earnings axis, regime still against the energy long."},
+     "USO": {"long": 0, "short": 1, "why": "WTI rebounded to ~$86.53 (CME 11/11) but remains in the downtrend from $110 => regime against the USO long; energy stays a fighter vs the regime."},
+     "XLF": {"long": 1, "short": 1, "why": "Hot CPI => NIM-positive but rate-hike equity headwind => net neutral."},
+     "JPM": {"long": 1, "short": 1, "why": "Same as XLF; next JPM report ~late Jan / early Feb 2027, out of the 10-trading-day window => neutral."},
+     "TLT": {"long": 0, "short": 2, "why": "10Y ~5.05% rising on the hot-CPI re-hawk (CNBC 11/12) => regime strongly against the TLT long; TLT short regime-supported."},
+     "IEF": {"long": 0, "short": 2, "why": "Same as TLT: rising yields => regime against the IEF long; IEF short regime-supported."},
+     "GLD": {"long": 0, "short": 2, "why": "Gold fell to ~$3,999-4,043 (texmetals/Yahoo 11/11) as DXY hit a fresh 52-wk high of 103.08 (CNBC 11/12) and 10Y ~5.05% => high-real-yield/strong-dollar pressures gold; GLD long against, short regime-supported."},
+     "SLV": {"long": 0, "short": 2, "why": "Silver ~$52.39 (texmetals 11/11) in the high-real-yield/strong-dollar regime; the open SLV short stays regime-supported (metals 0/2)."},
+     "GDX": {"long": 0, "short": 2, "why": "Miners follow spot gold and a fresh 52-wk-high dollar (cnbc .DXY 103.08, 11/12) => regime against the GDX long; GDX short regime-supported."},
+     "UUP": {"long": 2, "short": 0, "why": "DXY at a fresh 52-week high of 103.08 set 11/12 (CNBC .DXY; prev close ~102.91, investing.com 11/11) on the hot-CPI re-hawk => UUP long strongly regime-supported."},
+     "QQQ": {"long": 0, "short": 1, "why": "Nasdaq -0.74% to 25,065.87 on 11/10 (Reuters) closes lower into the AI de-rating with 10Y ~5.05% => mild short; the prior-week bounce fights the short so it stays mild (1)."},
+     "XLK": {"long": 0, "short": 1, "why": "Semis/tech closing lower into a rising-yield AI de-rating => open XLK short mildly regime-supported (1)."},
+     "SMH": {"long": 0, "short": 1, "why": "10Y ~5.05% and the AI de-rating => SMH long against, short mildly regime-supported (1)."},
+     "NVDA": {"long": 0, "short": 0, "why": "EARNINGS GATE: NVDA reports 2026-11-17 after the close (NVIDIA IR + fool.com + investing.com; confirmed again 11/12) — ~3-4 trading days out (11/12,13,16,17), inside the 10-trading-day window => excluded via regime 'exclude' and auto-blackout by score.py."},
+     "AVGO": {"long": 0, "short": 1, "why": "Next AVGO report 12/10/2026 is out of the 10-trading-day window (ends ~11/25 today); chipmaker in the AI de-rating + rising yields => tech-tilt short (mild, 1); no earnings exclusion."},
+     "TSLA": {"long": 1, "short": 1, "why": "No forward TSLA report in the 10-trading-day window (next Q4 ~late Jan 2027, cmelitegroup) => neutral; hot-CPI consumer headwind noted but no confirming leg."},
+     "AMZN": {"long": 1, "short": 1, "why": "AMZN Q3 reported 10/29/2026; next report early 2027 out of the window => neutral."},
+     "MSFT": {"long": 1, "short": 1, "why": "MSFT F1 Q1 reported 10/28/2026; next report ~Jan 27/28 out of the window => neutral."},
+     "GOOGL": {"long": 1, "short": 1, "why": "Alphabet Q3 reported 10/28/2026; next report out of the window => neutral."},
+     "META": {"long": 1, "short": 1, "why": "META Q3 reported 10/21/2026; next report 01/27/2027 after close (wallstreethorizon / investor.atmeta.com, confirmed 11/12) => out of the 10-trading-day window => neutral on the earnings axis."},
+     "AAPL": {"long": 1, "short": 1, "why": "AAPL reported 11/02/2026; next report ~Jan 28 2027 out of the window => neutral."}
+ },
+ "exclude": {
+     "NVDA": "earnings 2026-11-17 after close (NVIDIA IR + fool.com + investing.com, re-checked 2026-11-12) — ~3-4 trading days out, inside the 10-trading-day window"
+ },
+ "catalysts": [
+     "MARKET OPEN: 11/12/2026 is a normal trading day (11/11 was the Veterans Day holiday; the 11/10 cash print and 11/11 futures tape are the latest figures above). No holiday today.",
+     "TIER-1 EVENTS TODAY 11/12: NONE (no CPI/PPI/NFP/PCE/FOMC decision or press conference). Nearest tier-1: PPI (Oct 2026) FRI 11/13 08:30 ET (fedratecalc.com; BLS), then FOMC MINUTES (Oct 27-28 meeting) WED 11/18 14:00 ET (fedratecalc.com / federalreserve.gov), next PCE Wed 11/25, next NFP Fri 12/04, next CPI Thu 12/10.",
+     "10-YEAR YIELD: ~5.05% intraday 11/12 (CNBC US10Y 8:41 am EST, +0.061; FRED DGS10 close 4.88 on 11/09; TradingEconomics 4.99 on 11/10) — rising on the hot-CPI (11/10) re-hawk => bonds kept at 0/2; TLT/IEF shorts supported (strongest confirmed read).",
+     "DOLLAR: DXY at a FRESH 52-week high of 103.08 set 11/12 (CNBC .DXY; prev close ~102.91 per investing.com +0.66% on 11/11) on the hot-CPI re-hawk => dollar 2/0; UUP long strongly supported (strength upgraded vs 11/11's 102.5).",
+     "OIL: WTI ~$85.83-86.53 on 11/11 (Forbes $85.83 -0.50%; CME $86.53; investing.com $86.53) well below the $110.48 52-week high and ~$98 a week ago => energy in a downtrend; long regime-against, USO a fighter vs the regime.",
+     "GOLD/METALS: gold FELL — futures opened $4,043.70 on 11/11 down ~2.5% (Yahoo), spot ~$3,999 (texmetals) with silver ~$52.39, as a hawkish-Fed / rising-yield regime and a fresh 52-wk-high dollar press hard => metals 0/2 confirmed; the open SLV short stays regime-supported.",
+     "EQUITIES: the tape closed DOWN on the hot print. S&P 500 -0.38% to 7,520.93, Dow -0.30% to 52,231.89, Nasdaq -0.74% to 25,065.87 on 11/10 (Reuters 11/10); a prior-week bounce (S&P +0.89% to ~7,586 on 11/11) runs into the ~7,600/200DMA resistance with rising 10Y => broad NEUTRAL, tech short trimmed to mild (1). Open QQQ/XLK/SMH shorts stay (mildly) regime-supported; the SPY short aligns with the tape-into-resistance read.",
+     "EARNINGS GATE (10-trading-day window from 11/12 through ~11/25): NVDA 11/17 after close (~3-4 trading days out) => EXCLUDE via regime + auto-blackout by score.py. No other in-window universe report: META 01/27/2027; AAPL/MSFT/GOOGL ~late Jan/early Feb 2027; JPM/XOM/TSLA late Jan/early Feb 2027; AMZN early 2027; AVGO 12/10/2026 (out of window). exclude = {NVDA}, unchanged from 11/06 / 11/09 / 11/10 / 11/11."
+ ]
+}
