@@ -212,3 +212,83 @@
 
 ### 8. Proposed rule changes
 - (Socrates: list proposals here with reasoning. Do NOT apply. Changes need 40 closed A+B trades, Chris's approval, and a version bump.)
+
+## Weekly review 2026-11-13 (rules v1.0)
+
+**Sample too small for conclusions** (9 closed trades; need 20 to interpret, 40 to change rules).
+
+### 1. Activity
+- This week: 1 opened (A 1, B 0, quota 0), 1 closed
+- To date: 14 placed (A 14, B 0, quota 0), 9 closed, 0 unfilled, 5 still open/pending, 0 rejected or failed to submit
+
+### 2. Performance to date (real fills)
+- Win rate 55.6% | expectancy (avg R per trade) +0.11R | total P/L $472.02 | realized max drawdown -1.2% (closed trades only)
+- Tier A: 9 trades, win 55.6%, +0.11R avg
+
+### 3. Benchmark vs SPY
+- Since 2026-10-16: account 1.4% vs SPY price -1.9% (ahead by 3.3%)
+- Note: the account is mostly cash and mixes longs with shorts, so this line mostly reflects market exposure, not skill. Judge the edge on R and on the random baseline (5b), not this line.
+
+### 4. Score buckets (closed trades)
+- Score 4: none
+- Score 5: none
+- Score 6: none
+- Score 7: none
+- Score 8+: 9 trades, +0.11R avg, win 55.6%
+
+### 5. Shadow book (simulated, 10-day horizon, same-day ties counted as stops) [exploratory]
+- planned: 6 matured, +0.19R avg, win 67%
+- blocked: 289 matured, +0.09R avg, win 46%
+- shadow: 15 matured, -0.37R avg, win 33%
+
+### 5b. Random baseline (control group) [PRIMARY TEST]
+- Control entries logged: 100 (65 resolved, 35 still open). Same universe, entry, stop/target rules, 10-day exit and hard gates as the real trades; random symbol and direction; score ignored.
+- Random controls (all resolved): 65, +0.21R avg, win 43%
+- Real trades (actual fills, descriptive only): 9, +0.11R avg, win 56%
+- Verdict withheld: the test is read only at 13, 26, 52 closed fortnights (fixed in advance). Closed fortnights with planned and control data so far: 0. Numbers above are for tracking only.
+- Caveats: simulations assume a fill at the logged entry and exit on the first stop/target touch in daily bars (gaps fill at the open); each planned trade is compared with same-day, same-direction controls and the test treats fortnights as independent, which is close but not exact; one stretch of market is not every regime; a pass here is evidence, not proof.
+
+### 5c. Does the score predict forward R? (all scored candidates, matured only) [exploratory]
+- 310 matured candidate-trades across 10 decision days (341 not matured yet).
+- Score 10: 18 trades, -0.46R avg, win 28%
+- Score 9: 39 trades, -0.05R avg, win 44%
+- Score 8: 59 trades, +0.34R avg, win 58%
+- Score 7: 52 trades, +0.22R avg, win 52%
+- Score 5-6: 127 trades, +0.04R avg, win 43%
+- Score 4 or less: 15 trades, -0.37R avg, win 33%
+- Factor trend: 0 -> +0.18R (n=36); 1 -> +0.37R (n=131); 2 -> -0.24R (n=143)
+- Factor rs: 0 -> -0.54R (n=36); 1 -> -0.43R (n=68); 2 -> +0.34R (n=206)
+- Factor regime: 0 -> -0.30R (n=38); 1 -> +0.26R (n=178); 2 -> -0.16R (n=94)
+- Factor rr: 0 -> +0.39R (n=32); 1 -> +0.54R (n=50); 2 -> -0.08R (n=228)
+- Factor momentum: 0 -> -0.43R (n=68); 1 -> +0.20R (n=242)
+- Factor volume: 0 -> +0.13R (n=181); 1 -> -0.02R (n=129)
+- Score vs R correlation -0.001; within-day permutation p = 0.582 (no reliable predictive power shown yet).
+- Caveats: candidates on consecutive days overlap in time, so the effective sample is much smaller than the row count and the p-value is optimistic; the rr factor changes the size of winning R by construction; the regime rows test Socrates' macro research (regime 2 vs 1 vs 0); several tables are read at once, so expect some false leads.
+
+### 6. Calibration of p_target (anchored to the neutral base rate 1 / (1 + R:R))
+- Brier score 0.203 on 4 trades (lower is better). Reference: always saying the base rate scores 0.194.
+- Anchor check: average p_target 0.34 vs neutral base rate 0.33; actual target-before-stop rate 25%. Brier skill vs the base rate: -0.04 (positive = his adjustments added information; meaningless under ~20 trades)
+- p_target < 0.25: none
+- p_target 0.25-0.35: 3 trades, hit target 33%
+- p_target > 0.35: 1 trades, hit target 0%
+- Left out: 0 time-stop exits (neither target nor stop was hit) and 5 trades placed before the base-rate rule (2026-10-16).
+- Note: the base rate ignores the 10-day time stop, so the true target-before-stop rate runs a little below it.
+
+### 7. Rule adherence
+- 2026-10-29 XOM: excluded by Socrates \(excluded today: earnings 2026-10-30 before open \(thinkmarkets Q4 2026 calendar, checked 2026-10-29\) — ~1 trading day, inside window\)
+- 2026-10-29 AAPL: excluded by Socrates \(excluded today: earnings 2026-11-02 after close \(thinkmarkets Q4 2026 calendar, checked 2026-10-29\) — ~4 trading days, inside window\)
+- 2026-10-29 AMZN: excluded by Socrates \(no reason\)
+- 2026-10-30 AAPL: excluded by Socrates \(excluded today: earnings 2026-11-02 after close \(apple.com IR + trefis.com 10/30, checked 2026-10-30\) — ~3 trading days, inside window\)
+- 2026-11-02 AAPL: excluded by Socrates \(excluded today: earnings 2026-11-02 after close \(apple.com IR + apple.com/earnings-call, checked 2026-11-02\) — 0 trading days, inside window\)
+- 2026-11-03 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + wallstreethorizon, checked 2026-11-03\) — 10 trading days from 11/03, at the window edge\)
+- 2026-11-04 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + wallstreethorizon, checked 2026-11-03\) — 9 trading days from 11/04, inside the 10-trading-day window\)
+- 2026-11-05 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + Wall Street Horizon + Yahoo Finance calendar, checked 2026-11-05\) -- ~8 trading days from 11/05, inside the 10-trading-day window\)
+- 2026-11-06 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + Wall Street Horizon, checked 2026-11-06\) — ~8 trading days from 11/06, inside the 10-trading-day window\)
+- 2026-11-09 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + Wall Street Horizon, checked 2026-11-09\) — ~6 trading days from 11/09, inside the 10-trading-day window\)
+- 2026-11-10 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page + Wall Street Horizon, checked 2026-11-10\) — ~5 trading days from 11/10, inside the 10-trading-day window\)
+- 2026-11-11 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR + fool.com + investing.com, checked 2026-11-11\) — ~4 trading days out, inside the 10-trading-day window\)
+- 2026-11-12 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR + fool.com + investing.com, re-checked 2026-11-12\) — ~3-4 trading days out, inside the 10-trading-day window\)
+- 2026-11-13 NVDA: excluded by Socrates \(excluded today: earnings 2026-11-17 after close \(NVIDIA IR events page, re-checked 2026-11-13\) — ~4 trading days out \(11/13,16,17\), inside the 10-trading-day window\)
+
+### 8. Proposed rule changes
+- (Socrates: list proposals here with reasoning. Do NOT apply. Changes need 40 closed A+B trades, Chris's approval, and a version bump.)
