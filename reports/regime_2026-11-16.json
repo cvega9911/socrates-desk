@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-16",
+  "themes": {
+    "energy": {"long": 0, "short": 1, "why": "WTI ~$87.29-88.56 on 11/13-11/16 (investing.com 87.29; macrotrends $88.56 11/13; Forbes WTI open $88.93 11/13) below the ~$98 a week earlier and the $110.48 52-wk high => oil downtrend continues; regime against the energy long, USO remains the book's active fighter."},
+    "bonds": {"long": 0, "short": 2, "why": "HAWKISH REGIME. 10Y ~5.15% intraday 11/16 (CNBC US10Y open 5.166%; TradingEconomics 5.15% 11/16) at one-month highs after a +30bps weekly surge on hot inflation + NVDA/AI credit fears, and the Fed is pricing a 25bps DEc HIKE (93% prob, some 50bps) per TradingEconomics 11/16. High and rising yields with a hawkish Fed argue a bond SHORT / high-real-yield regime; TLT/IEF shorts regime-supported (0/2)."},
+    "tech": {"long": 0, "short": 2, "why": "NVDA governance shock (Jensen Huang resignation) + a 5.15% 10Y crushes long-duration chips; NVDA ~-30% from Oct 6 peak (prior briefings), Nasdaq-100 futures -1.4% overnight 11/16 (CNBC), QQQ 679.89 -1.20% on 11/14 (SeekingAlpha), VUG -0.92%. Clear regime against the tech long; QQQ/XLK/SMH/AVGO shorts regime-supported."},
+    "consumer": {"long": 1, "short": 1, "why": "NEUTRAL. TSLA still risk-off-spillover only with no fundamental consumer leg and no in-window consumer earnings; neutral until XLY rolls."},
+    "financials": {"long": 1, "short": 1, "why": "NEUTRAL. A hawkish Fed / high real yields support the net-interest-margin case for XLF/JPM, but a Dec-hike scare pressures equities broadly; net neutral. JPM Q4 2026 ~early 2027 out of the 10-trading-day window => neutral on the earnings axis."},
+    "defensive": {"long": 1, "short": 0, "why": "MILD LONG / ROTATION. Equal-weight and value outperforming growth on 11/14 (RSP +0.20%, VTV +0.21% vs QQQ -1.20%, VUG -0.92%, SeekingAlpha) + a risk-off tape into staples/healthcare (XLV/XLU/XLP); open XLV long stays regime-aligned; no risk-on leg argues a short."},
+    "cyclicals": {"long": 0, "short": 1, "why": "HIGH REAL YIELDS + HAWKISH FED. 10Y ~5.15% (CNBC/TradingEconomics 11/16) with a priced Dec hike stay stretched vs real yields => headwinds for XLI/XLB; mild short, no clean long."},
+    "broad": {"long": 1, "short": 1, "why": "NEUTRAL / FRAGMENTED. SPY 754.37 on 11/14 (-0.36%, SeekingAlpha) below the ~7,600 200DMA break it made on 11/12; VIX ~20.72 +7.36% (WSJ) on a hawkish tape and a fractured growth-led leadership core argues the break is at risk, but equal-weight resilience keeps it mixed => long 1 (index off lows) / short 1 (VIX surge + hawkish + tech fragility). SPY short at best neutral-supported."},
+    "metals": {"long": 0, "short": 2, "why": "GOLD ~$3,870.80 on 11/16 (-0.40%, WSJ) vs $3,912 on 11/12, with DXY at a fresh 52-wk/19-mo high ~103.56 (CNBC/TradingEconomics 11/16) and 10Y ~5.15% => strong-dollar / high-real-yield regime keeps crushing metals; metals short confirmed 0/2; the open SLV short stays regime-SUPPORTED."},
+    "dollar": {"long": 2, "short": 0, "why": "CONFIRMED 2/0, fresh high. DXY ~103.56 on 11/16 = a fresh 52-week / 19-month high (CNBC 52-wk-high date 11/16/26; TradingEconomics 103.4998; MarketWatch 103.43) firming into a hawkish + risk-off tape; strong-dollar regime supports the UUP long and reinforces the metals crash."}
+  },
+  "symbols": {
+    "XLE": {"long": 0, "short": 1, "why": "WTI ~$87-89 on 11/13-11/16 in the oil downtrend from a $110.48 52-wk high => regime against the energy long."},
+    "XOM": {"long": 0, "short": 1, "why": "Same as XLE; next XOM report ~01/29/2027 (public.com/ExxonMobil IR) OUT of the 10-trading-day window => neutral on earnings, regime against the energy long."},
+    "USO": {"long": 0, "short": 1, "why": "Held long; WTI in the downtrend (investing.com/macrotrends 11/13-11/16) => regime against the USO long; still the book's active fighter risk (opened 10/27)."},
+    "XLF": {"long": 1, "short": 1, "why": "Hawkish Fed / high real yields support NIM but the Dec-hike scare pressures equities => net neutral."},
+    "JPM": {"long": 1, "short": 1, "why": "Same as XLF; JPM Q4 2026 ~early 2027 out of window => neutral."},
+    "TLT": {"long": 0, "short": 2, "why": "Hawkish regime: 10Y ~5.15% one-month high + priced Dec hike (CNBC/TradingEconomics 11/16) => TLT short regime-supported (0/2)."},
+    "IEF": {"long": 0, "short": 2, "why": "Same as TLT: 10Y ~5.15% + hawkish Fed => IEF short regime-supported (0/2)."},
+    "GLD": {"long": 0, "short": 2, "why": "Gold ~$3,870.80 on 11/16 (-0.40% WSJ) with DXY ~103.56 fresh high + 10Y ~5.15% => high-real-yield / strong-dollar pressures gold; GLD long against, short regime-supported."},
+    "SLV": {"long": 0, "short": 2, "why": "Silver follows the metals crash / strong-dollar / high-real-yield regime (metals 0/2); the open SLV short stays regime-SUPPORTED."},
+    "GDX": {"long": 0, "short": 2, "why": "Miners follow spot gold (~$3,870, WSJ 11/16) into a fresh 52-wk-high dollar => regime against the GDX long; GDX short regime-supported."},
+    "UUP": {"long": 2, "short": 0, "why": "DXY ~103.56 at a fresh 52-wk/19-mo high on 11/16 (CNBC/TradingEconomics) into a hawkish + risk-off tape => UUP long strongly regime-supported."},
+    "QQQ": {"long": 0, "short": 2, "why": "Tech governance shock (NVDA -30% from peak) + 10Y ~5.15% crushes duration; Nasdaq futures -1.4%, QQQ 679.89 -1.20% (11/14) => QQQ short strongly regime-supported (open short aligned)."},
+    "XLK": {"long": 0, "short": 2, "why": "Chips hardest hit in the NVDA governance shock + AI de-rating with a 5.15% 10Y => open XLK short strongly regime-supported (2)."},
+    "SMH": {"long": 0, "short": 2, "why": "Semis in the NVDA-led de-rating with a rising 10Y => SMH long against, short strongly regime-supported (2)."},
+    "NVDA": {"long": 0, "short": 0, "why": "EARNINGS GATE: NVDA reports 2026-11-17 after close (nvidianews IR; fool.com 11/15; yahoo 11/15) — ~1 trading day out, firmly inside the 10-trading-day window => excluded via regime 'exclude' and auto-blackout by score.py; the governance shock is the story but the earnings gate blocks a new NVDA order."},
+    "AVGO": {"long": 0, "short": 2, "why": "Next AVGO report 12/10/2026 (public.com) is OUT of the 10-trading-day window (~through ~11/29; Thanksgiving 11/26 closes) => no earnings exclusion; a chipmaker in the NVDA governance de-rating + rising-10Y AI de-rate => tech-short regime (2)."},
+    "TSLA": {"long": 1, "short": 1, "why": "TSLA risk-off spillover only; next Q4 report ~late Jan 2027 out of window => neutral."},
+    "AMZN": {"long": 1, "short": 1, "why": "AMZN Q3 reported 10/29/2026; next report early 2027 out of window => neutral."},
+    "MSFT": {"long": 1, "short": 1, "why": "MSFT F1 Q1 reported 10/28/2026; next report ~Jan 2027 out of window => neutral."},
+    "GOOGL": {"long": 1, "short": 1, "why": "Alphabet Q3 reported 10/28/2026; next report out of window => neutral."},
+    "META": {"long": 1, "short": 1, "why": "META Q3 reported ~10/21/2026; next report 01/27/2027 after close (investor.atmeta.com) => out of window => neutral."},
+    "AAPL": {"long": 1, "short": 1, "why": "AAPL reported 11/02/2026; next report ~Jan 2027 out of window => neutral."}
+  },
+  "exclude": {
+    "NVDA": "earnings 2026-11-17 after close (nvidianews.nvidia.com IR + fool.com 11/15 + yahoo finance 11/15, re-checked 2026-11-16) — ~1 trading day out, inside the 10-trading-day window"
+  },
+  "catalysts": [
+    "MARKET OPEN: 11/16/2026 is a normal Monday trading day (no holiday; next close is Thanksgiving 11/26). Figures below are the latest through the 11/14 close + 11/16 pre-open/intraday.",
+    "TIER-1 TODAY 11/16 — FED CHAIR WARSH SPEECH ~12:00 ET (Fed San Francisco, 'AI & Financial Stability'; federalreserve.gov Nov calendar + admiralmarkets/federalreserve 11/16), a TIER-1 catalyst: with the 10Y at one-month highs (5.15%) and a Dec hike 93%-priced, a hawkish Warsh remark would lift further. No other tier-1 today. Nearest: FOMC MINUTES (Oct 27-28) WED 11/18 14:00 ET (financecalendar/fedratecalc), PCE (likely WED 11/25), next NFP FRI 12/04, next CPI THU 12/10, next FOMC decision DEC 08-09.",
+    "10-YEAR YIELD: ~5.15% intraday 11/16 (CNBC US10Y open 5.166%; TradingEconomics 5.15% 11/16) at one-month highs after a +30bps weekly surge on hot inflation + NVDA/AI-credit fears; Fed pricing a 25bps Dec HIKE (93% prob, some 50bps) => hawkish regime; bonds short (0/2), TLT/IEF shorts regime-supported.",
+    "DOLLAR: DXY ~103.56 on 11/16 = a FRESH 52-week/19-month high (CNBC 52-wk-high date 11/16/26; TradingEconomics 103.4998; MarketWatch 103.43) firming into a hawkish + risk-off tape => dollar 2/0; UUP long strongly supported; reinforced by the metals crash.",
+    "OIL: WTI ~$87.29-88.56 on 11/13-11/16 (investing.com 87.29; macrotrends $88.56 11/13; Forbes open $88.93 11/13) below the ~$98 a week earlier and the $110.48 52-wk high => oil downtrend continues; energy 0/1; USO (open long) is the lone fighter.",
+    "GOLD/METALS: GOLD ~$3,870.80 on 11/16 (-0.40%, WSJ) vs $3,912 on 11/12, with DXY ~103.56 fresh high and 10Y ~5.15% => strong-dollar / high-real-yield regime keeps crushing metals; metals 0/2 confirmed; open SLV short stays regime-SUPPORTED.",
+    "EQUITIES: FRAGMENTED / ROTATION OUT OF TECH. SPY 754.37 on 11/14 (-0.36%) below the ~7,600 200DMA break it made 11/12; QQQ 679.89 -1.20%, VUG -0.92%, Nasdaq-100 futures -1.4% overnight, but equal-weight/value resilient (RSP +0.20%, VTV +0.21%) and VIX ~20.72 +7.36% (WSJ) => broad NEUTRAL 1/1, tech/semis SHORT 0/2. Open QQQ/XLK/SMH shorts + UUP long + SLV short stay supported; SPY short at best neutral.",
+    "EARNINGS GATE (10-trading-day window from 11/16 through ~11/29; Thanksgiving 11/26 closes the market, 11/27 Black Friday early close): NVDA 11/17 after close (~1 trading day out) => EXCLUDE via regime + auto-blackout by score.py. No other in-window universe report: AVGO 12/10/2026, XOM ~01/29/2027, JPM Q4 ~early 2027, AAPL/MSFT/GOOGL/META/TSLA ~Jan 2027 — all OUT of window. exclude = {NVDA}, unchanged from prior regimes.",
+    "OPEN POSITIONS (journal, as of this run, to be confirmed by sync.py): per 11/13 — SLV short (10/27, regime-SUPPORTED metals 0/2), QQQ short (11/02, SUPPORTED tech 0/2), XLV long (11/03, SUPPORTED defensive 1/0), SPY short (11/06, neutral 1/1), XLK short (11/06, SUPPORTED tech 0/2). 5 positions => at the max-5 cap; any new entry forces an existing exit. NET of today's regime: the hawkish/strong-dollar/high-yield tape now supports the bonds-short thesis (TLT/IEF shorts newly regime-supported 0/2) in addition to the existing tech-short, dollar-long and metals-short legs; the USO energy long remains the lone fighter."
+  ]
+}
