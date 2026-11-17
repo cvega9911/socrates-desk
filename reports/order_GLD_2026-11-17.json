@@ -1,0 +1,8 @@
+{
+  "symbol": "GLD",
+  "p_target": 0.35,
+  "thesis": "10/10 short on the high-real-yield / strong-dollar regime: 10Y ~5.12% one-month-high (CNBC 11/17) plus DXY 103.64 at a fresh 52-wk high press gold at ~$3,856-3,884/oz below recent highs, with trend 2 and relative strength 2 confirming the down leg.",
+  "invalidation": "GLD closes above the stop-adjacent 368.55 on a sustained safe-haven bid that overpowers the high-yield regime, or the 10-year yield retreats meaningfully below 5.0%.",
+  "dissent": "Fails if the Iran/Vance-driven geopolitical spike that already popped Brent +1.38% on 11/17 triggers a broad safe-haven bid that lifts GLD above 368.55 despite the high-real-yield regime intact.",
+  "earnings_checked": false
+}

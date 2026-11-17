@@ -1,0 +1,8 @@
+{
+  "symbol": "SLV",
+  "p_target": 0.33,
+  "thesis": "10/10 short on silver following the metals regime: trend 2 and relative strength 2 confirm the down leg, regime 2/2 is backed by a fresh 52-wk-high DXY (103.64) and a ~5.12% 10-year yield crushing high real-yield-sensitive precious metals.",
+  "invalidation": "SLV closes above the stop-adjacent 46.23 on a broad risk-off metals bid, or DXY rolls below 102.00 removing the dollar anchor of the regime.",
+  "dissent": "Fails if silver's industrial-metal demand narrative (AI/data-center power, electrification) plus a geopolitical safe-haven spike push SLV above 46.23 despite the high-real-yield regime.",
+  "earnings_checked": false
+}

@@ -1,0 +1,332 @@
+{
+  "date": "2026-11-17",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 101935.62,
+  "spy_ret20": -0.0346,
+  "regime_file": "reports/regime_2026-11-17.json",
+  "regime_sha": "fb767b3439237877",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-02",
+  "exclusions": {
+    "NVDA": "earnings 2026-11-17 after close (nvidianews.nvidia.com IR + Kiplinger live updates 11/17, re-checked 2026-11-17) \u2014 0 trading days out, inside the 10-trading-day window"
+  },
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): NVDA"
+  ],
+  "trading_days_since_last_AB": 3,
+  "run": "decision",
+  "day_pnl_pct": -0.0006,
+  "halted": false,
+  "open_positions": 3,
+  "open_risk_dollars": 1181.59,
+  "plan": [
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 353.42,
+      "stop": 368.55,
+      "target": 323.16,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold ~$3,856-3,884 modestly firm but under DXY fresh high + 10Y ~5.12% => high-real-yield pressure; GLD against-a-long, short regime-supported (0/2).",
+      "atr": 7.57,
+      "close": 352.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0701
+      },
+      "quota": false,
+      "shares": 33,
+      "risk_dollars": 499.29,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 101935.62
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 42.93,
+      "stop": 46.23,
+      "target": 36.34,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver follows the metals regime (metals 0/2) into a fresh-high dollar + high yields; the open SLV short stays regime-supported.",
+      "atr": 1.65,
+      "close": 42.39,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1194
+      },
+      "quota": false,
+      "shares": 154,
+      "risk_dollars": 508.2,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 101935.62
+    }
+  ],
+  "blocked": [
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 163.17,
+      "stop": 176.03,
+      "target": 137.44,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Chips hardest hit in the AI de-rating with a 5.12% 10Y => open XLK short strongly regime-supported (0/2).",
+      "atr": 6.43,
+      "close": 164.76,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0358
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 5: already have a position or order in this symbol"
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 80.06,
+      "stop": 87.73,
+      "target": 64.73,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold into a fresh 52-wk-high dollar => regime against the GDX long; GDX short regime-supported (0/2).",
+      "atr": 3.83,
+      "close": 78.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1368
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.58,
+      "stop": 29.32,
+      "target": 30.11,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.64 at a FRESH 52-wk high on 11/17 (CNBC/TradingEconomics/MarketWatch) into a hawkish + risk-off tape => UUP long strongly regime-supported.",
+      "atr": 0.13,
+      "close": 29.56,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0204
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 57.7,
+      "stop": 56.66,
+      "target": 60.04,
+      "rr": 2.26,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "High real yields support NIM but the Dec-hike scare pressures equities => net neutral.",
+      "atr": 1.04,
+      "close": 58.18,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0033
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 735.99,
+      "stop": 763.0,
+      "target": 681.96,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "NEUTRAL / FRAGMENTED. SPY 7,416.59 on 11/16 (FRED/macrotrends) FALLING below the ~7,600 200DMA; QQQ -1.22%; VIX ~22.93 intraday (CNBC) elevated => weak tape argues a long 1 (index off lows, not a fresh risk-on) / short 1 (sub-200DMA + tech weakness + elevated VIX). SPY short at best neutral-supported.",
+      "atr": 13.51,
+      "close": 739.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0169
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "AVGO",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 2,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 337.74,
+      "stop": 369.82,
+      "target": 289.77,
+      "rr": 1.5,
+      "tier": "shadow",
+      "theme": "tech",
+      "regime_why": "Next AVGO report 12/10/2026 (public.com) is OUT of the 10-trading-day window (~through ~11/30; Thanksgiving 11/26 closes) => no earnings exclusion; a chipmaker in the NVDA-led de-rating + firming 10Y => tech-short regime (0/2).",
+      "atr": 20.44,
+      "close": 333.4,
+      "alt": {
+        "pullback": 1,
+        "ret5": 0.0436
+      },
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 168.28,
+      "stop": 177.71,
+      "target": 155.32,
+      "rr": 1.38,
+      "tier": "shadow",
+      "theme": "energy",
+      "regime_why": "Same as XLE; next XOM report ~01/29/2027 (ExxonMobil IR) OUT of the 10-trading-day window => neutral on earnings, regime against the energy long.",
+      "atr": 4.71,
+      "close": 166.87,
+      "alt": {
+        "pullback": 1,
+        "ret5": 0.013
+      },
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 2,
+        "rs": 1,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 258.96,
+      "stop": 245.88,
+      "target": 275.34,
+      "rr": 1.25,
+      "tier": "shadow",
+      "theme": "consumer",
+      "regime_why": "AMZN Q3 reported ~10/29/2026; next report ~early 2027 out of window => neutral.",
+      "atr": 11.03,
+      "close": 257.75,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0344
+      },
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
