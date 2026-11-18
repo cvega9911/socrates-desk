@@ -1,0 +1,8 @@
+{
+  "symbol": "SPY",
+  "p_target": 0.33,
+  "thesis": "SPY closed 7,340.53 on 11/17 (-1.03%, a 5-month low on a 4th straight down day, sub-200DMA) giving trend 2 and relative strength 2 a clean down leg, and the plan scores it 9/10 as a Tier A short into target 675.69 vs stop 760.52 (R:R 2.0); even after NVDA's after-close fiscal Q3 print (revenue +103%, guide above estimates) the structure is still a 5-month-low downtrend that the risk-on open has not yet reversed.",
+  "invalidation": "SPY closes above the 760.52 stop on a sustained risk-on move, or the 10-year yield retreats meaningfully below 5.0% with VIX falling through 20, confirming the NVDA-led bounce has broken the 5-month-low trend into an uptrend.",
+  "dissent": "Fails if the NVDA beat (rev +103%, guide above estimates) plus the pre-morning risk-on tape (SPY +0.56%, QQQ +1.13%, VIX -7.19% to 23.62) carries SPY back above 760.52 before it can retest the 675.69 target, i.e. the bounce outruns the downtrend leg.",
+  "earnings_checked": false
+}

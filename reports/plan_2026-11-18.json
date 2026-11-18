@@ -1,0 +1,234 @@
+{
+  "date": "2026-11-18",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 102500.96,
+  "spy_ret20": -0.0476,
+  "regime_file": "reports/regime_2026-11-18.json",
+  "regime_sha": "b49c7d93e61c7708",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-03",
+  "exclusions": {},
+  "warnings": [],
+  "trading_days_since_last_AB": 1,
+  "run": "decision",
+  "day_pnl_pct": 0.0053,
+  "halted": false,
+  "open_positions": 4,
+  "open_risk_dollars": 1686.27,
+  "plan": [
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 732.24,
+      "stop": 760.52,
+      "target": 675.69,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "NEUTRAL / REVERSAL-IN-PROGRESS. SPY closed 7,340.53 on 11/17 -1.03%, a 5-month low on a 4th straight down day (moomoo Capital Breakdown 11/18) -> trend leg still down, argues a short (sub-200DMA, 5-mo low). BUT the day's catalyst re-inverts it: NVDA printed after close 11/17 with revenue +103% and a guide ABOVE estimates, so equities open UP today (premarket SPY 736.52 +0.56%, QQQ 664.38 +1.13%; VIX 23.62 -7.19%, moomoo) -> a risk-on bounce argues a long. Net 1/1: 5-mo-low downtrend vs an NVDA-driven risk-on reversal.",
+      "atr": 14.14,
+      "close": 732.44,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0233
+      },
+      "quota": false,
+      "shares": 18,
+      "risk_dollars": 509.04,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 102500.96
+    }
+  ],
+  "blocked": [
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.63,
+      "stop": 29.37,
+      "target": 30.15,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.77 hitting a FRESH 52-wk high 103.91 on 11/18 (TradingEconomics/CNBC) into a hawkish + high-real-yield tape => UUP long strongly regime-supported; UUP already held.",
+      "atr": 0.13,
+      "close": 29.54,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0134
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 5: already have a position or order in this symbol"
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 660.65,
+      "stop": 700.67,
+      "target": 580.61,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "DOWNGRADING: NVDA fiscal Q3 beat after close 11/17 (rev +103%, guide above estimates) and QQQ opens +1.13% premarket 11/18 challenge the AI de-rating; but 10Y 5.123% keeps duration pressure. No open QQQ position (closed +1.297R time 11/16).",
+      "atr": 20.01,
+      "close": 656.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0264
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 164.3,
+      "stop": 177.7,
+      "target": 137.51,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "DOWNGRADING FROM 2 TO 1 on the NVDA print + QQQ +1.13% premarket challenge to the de-rating; 10Y 5.123% keeps some duration pressure => short regime-plausible but weakened. Open XLK short's support is now thinner; the NVDA beat is the falsifier.",
+      "atr": 6.7,
+      "close": 163.26,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0334
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 463.83,
+      "stop": 520.59,
+      "target": 350.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Same as XLK: NVDA-led risk-on bounce (rev +103%, guide above estimates) challenges semis, but 10Y 5.123% keeps pressure. No open SMH position (previous short hit target 11/05 +2.087R).",
+      "atr": 28.38,
+      "close": 460.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0487
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 40.87,
+      "stop": 44.15,
+      "target": 34.31,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver $46.14 -3.27% on 11/18 (goldprice.com) extends the liquidation into a fresh-high dollar + high yields; open SLV short strongly regime-supported (0/2).",
+      "atr": 1.64,
+      "close": 42.64,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0826
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 119.05,
+      "stop": 116.35,
+      "target": 122.92,
+      "rr": 1.43,
+      "tier": "shadow",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL. No in-window consumer catalyst; XLY flat. AMZN/TSLA have no fresh leg today; net neutral until a consumer tape forms.",
+      "atr": 2.7,
+      "close": 117.1,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0326
+      },
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
