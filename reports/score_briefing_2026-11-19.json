@@ -1,0 +1,963 @@
+{
+  "date": "2026-11-19",
+  "mode": "briefing",
+  "rules_version": "v1.0",
+  "equity": 102372.64,
+  "spy_ret20": -0.0555,
+  "regime_file": "reports/regime_2026-11-19.json",
+  "regime_sha": "2a88bb4b0509205c",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-04",
+  "exclusions": {},
+  "warnings": [],
+  "top": [
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 341.19,
+      "stop": 357.03,
+      "target": 309.5,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold $3,722.40 (Yahoo 11/19) to a fresh 14-MONTH LOW under a fresh 52-wk-high dollar (DXY 103.97) + 10Y 5.09-5.10% => high-real-yield pressure; GLD against-a-long, short strongly regime-supported (0/2). Open GLD short from 11/17 stays supported.",
+      "atr": 7.92,
+      "close": 341.19,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0657
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 40.7,
+      "stop": 43.99,
+      "target": 34.12,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver $45.26 (Fortune 11/19, -5% from prior day) extends the liquidation into a fresh-high dollar + high yields; open SLV short from 11/17 strongly regime-supported (0/2).",
+      "atr": 1.65,
+      "close": 40.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1275
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 74.82,
+      "stop": 82.98,
+      "target": 58.5,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold/silver into a fresh 52-wk-high dollar => GDX short regime-supported (0/2).",
+      "atr": 4.08,
+      "close": 74.82,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1219
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.62,
+      "stop": 29.36,
+      "target": 30.13,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.67-103.97 at a FRESH 52-wk high 11/19/26 (CNBC/TradingEconomics/Yahoo) into a hawkish + high-real-yield tape => UUP long strongest signal in the book; already held.",
+      "atr": 0.13,
+      "close": 29.62,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0092
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 730.2,
+      "stop": 758.84,
+      "target": 672.91,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / REVERSAL ATTEMPT. SPY closed 7,323.63 on 11/18 (-0.23%, 5th straight losing day \u2014 longest since June per LA Times 11/19); but Nasdaq Futures are +2.2% premarket 11/19 (BusinessInsider 27,784.75 +2.20%) on a tech-led bounce after NVDA fell -2.9% on 11/18 despite the after-close beat on 11/17. The 5-day broad downtrend (argues a short 1, sub-200DMA leg intact) vs a strong premarket futures bounce (argues a long 1). Net 1/1.",
+      "atr": 14.32,
+      "close": 730.2,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.039
+      }
+    }
+  ],
+  "all": [
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 341.19,
+      "stop": 357.03,
+      "target": 309.5,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold $3,722.40 (Yahoo 11/19) to a fresh 14-MONTH LOW under a fresh 52-wk-high dollar (DXY 103.97) + 10Y 5.09-5.10% => high-real-yield pressure; GLD against-a-long, short strongly regime-supported (0/2). Open GLD short from 11/17 stays supported.",
+      "atr": 7.92,
+      "close": 341.19,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0657
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 40.7,
+      "stop": 43.99,
+      "target": 34.12,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver $45.26 (Fortune 11/19, -5% from prior day) extends the liquidation into a fresh-high dollar + high yields; open SLV short from 11/17 strongly regime-supported (0/2).",
+      "atr": 1.65,
+      "close": 40.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1275
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 74.82,
+      "stop": 82.98,
+      "target": 58.5,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold/silver into a fresh 52-wk-high dollar => GDX short regime-supported (0/2).",
+      "atr": 4.08,
+      "close": 74.82,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1219
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.62,
+      "stop": 29.36,
+      "target": 30.13,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.67-103.97 at a FRESH 52-wk high 11/19/26 (CNBC/TradingEconomics/Yahoo) into a hawkish + high-real-yield tape => UUP long strongest signal in the book; already held.",
+      "atr": 0.13,
+      "close": 29.62,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0092
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 730.2,
+      "stop": 758.84,
+      "target": 672.91,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / REVERSAL ATTEMPT. SPY closed 7,323.63 on 11/18 (-0.23%, 5th straight losing day \u2014 longest since June per LA Times 11/19); but Nasdaq Futures are +2.2% premarket 11/19 (BusinessInsider 27,784.75 +2.20%) on a tech-led bounce after NVDA fell -2.9% on 11/18 despite the after-close beat on 11/17. The 5-day broad downtrend (argues a short 1, sub-200DMA leg intact) vs a strong premarket futures bounce (argues a long 1). Net 1/1.",
+      "atr": 14.32,
+      "close": 730.2,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.039
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 163.81,
+      "stop": 176.49,
+      "target": 138.45,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Same as QQQ: Nasdaq up premarket challenges the chip de-rating; 10Y 5.09-5.10% keeps some duration pressure. Open XLK short from 11/06 carries the thinnest regime support (short downgraded 2->1).",
+      "atr": 6.73,
+      "close": 163.81,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0605
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 659.51,
+      "stop": 695.57,
+      "target": 587.39,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq Futures +2.2% premarket 11/19 (BusinessInsider 27,784.75) on a tech-led bounce after the 11/17 NVDA print; 11/18 NVDA -2.9% despite the guide. 10Y 5.09-5.10% keeps duration pressure. Weak short (was 2). No open QQQ position (closed +1.297R time 11/04).",
+      "atr": 19.71,
+      "close": 659.51,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0447
+      }
+    },
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 61.29,
+      "stop": 64.91,
+      "target": 54.06,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent $88.64 on 11/19 (Yahoo BZ=F), -4.3% in one day from $92.67 on 11/18, extending a -15%+ monthly decline; WTI ~$83.20 testing the 100-day. Energy long is firmly against; mild short.",
+      "atr": 1.81,
+      "close": 61.29,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0328
+      }
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 91.18,
+      "stop": 88.87,
+      "target": 95.8,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG. 5-day SPY losing streak (longest since June, per LA Times 11/19) + 10Y 5.09-5.10% + Philly Fed Manufacturing 6.3 vs 20.9 consensus (TradingEconomics 11/19 \u2014 a massive manufacturing contraction miss) argue a rotation into staples/healthcare. No clear risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 1.67,
+      "close": 91.18,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.003
+      }
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 459.54,
+      "stop": 516.65,
+      "target": 345.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Same as XLK: NVDA beat + Nasdaq +2.2% premarket challenges semis; 10Y pressure keeps it at short 1. No open SMH position (previous short hit target 11/05 +2.087R).",
+      "atr": 28.7,
+      "close": 459.54,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0935
+      }
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 150.96,
+      "stop": 174.81,
+      "target": 103.27,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "EARNINGS GATE CLEARED: NVDA fiscal 2027 Q3 ALREADY reported after close 11/17 (rev +103%, guide above estimates). Next report ~early-2027 out of the 10-trading-day window. Fell -2.9% on 11/18 but premarket up => 10Y 5.10% caps the upside but no downside from de-rating. Mild long 1/0, no earnings exclusion.",
+      "atr": 11.92,
+      "close": 150.96,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1311
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 267.74,
+      "stop": 252.27,
+      "target": 298.68,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "consumer",
+      "regime_why": "AMZN $267.74 (+3.8% on 11/18 via moomoo/CNN); next report ~early 2027 out of window => neutral.",
+      "atr": 11.0,
+      "close": 267.74,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0059
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "GOOGL",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 282.44,
+      "stop": 301.44,
+      "target": 244.43,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Goog $279.20 (+0.6% on 11/18); Q4 ~late Jan 2027 out of window => neutral.",
+      "atr": 9.5,
+      "close": 282.44,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0375
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 160.58,
+      "stop": 170.39,
+      "target": 140.96,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Same as XLE; next XOM report ~01/29/2027 (ExxonMobil IR) OUT of the 10-trading-day window => no earnings exclusion, regime against the energy long.",
+      "atr": 4.91,
+      "close": 160.58,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0368
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 56.42,
+      "stop": 55.36,
+      "target": 59.6,
+      "rr": 3.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "10Y 5.09-5.10% supports NIM (long leg) but the 5-day broad tape weakens equities => net neutral.",
+      "atr": 1.06,
+      "close": 56.42,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0377
+      }
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 181.17,
+      "stop": 177.44,
+      "target": 192.32,
+      "rr": 2.99,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG. 5-day SPY losing streak (longest since June, per LA Times 11/19) + 10Y 5.09-5.10% + Philly Fed Manufacturing 6.3 vs 20.9 consensus (TradingEconomics 11/19 \u2014 a massive manufacturing contraction miss) argue a rotation into staples/healthcare. No clear risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 3.73,
+      "close": 181.17,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0412
+      }
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 43.55,
+      "stop": 42.63,
+      "target": 45.39,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG. 5-day SPY losing streak (longest since June, per LA Times 11/19) + 10Y 5.09-5.10% + Philly Fed Manufacturing 6.3 vs 20.9 consensus (TradingEconomics 11/19 \u2014 a massive manufacturing contraction miss) argue a rotation into staples/healthcare. No clear risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 0.6,
+      "close": 43.55,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0062
+      }
+    },
+    {
+      "symbol": "USO",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 136.11,
+      "stop": 147.61,
+      "target": 113.12,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "WTI $83.20 into a monthly oil downtrend => regime against the USO long; USO was closed on a stop 11/02 (-1.002R), not currently held.",
+      "atr": 5.75,
+      "close": 136.11,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0379
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 352.45,
+      "stop": 338.3,
+      "target": 380.75,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AAPL $352.45 (+0.2% on 11/18); next Q1 ~late Jan 2027 out of window => neutral.",
+      "atr": 9.44,
+      "close": 352.45,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0089
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "JPM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 324.11,
+      "stop": 341.11,
+      "target": 290.11,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "Same as XLF; JPM Q4/early-2027 out of the 10-trading-day window => neutral.",
+      "atr": 8.5,
+      "close": 324.11,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0561
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "TLT",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 80.22,
+      "stop": 81.68,
+      "target": 76.43,
+      "rr": 2.59,
+      "tier": "B",
+      "theme": "bonds",
+      "regime_why": "Hawkish regime: 10Y 5.09-5.10% one-month-high region + TIPS auction 11/19 => TLT short regime-supported (0/2).",
+      "atr": 0.73,
+      "close": 80.22,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0087
+      }
+    },
+    {
+      "symbol": "IWM",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 270.12,
+      "stop": 281.8,
+      "target": 246.75,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "MIXED / REVERSAL ATTEMPT. SPY closed 7,323.63 on 11/18 (-0.23%, 5th straight losing day \u2014 longest since June per LA Times 11/19); but Nasdaq Futures are +2.2% premarket 11/19 (BusinessInsider 27,784.75 +2.20%) on a tech-led bounce after NVDA fell -2.9% on 11/18 despite the after-close beat on 11/17. The 5-day broad downtrend (argues a short 1, sub-200DMA leg intact) vs a strong premarket futures bounce (argues a long 1). Net 1/1.",
+      "atr": 5.84,
+      "close": 270.12,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0458
+      }
+    },
+    {
+      "symbol": "DIA",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 501.73,
+      "stop": 519.35,
+      "target": 466.49,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "MIXED / REVERSAL ATTEMPT. SPY closed 7,323.63 on 11/18 (-0.23%, 5th straight losing day \u2014 longest since June per LA Times 11/19); but Nasdaq Futures are +2.2% premarket 11/19 (BusinessInsider 27,784.75 +2.20%) on a tech-led bounce after NVDA fell -2.9% on 11/18 despite the after-close beat on 11/17. The 5-day broad downtrend (argues a short 1, sub-200DMA leg intact) vs a strong premarket futures bounce (argues a long 1). Net 1/1.",
+      "atr": 8.81,
+      "close": 501.73,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0433
+      }
+    },
+    {
+      "symbol": "XLI",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 164.66,
+      "stop": 171.6,
+      "target": 150.78,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "cyclicals",
+      "regime_why": "HIGH REAL YIELDS + MANUFACTURING CONTRACTION. 10Y 5.09-5.10% + Philly Fed Manufacturing 6.3 (TradingEconomics 11/19) is a massive headwind for XLI/XLB. Mild short, no clean long.",
+      "atr": 3.56,
+      "close": 164.66,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0369
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 383.72,
+      "stop": 347.79,
+      "target": 455.58,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "TSLA $383.72 (+0.9% on 11/18 via moomoo/CNN); next Q4 report ~late Jan/early 2027 out of window => neutral.",
+      "atr": 17.96,
+      "close": 383.72,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0182
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 354.05,
+      "stop": 312.11,
+      "target": 437.93,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "Next AVGO report 12/10/2026 (public.com, checked 11/18) OUT of the 10-trading-day window => no earnings exclusion. 10Y 5.10% pressure; chip de-rating context => mild short 1.",
+      "atr": 20.97,
+      "close": 354.05,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0256
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "META",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 616.38,
+      "stop": 648.45,
+      "target": 583.8,
+      "rr": 1.02,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "Meta $616.38 (-0.4% on 11/18); next Q4 ~01/27/2027 (investor.atmeta.com) out of window => neutral.",
+      "atr": 20.75,
+      "close": 616.38,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0197
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "IEF",
+      "direction": "short",
+      "score": 5,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 90.67,
+      "stop": 91.63,
+      "target": 88.64,
+      "rr": 2.12,
+      "tier": "B",
+      "theme": "bonds",
+      "regime_why": "Same as TLT: 10Y 5.09-5.10% + hawkish Fed regime => IEF short regime-supported (0/2).",
+      "atr": 0.48,
+      "close": 90.67,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.003
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "short",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 508.29,
+      "stop": 544.11,
+      "target": 436.64,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "MSFT $508.29 (+0.4% on 11/18); next fiscal Q2 ~late Jan/early 2027 out of window => neutral.",
+      "atr": 17.91,
+      "close": 508.29,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0246
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 119.2,
+      "stop": 116.41,
+      "target": 122.92,
+      "rr": 1.33,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL. No in-window consumer catalyst. XLY/AMZN/TSLA have no fresh leg. Net neutral.",
+      "atr": 2.79,
+      "close": 119.2,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0148
+      }
+    },
+    {
+      "symbol": "XLB",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 50.46,
+      "stop": 49.37,
+      "target": 53.74,
+      "rr": 3.0,
+      "tier": "shadow",
+      "theme": "cyclicals",
+      "regime_why": "HIGH REAL YIELDS + MANUFACTURING CONTRACTION. 10Y 5.09-5.10% + Philly Fed Manufacturing 6.3 (TradingEconomics 11/19) is a massive headwind for XLI/XLB. Mild short, no clean long.",
+      "atr": 1.09,
+      "close": 50.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0483
+      }
+    }
+  ]
+}
