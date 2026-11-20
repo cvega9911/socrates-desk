@@ -1,0 +1,963 @@
+{
+  "date": "2026-11-20",
+  "mode": "briefing",
+  "rules_version": "v1.0",
+  "equity": 104192.26,
+  "spy_ret20": -0.0629,
+  "regime_file": "reports/regime_2026-11-20.json",
+  "regime_sha": "b573069d140cdc7b",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-07",
+  "exclusions": {},
+  "warnings": [],
+  "top": [
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 335.18,
+      "stop": 349.91,
+      "target": 305.71,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold fell FURTHER to ~$3,573-3,592/oz on 11/20 (goldprice.org -3.00% on the day; jmbullion $3,588.67) from $3,722 on 11/19 => a NEW liquidation low under a near-52-wk-high dollar (DXY 103.59-103.80) + ~5% absolute 10Y => short strongly regime-supported (0/2). The open GLD short from 11/17 stays the book's cleanest signal.",
+      "atr": 7.37,
+      "close": 335.18,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0555
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 39.64,
+      "stop": 42.69,
+      "target": 33.53,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver follows the deeper metals regime into a new-high dollar + high yields; open SLV short from 11/17 strongly regime-supported (0/2).",
+      "atr": 1.53,
+      "close": 39.64,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1215
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 72.0,
+      "stop": 79.82,
+      "target": 56.37,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold/silver into a near-52-wk-high dollar + gold's new low => GDX short regime-supported (0/2).",
+      "atr": 3.91,
+      "close": 72.0,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1202
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 715.87,
+      "stop": 745.26,
+      "target": 657.08,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / RISK-OFF but TAILWINDED by the 10Y ease. SPX 7,175.83 on 11/19 (-2.02%, prev close 7,323.63; MarketWatch SPX 11/20) and Nasdaq IN A CORRECTION argue a short 1 (sub-200DMA leg intact, falling tape); but the ~12bp 10Y ease (TradingEconomics/CNBC 11/20) is a risk-on tailwind for the long leg => neutral 1/1.",
+      "atr": 14.7,
+      "close": 715.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0545
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 645.04,
+      "stop": 684.49,
+      "target": 566.14,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq now OFFICIALLY IN A CORRECTION (Yahoo Finance 11/19/20) reinforces the short, but the 10Y ease + NVDA 11/17 beat hold one point. Weak short (1). No open QQQ position (closed +1.297R time 11/16).",
+      "atr": 19.73,
+      "close": 645.04,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0627
+      }
+    }
+  ],
+  "all": [
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 335.18,
+      "stop": 349.91,
+      "target": 305.71,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Gold fell FURTHER to ~$3,573-3,592/oz on 11/20 (goldprice.org -3.00% on the day; jmbullion $3,588.67) from $3,722 on 11/19 => a NEW liquidation low under a near-52-wk-high dollar (DXY 103.59-103.80) + ~5% absolute 10Y => short strongly regime-supported (0/2). The open GLD short from 11/17 stays the book's cleanest signal.",
+      "atr": 7.37,
+      "close": 335.18,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0555
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 39.64,
+      "stop": 42.69,
+      "target": 33.53,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver follows the deeper metals regime into a new-high dollar + high yields; open SLV short from 11/17 strongly regime-supported (0/2).",
+      "atr": 1.53,
+      "close": 39.64,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1215
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 72.0,
+      "stop": 79.82,
+      "target": 56.37,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Miners follow spot gold/silver into a near-52-wk-high dollar + gold's new low => GDX short regime-supported (0/2).",
+      "atr": 3.91,
+      "close": 72.0,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1202
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 715.87,
+      "stop": 745.26,
+      "target": 657.08,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / RISK-OFF but TAILWINDED by the 10Y ease. SPX 7,175.83 on 11/19 (-2.02%, prev close 7,323.63; MarketWatch SPX 11/20) and Nasdaq IN A CORRECTION argue a short 1 (sub-200DMA leg intact, falling tape); but the ~12bp 10Y ease (TradingEconomics/CNBC 11/20) is a risk-on tailwind for the long leg => neutral 1/1.",
+      "atr": 14.7,
+      "close": 715.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0545
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 645.04,
+      "stop": 684.49,
+      "target": 566.14,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq now OFFICIALLY IN A CORRECTION (Yahoo Finance 11/19/20) reinforces the short, but the 10Y ease + NVDA 11/17 beat hold one point. Weak short (1). No open QQQ position (closed +1.297R time 11/16).",
+      "atr": 19.73,
+      "close": 645.04,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0627
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 160.69,
+      "stop": 173.72,
+      "target": 134.63,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Same as QQQ: Nasdaq in a correction reinforces the chip de-rating, but 10Y ease holds a point. Open XLK short from 11/06 carries the thinnest regime support (short = 1).",
+      "atr": 6.52,
+      "close": 160.69,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0753
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 29.63,
+      "stop": 29.37,
+      "target": 30.15,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.59-103.80 on 11/20 just off the 103.97 52-wk high (TradingEconomics/MarketWatch/CNBC) into a high-absolute-yield tape => UUP long strongest signal in the book; already held.",
+      "atr": 0.13,
+      "close": 29.63,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0071
+      }
+    },
+    {
+      "symbol": "GOOGL",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 272.66,
+      "stop": 293.97,
+      "target": 230.03,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Alphabet Q3 reported ~10/28/2026; next report ~early 2027 out of window => neutral.",
+      "atr": 10.66,
+      "close": 272.66,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0872
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 447.48,
+      "stop": 502.41,
+      "target": 337.62,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Same as XLK: Nasdaq correction reinforces semis de-rating, but 10Y ease holds a point. No open SMH position (previous short hit target 11/05 +2.087R).",
+      "atr": 27.46,
+      "close": 447.48,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1081
+      }
+    },
+    {
+      "symbol": "USO",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 138.09,
+      "stop": 149.41,
+      "target": 115.45,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "WTI $82.13 into a monthly oil downtrend => regime against the USO long; USO was closed on a stop 11/02 (-1.002R), not currently held.",
+      "atr": 5.73,
+      "close": 138.09,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0546
+      }
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 145.98,
+      "stop": 169.78,
+      "target": 98.38,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "EARNINGS GATE CLEARED: NVDA fiscal Q3 reported after close 11/17 (rev +103%, guide above estimates); next report ~early 2027, OUT of the 10-trading-day window => no exclusion. The 10Y ease is a tailwind; mild long 1/0.",
+      "atr": 11.9,
+      "close": 145.98,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1216
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 177.46,
+      "stop": 173.7,
+      "target": 188.73,
+      "rr": 3.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG / ROTATION DEEPENS. SPX 7,175.83 on 11/19 close (-2.02% on the day, prev close 7,323.63; MarketWatch SPX 11/20) + Nasdaq now OFFICIALLY IN A CORRECTION (Yahoo Finance 11/19/20) argue a continued rotation into staples/healthcare (XLV/XLU/XLP). No clean risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 3.76,
+      "close": 177.46,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0552
+      }
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 115.88,
+      "stop": 112.93,
+      "target": 122.92,
+      "rr": 2.39,
+      "tier": "A",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL. No in-window consumer catalyst. XLY/AMZN/TSLA have no fresh leg. Net neutral.",
+      "atr": 2.95,
+      "close": 115.88,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.038
+      }
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 43.01,
+      "stop": 42.39,
+      "target": 44.4,
+      "rr": 2.24,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG / ROTATION DEEPENS. SPX 7,175.83 on 11/19 close (-2.02% on the day, prev close 7,323.63; MarketWatch SPX 11/20) + Nasdaq now OFFICIALLY IN A CORRECTION (Yahoo Finance 11/19/20) argue a continued rotation into staples/healthcare (XLV/XLU/XLP). No clean risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 0.62,
+      "close": 43.01,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0183
+      }
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 89.86,
+      "stop": 88.21,
+      "target": 93.48,
+      "rr": 2.19,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "MILD LONG / ROTATION DEEPENS. SPX 7,175.83 on 11/19 close (-2.02% on the day, prev close 7,323.63; MarketWatch SPX 11/20) + Nasdaq now OFFICIALLY IN A CORRECTION (Yahoo Finance 11/19/20) argue a continued rotation into staples/healthcare (XLV/XLU/XLP). No clean risk-on leg argues a short. Net mild long 1/0.",
+      "atr": 1.65,
+      "close": 89.86,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0132
+      }
+    },
+    {
+      "symbol": "IWM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 264.22,
+      "stop": 276.04,
+      "target": 240.58,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / RISK-OFF but TAILWINDED by the 10Y ease. SPX 7,175.83 on 11/19 (-2.02%, prev close 7,323.63; MarketWatch SPX 11/20) and Nasdaq IN A CORRECTION argue a short 1 (sub-200DMA leg intact, falling tape); but the ~12bp 10Y ease (TradingEconomics/CNBC 11/20) is a risk-on tailwind for the long leg => neutral 1/1.",
+      "atr": 5.91,
+      "close": 264.22,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0511
+      }
+    },
+    {
+      "symbol": "DIA",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 490.79,
+      "stop": 509.26,
+      "target": 453.84,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "MIXED / RISK-OFF but TAILWINDED by the 10Y ease. SPX 7,175.83 on 11/19 (-2.02%, prev close 7,323.63; MarketWatch SPX 11/20) and Nasdaq IN A CORRECTION argue a short 1 (sub-200DMA leg intact, falling tape); but the ~12bp 10Y ease (TradingEconomics/CNBC 11/20) is a risk-on tailwind for the long leg => neutral 1/1.",
+      "atr": 9.24,
+      "close": 490.79,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0606
+      }
+    },
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 60.89,
+      "stop": 64.47,
+      "target": 53.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "WTI $82.13 on 11/20 (TradingEconomics, -0.38%, -15.46% monthly off $110.48); Brent ~$93.14. Monthly oil downtrend dominates => regime against the energy long; mild short.",
+      "atr": 1.79,
+      "close": 60.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0535
+      }
+    },
+    {
+      "symbol": "XLI",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 161.36,
+      "stop": 168.71,
+      "target": 146.66,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "cyclicals",
+      "regime_why": "HIGH ABSOLUTE YIELDS + WEAK EQUITIES. 10Y still ~4.97-5.00% (still very elevated) + SPX -2.02% and a Nasdaq correction are a headwind for XLI/XLB; mild short, no clean long.",
+      "atr": 3.67,
+      "close": 161.36,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0477
+      }
+    },
+    {
+      "symbol": "META",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 596.22,
+      "stop": 640.29,
+      "target": 508.07,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Meta Q3 reported ~10/21/2026; next report ~01/27/2027 (investor.atmeta.com) out of window => neutral.",
+      "atr": 22.04,
+      "close": 596.22,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0439
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "JPM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 320.22,
+      "stop": 337.32,
+      "target": 286.03,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "Same as XLF; JPM next report out of the 10-trading-day window => neutral.",
+      "atr": 8.55,
+      "close": 320.22,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0659
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 158.93,
+      "stop": 168.49,
+      "target": 139.8,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Same as XLE (monthly oil downtrend). Next XOM report ~01/29/2027 OUT of the 10-trading-day window => no earnings exclusion; regime against the energy long.",
+      "atr": 4.78,
+      "close": 158.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0639
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 80.35,
+      "stop": 79.11,
+      "target": 82.42,
+      "rr": 1.67,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "CHANGED from 0/2 ON THE 10Y EASE: 10Y fell ~12bp to ~4.97-5.00% on 11/20 (TradingEconomics/CNBC) => a falling yield rallies bonds, supporting the LONG leg (1) and dropping the short from 2 to 1. Absolute yield still ~5% keeps long below 2. No open TLT position.",
+      "atr": 0.73,
+      "close": 80.35,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0079
+      }
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 55.58,
+      "stop": 54.49,
+      "target": 58.86,
+      "rr": 3.0,
+      "tier": "B",
+      "theme": "financials",
+      "regime_why": "10Y eased to ~4.97-5.00% (still elevated, supports NIM, a long leg at 1) but the ease pressures the NIM thesis and weak equities => net neutral.",
+      "atr": 1.09,
+      "close": 55.58,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0452
+      }
+    },
+    {
+      "symbol": "XLB",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 49.42,
+      "stop": 51.69,
+      "target": 44.89,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "cyclicals",
+      "regime_why": "HIGH ABSOLUTE YIELDS + WEAK EQUITIES. 10Y still ~4.97-5.00% (still very elevated) + SPX -2.02% and a Nasdaq correction are a headwind for XLI/XLB; mild short, no clean long.",
+      "atr": 1.13,
+      "close": 49.42,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0558
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 498.3,
+      "stop": 535.92,
+      "target": 423.07,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "MSFT fiscal Q1 reported ~10/28/2026; next report ~early 2027 out of window => neutral.",
+      "atr": 18.81,
+      "close": 498.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0472
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 257.37,
+      "stop": 246.17,
+      "target": 275.34,
+      "rr": 1.6,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "AMZN Q3 reported ~10/29/2026; next report ~early 2027 out of window => neutral.",
+      "atr": 11.2,
+      "close": 257.37,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0377
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 90.82,
+      "stop": 89.95,
+      "target": 92.17,
+      "rr": 1.55,
+      "tier": "B",
+      "theme": "bonds",
+      "regime_why": "Same as TLT: 10Y eased to ~4.97-5.00% => bond rally supports the long leg; short downgraded 2->1. No open IEF position.",
+      "atr": 0.47,
+      "close": 90.82,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0068
+      }
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 346.65,
+      "stop": 304.92,
+      "target": 430.12,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "Next AVGO report 12/09/2026 (investors.broadcom.com IR + MarketBeat, checked 11/20) is OUT of the 10-trading-day window (window through ~12/04) => no earnings exclusion. 10Y ease + Nasdaq correction => mild short 1.",
+      "atr": 20.87,
+      "close": 346.65,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0486
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AAPL",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 349.21,
+      "stop": 338.3,
+      "target": 360.83,
+      "rr": 1.07,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "AAPL Q2 reported ~11/02/2026; next report ~late Jan/early 2027 out of window => neutral.",
+      "atr": 9.01,
+      "close": 349.21,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.016
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 3,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 374.41,
+      "stop": 347.6,
+      "target": 414.23,
+      "rr": 1.49,
+      "tier": "shadow",
+      "theme": "consumer",
+      "regime_why": "TSLA risk-off spillover only; next Q4 report ~late Jan/early 2027 out of window => neutral.",
+      "atr": 18.4,
+      "close": 374.41,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.058
+      },
+      "earnings_unverified": false
+    }
+  ]
+}
