@@ -1,0 +1,8 @@
+{
+  "symbol": "TLT",
+  "p_target": 0.41,
+  "thesis": "TLT LONG 10/10 (trend 2, RS 2, bonds regime 2, RR 2, momentum 1, volume 1): the 10Y easing to ~4.89% with a risk-off flight-to-quality bid in long-duration debt, regime and relative strength both maxed (score.py 11/24).",
+  "invalidation": "Stop 80.17; the thesis is wrong if TLT closes back below 80.17 as the 10Y re-spikes.",
+  "dissent": "Fails if a risk-on reversal or a hawkish surprise pushes TLT back below 81.72 entry before the 84.83 target.",
+  "earnings_checked": false
+}

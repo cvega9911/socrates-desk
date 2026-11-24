@@ -1,0 +1,8 @@
+{
+  "symbol": "XLE",
+  "p_target": 0.38,
+  "thesis": "XLE SHORT 10/10 (trend 2, RS 2, energy regime 2, RR 2, momentum 1, volume 1): Brent at a ~3-month low (~$90/bbl, -22% mtd) on US-Iran diplomatic de-escalation leaves energy on the weak side of its trend with both regime and relative strength maxed (score.py 11/24).",
+  "invalidation": "Stop 63.69; the thesis is wrong if XLE closes back above 63.69 as oil recovers off its low.",
+  "dissent": "Fails if a risk-off short-squeeze or a renewed US-Iran escalation spike lifts XLE back above 60.31 entry before the 53.54 target, as in the Mon violent equity bounce.",
+  "earnings_checked": false
+}

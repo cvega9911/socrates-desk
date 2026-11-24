@@ -1,0 +1,239 @@
+{
+  "date": "2026-11-24",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 104715.85,
+  "spy_ret20": -0.0563,
+  "regime_file": "reports/regime_2026-11-24.json",
+  "regime_sha": "567159716976d343",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-09",
+  "exclusions": {},
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "trading_days_since_last_AB": 4,
+  "run": "decision",
+  "day_pnl_pct": 0.0021,
+  "halted": false,
+  "open_positions": 3,
+  "open_risk_dollars": 1195.08,
+  "plan": [
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 60.31,
+      "stop": 63.69,
+      "target": 53.54,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent at 3-month low on US-Iran de-escalation, oil complex weak (TradingEconomics 11/24)",
+      "atr": 1.69,
+      "close": 59.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.06
+      },
+      "quota": false,
+      "shares": 154,
+      "risk_dollars": 520.52,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 104715.85
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 81.72,
+      "stop": 80.17,
+      "target": 84.83,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)",
+      "atr": 0.78,
+      "close": 81.69,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0291
+      },
+      "quota": false,
+      "shares": 256,
+      "risk_dollars": 396.8,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 104715.85
+    }
+  ],
+  "blocked": [
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 91.81,
+      "stop": 90.79,
+      "target": 93.86,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)",
+      "atr": 0.51,
+      "close": 91.64,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0155
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 716.41,
+      "stop": 753.3,
+      "target": 642.63,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)",
+      "atr": 18.45,
+      "close": 722.29,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0239
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 636.95,
+      "stop": 685.14,
+      "target": 540.56,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 24.1,
+      "close": 651.03,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0162
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 156.65,
+      "stop": 172.31,
+      "target": 125.33,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 7.83,
+      "close": 162.38,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0144
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 426.56,
+      "stop": 492.52,
+      "target": 294.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 32.98,
+      "close": 460.18,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0037
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
