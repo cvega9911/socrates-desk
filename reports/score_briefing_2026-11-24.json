@@ -1,0 +1,967 @@
+{
+  "date": "2026-11-24",
+  "mode": "briefing",
+  "rules_version": "v1.0",
+  "equity": 104733.07,
+  "spy_ret20": -0.0563,
+  "regime_file": "reports/regime_2026-11-24.json",
+  "regime_sha": "567159716976d343",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-09",
+  "exclusions": {},
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "top": [
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 59.87,
+      "stop": 63.25,
+      "target": 53.1,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent at 3-month low on US-Iran de-escalation, oil complex weak (TradingEconomics 11/24)",
+      "atr": 1.69,
+      "close": 59.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.06
+      }
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 81.69,
+      "stop": 80.14,
+      "target": 84.8,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)",
+      "atr": 0.78,
+      "close": 81.69,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0291
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 722.29,
+      "stop": 759.18,
+      "target": 648.51,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)",
+      "atr": 18.45,
+      "close": 722.29,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0239
+      }
+    },
+    {
+      "symbol": "USO",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 133.36,
+      "stop": 144.29,
+      "target": 111.49,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent ~89.98 USD/bbl at 3-month low, -22.25% over past month, US-Iran diplomatic de-escalation (VP Vance talks with Qatar) pressuring the complex; regime supports short-energy (TradingEconomics 11/24)",
+      "atr": 5.47,
+      "close": 133.36,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0476
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 385.46,
+      "stop": 344.33,
+      "target": 467.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 22.08,
+      "close": 385.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0151
+      },
+      "earnings_unverified": false
+    }
+  ],
+  "all": [
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 59.87,
+      "stop": 63.25,
+      "target": 53.1,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent at 3-month low on US-Iran de-escalation, oil complex weak (TradingEconomics 11/24)",
+      "atr": 1.69,
+      "close": 59.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.06
+      }
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 81.69,
+      "stop": 80.14,
+      "target": 84.8,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)",
+      "atr": 0.78,
+      "close": 81.69,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0291
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 722.29,
+      "stop": 759.18,
+      "target": 648.51,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)",
+      "atr": 18.45,
+      "close": 722.29,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0239
+      }
+    },
+    {
+      "symbol": "USO",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 133.36,
+      "stop": 144.29,
+      "target": 111.49,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent ~89.98 USD/bbl at 3-month low, -22.25% over past month, US-Iran diplomatic de-escalation (VP Vance talks with Qatar) pressuring the complex; regime supports short-energy (TradingEconomics 11/24)",
+      "atr": 5.47,
+      "close": 133.36,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0476
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 385.46,
+      "stop": 344.33,
+      "target": 467.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 22.08,
+      "close": 385.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0151
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 165.05,
+      "stop": 180.67,
+      "target": 124.5,
+      "rr": 2.6,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 15.62,
+      "close": 165.05,
+      "alt": {
+        "pullback": 1,
+        "ret5": 0.0571
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 333.02,
+      "stop": 350.39,
+      "target": 298.29,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Spot gold +2.2% to ~3,623 on risk-off bid (JMBullion 11/24)",
+      "atr": 8.68,
+      "close": 333.02,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0564
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 38.91,
+      "stop": 42.43,
+      "target": 31.87,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Spot gold ~3,623-3,631 USD/oz, +2.2% on the day on risk-off bid; regime supports long metals (JMBullion/Forbes 11/24)",
+      "atr": 1.76,
+      "close": 38.91,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0821
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 72.8,
+      "stop": 81.31,
+      "target": 55.77,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Spot gold ~3,623-3,631 USD/oz, +2.2% on the day on risk-off bid; regime supports long metals (JMBullion/Forbes 11/24)",
+      "atr": 4.26,
+      "close": 72.8,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0779
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.78,
+      "stop": 29.5,
+      "target": 30.34,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.85 at 4-week low, -0.40% day (TradingEconomics 11/24)",
+      "atr": 0.14,
+      "close": 29.78,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0074
+      }
+    },
+    {
+      "symbol": "GOOGL",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 282.1,
+      "stop": 304.97,
+      "target": 236.36,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 12.53,
+      "close": 282.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0057
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 156.9,
+      "stop": 165.83,
+      "target": 139.04,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent ~89.98 USD/bbl at 3-month low, -22.25% over past month, US-Iran diplomatic de-escalation (VP Vance talks with Qatar) pressuring the complex; regime supports short-energy (TradingEconomics 11/24)",
+      "atr": 4.47,
+      "close": 156.9,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0597
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 91.64,
+      "stop": 90.62,
+      "target": 92.75,
+      "rr": 1.08,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)",
+      "atr": 0.51,
+      "close": 91.64,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0155
+      }
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 179.42,
+      "stop": 175.49,
+      "target": 191.21,
+      "rr": 3.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 3.93,
+      "close": 179.42,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.045
+      }
+    },
+    {
+      "symbol": "IWM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 265.74,
+      "stop": 279.25,
+      "target": 238.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)",
+      "atr": 6.76,
+      "close": 265.74,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0264
+      }
+    },
+    {
+      "symbol": "XLI",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 162.47,
+      "stop": 170.82,
+      "target": 145.76,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "cyclicals",
+      "regime_why": "Risk-off regime, VIX 35.89, and 10Y still ~4.89% pressure cyclical valuations; regime leans against long cyclicals (FRED 11/20, FRED VIX 11/20)",
+      "atr": 4.18,
+      "close": 162.47,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0193
+      }
+    },
+    {
+      "symbol": "JPM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 316.66,
+      "stop": 335.54,
+      "target": 278.91,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 9.44,
+      "close": 316.66,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0637
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 313.55,
+      "stop": 361.07,
+      "target": 218.52,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 23.76,
+      "close": 313.55,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0595
+      },
+      "earnings_unverified": false,
+      "flag": "EARNINGS BLACKOUT"
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 90.38,
+      "stop": 88.74,
+      "target": 93.48,
+      "rr": 1.89,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 1.64,
+      "close": 90.38,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.024
+      }
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 460.18,
+      "stop": 516.65,
+      "target": 396.85,
+      "rr": 1.12,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 32.98,
+      "close": 460.18,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0037
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 651.03,
+      "stop": 695.57,
+      "target": 606.23,
+      "rr": 1.01,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 24.1,
+      "close": 651.03,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0162
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 162.38,
+      "stop": 176.49,
+      "target": 148.09,
+      "rr": 1.01,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 7.83,
+      "close": 162.38,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0144
+      }
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 55.65,
+      "stop": 54.42,
+      "target": 59.33,
+      "rr": 3.0,
+      "tier": "B",
+      "theme": "financials",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 1.18,
+      "close": 55.65,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0435
+      }
+    },
+    {
+      "symbol": "DIA",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 495.8,
+      "stop": 517.37,
+      "target": 452.67,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)",
+      "atr": 10.78,
+      "close": 495.8,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0386
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 492.5,
+      "stop": 531.03,
+      "target": 415.44,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 19.27,
+      "close": 492.5,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0492
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "META",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 597.6,
+      "stop": 648.21,
+      "target": 496.37,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 25.31,
+      "close": 597.6,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.046
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 43.32,
+      "stop": 42.63,
+      "target": 44.4,
+      "rr": 1.57,
+      "tier": "B",
+      "theme": "defensive",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 0.66,
+      "close": 43.32,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0181
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 349.08,
+      "stop": 339.92,
+      "target": 360.83,
+      "rr": 1.28,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)",
+      "atr": 9.16,
+      "close": 349.08,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0105
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLB",
+      "direction": "short",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 49.9,
+      "stop": 52.3,
+      "target": 45.1,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "cyclicals",
+      "regime_why": "Risk-off regime, VIX 35.89, and 10Y still ~4.89% pressure cyclical valuations; regime leans against long cyclicals (FRED 11/20, FRED VIX 11/20)",
+      "atr": 1.2,
+      "close": 49.9,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0305
+      }
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 255.39,
+      "stop": 243.47,
+      "target": 275.34,
+      "rr": 1.67,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 11.92,
+      "close": 255.39,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0092
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 116.93,
+      "stop": 112.03,
+      "target": 122.92,
+      "rr": 1.22,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 3.29,
+      "close": 116.93,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0103
+      }
+    }
+  ]
+}

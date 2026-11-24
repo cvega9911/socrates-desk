@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-24",
+  "themes": {
+    "broad": {
+      "long": 1,
+      "short": 1,
+      "why": "S&P 500 +4.73% to 7,237.17 and Nasdaq +6.51% to 24,089.56 on Mon 11/23, its best day since Apr 2025, but still ~12% off recent highs and VIX at 35.89; broken downtrend, violent capitulation bounce = mixed (CNBC 11/23, FRED VIX 11/20, Schwab 11/23)"
+    },
+    "tech": {
+      "long": 1,
+      "short": 1,
+      "why": "AI rout drove NDX ~18% off its high; Mon's relief bounce driven by Jensen Huang's return to Nvidia after a beat (earnings 11/17); chip complex oversold but trend still broken = mixed (CNBC 11/23, WSJ 11/17)"
+    },
+    "energy": {
+      "long": 0,
+      "short": 2,
+      "why": "Brent ~89.98 USD/bbl at 3-month low, -22.25% over past month, US-Iran diplomatic de-escalation (VP Vance talks with Qatar) pressuring the complex; regime supports short-energy (TradingEconomics 11/24)"
+    },
+    "cyclicals": {
+      "long": 0,
+      "short": 1,
+      "why": "Risk-off regime, VIX 35.89, and 10Y still ~4.89% pressure cyclical valuations; regime leans against long cyclicals (FRED 11/20, FRED VIX 11/20)"
+    },
+    "bonds": {
+      "long": 2,
+      "short": 0,
+      "why": "10Y yield easing to ~4.89% on 11/24 (down ~5bps from ~4.94% open), easing supports long bonds (CNBC US10Y 11/24, TradingEconomics 11/24)"
+    },
+    "metals": {
+      "long": 2,
+      "short": 0,
+      "why": "Spot gold ~3,623-3,631 USD/oz, +2.2% on the day on risk-off bid; regime supports long metals (JMBullion/Forbes 11/24)"
+    },
+    "dollar": {
+      "long": 0,
+      "short": 2,
+      "why": "DXY 103.85, -0.40% on the day and at a 4-week low, regime supports short-UUP / weak-dollar beneficiaries (TradingEconomics/MarketWatch 11/24)"
+    }
+  },
+  "symbols": {
+    "GLD": {
+      "long": 2,
+      "short": 0,
+      "why": "Spot gold +2.2% to ~3,623 on risk-off bid (JMBullion 11/24)"
+    },
+    "UUP": {
+      "long": 0,
+      "short": 2,
+      "why": "DXY 103.85 at 4-week low, -0.40% day (TradingEconomics 11/24)"
+    },
+    "XLE": {
+      "long": 0,
+      "short": 2,
+      "why": "Brent at 3-month low on US-Iran de-escalation, oil complex weak (TradingEconomics 11/24)"
+    }
+  },
+  "catalysts": [
+    "No tier-1 macro release today (Tue 2026-11-24). BLS schedule leaves 11/23-11/24 empty (JOLTS was 11/03, Nov NFP next 02/04). Beige Book release Tue 11/25 2:00pm ET; next FOMC rate decision Tue 12/09 2:00pm ET (fedratecalc.com / BLS).",
+    "Equity catalyst already printed Mon 11/23: Jensen Huang reinstated at Nvidia after a top-line beat (earnings 11/17) drove S&P +4.73% / Nasdaq +6.51%. NVDA reported 11/17, outside the 10-trading-day window, so no earnings blackout (WSJ 11/17).",
+    "Thematic tailwind: oil at a 3-month low on US-Iran peace progress = energy short-thesis; weak DXY + gold +2.2% = risk-off flight-to-quality."
+  ]
+}
