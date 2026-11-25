@@ -1,0 +1,202 @@
+{
+  "date": "2026-11-25",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 105595.07,
+  "spy_ret20": -0.0661,
+  "regime_file": "reports/regime_2026-11-25.json",
+  "regime_sha": "6b58666d737fe67e",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-10",
+  "exclusions": {},
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "trading_days_since_last_AB": 1,
+  "run": "decision",
+  "day_pnl_pct": 0.0086,
+  "halted": false,
+  "open_positions": 5,
+  "open_risk_dollars": 2112.4,
+  "plan": [],
+  "blocked": [
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 29.71,
+      "stop": 29.43,
+      "target": 30.27,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY 103.981 on 11/25 (+0.16%, near the 103.97 52-wk high; TradingEconomics) into a sticky-PCE / hawkish tape => UUP long strongest signal in the book; already held (open 11/12).",
+      "atr": 0.14,
+      "close": 29.63,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.003
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 698.54,
+      "stop": 733.84,
+      "target": 627.94,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 7,201.09 (-0.5% 11/24, in a correction off the AI rout) vs the 10Y ease => mixed/broad neutral; open SPY short (11/18) regime-neutral.",
+      "atr": 17.65,
+      "close": 718.78,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0186
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 60.44,
+      "stop": 63.41,
+      "target": 54.5,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "WTI ~$81.40 (macrotrends 11/24) / Brent ~$91.18 (markets.businessinsider 11/24) at/under recent lows on US-Iran de-escalation => energy structurally weak, strongly short. Open XLE short (11/24) stays the cleanest live regime signal.",
+      "atr": 1.49,
+      "close": 60.45,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0459
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 149.35,
+      "stop": 165.44,
+      "target": 117.16,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI ROUT DEEPENS: NVDA -6% on 11/24 and Nasdaq -1.5% off the chip complex (CNBC 11/24) reinforce a tech/chip de-rating (short 1), but the 10Y ease to 4.86% (TradingEconomics 11/25) is a growth tailwind that holds one point against the short. Mild short 0/1.",
+      "atr": 8.05,
+      "close": 157.09,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0378
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 397.95,
+      "stop": 466.32,
+      "target": 261.2,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "AI ROUT DEEPENS: NVDA -6% on 11/24 and Nasdaq -1.5% off the chip complex (CNBC 11/24) reinforce a tech/chip de-rating (short 1), but the 10Y ease to 4.86% (TradingEconomics 11/25) is a growth tailwind that holds one point against the short. Mild short 0/1.",
+      "atr": 34.19,
+      "close": 426.75,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0725
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 43.44,
+      "stop": 42.63,
+      "target": 44.4,
+      "rr": 1.19,
+      "tier": "shadow",
+      "theme": "defensive",
+      "regime_why": "MILD LONG / RISK-OFF ROTATION. With a broken equity tape and a volatile PCE day (S&P/Nasdaq in a correction off the AI rout, CNBC 11/24), the defensive complex (XLV/XLU/XLP) gets the rotation bid; no clean short leg argued. Net mild long 1/0.",
+      "atr": 0.64,
+      "close": 43.4,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0005
+      },
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
