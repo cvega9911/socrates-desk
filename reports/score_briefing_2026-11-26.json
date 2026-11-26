@@ -1,0 +1,971 @@
+{
+  "date": "2026-11-26",
+  "mode": "briefing",
+  "rules_version": "v1.0",
+  "equity": 105072.26,
+  "spy_ret20": -0.072,
+  "regime_file": "reports/regime_2026-11-26.json",
+  "regime_sha": "8e1c61bd5522633d",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-10",
+  "exclusions": {
+    "XOM": "Q3 FY26 report (quarter ended 2026-09-30) due late Nov/early Dec 2026 \u2014 within 10 trading days; checked 2026-11-26, source fullratio.com"
+  },
+  "warnings": [
+    "2026-11-26 is not a trading day; this briefing scores the last completed session.",
+    "EXCLUSION CONFLICT: XOM is excluded, but the earnings calendar shows no report in the next 10 trading days.",
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "top": [
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.3,
+      "stop": 89.4,
+      "target": 98.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "RISK-OFF ROTATION BID INTENSIFIED. A holiday-thinned tape plus a strong 3-session oil spike (Brent $95.61) and a safe-haven gold bid (gold ~$3,539/oz, USA Today 11/25) tilt capital into defensives (XLV/XLU/XLP); no clean short leg argues => defensive long 2/0.",
+      "atr": 1.45,
+      "close": 92.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0123
+      }
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 82.24,
+      "stop": 80.65,
+      "target": 85.43,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y EASED to 4.85% on 11/25 (FRED DGS10 / 247WallSt, ~6bp off 4.91% 11/24) on a risk-off flight-to-quality into the Thanksgiving holiday => bonds strongly regime-supported 2/0; the OPEN TLT long (11/24, entry 81.69, stop 80.17, target 84.83) is reinforced.",
+      "atr": 0.8,
+      "close": 82.24,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0252
+      }
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.06,
+      "stop": 91.05,
+      "target": 94.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "Same as TLT: 10Y easing 4.85% (FRED 11/25) supports the long leg; no open IEF position in the managed book.",
+      "atr": 0.51,
+      "close": 92.06,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0153
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 716.7,
+      "stop": 750.46,
+      "target": 649.18,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 7,182.78 on 11/25 close (Yahoo) \u2014 in the AI-led correction BUT +0.13% on the day and a Thanksgiving-holiday thin tape => mixed/broad neutral 1/1; the OPEN SPY short (11/18) is regime-neutral, not against it.",
+      "atr": 16.88,
+      "close": 716.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0185
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 633.93,
+      "stop": 680.58,
+      "target": 540.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT: Nasdaq -1.5% earlier in the week but +1.5% on 11/25 (AP 11/25) and XLK still deeply negative (1m -11.5% per composer.trade); the 10Y ease offsets one point vs the AI de-rating => mild short 0/1, no open QQQ position.",
+      "atr": 23.32,
+      "close": 633.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0388
+      }
+    }
+  ],
+  "all": [
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.3,
+      "stop": 89.4,
+      "target": 98.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "RISK-OFF ROTATION BID INTENSIFIED. A holiday-thinned tape plus a strong 3-session oil spike (Brent $95.61) and a safe-haven gold bid (gold ~$3,539/oz, USA Today 11/25) tilt capital into defensives (XLV/XLU/XLP); no clean short leg argues => defensive long 2/0.",
+      "atr": 1.45,
+      "close": 92.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0123
+      }
+    },
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 82.24,
+      "stop": 80.65,
+      "target": 85.43,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y EASED to 4.85% on 11/25 (FRED DGS10 / 247WallSt, ~6bp off 4.91% 11/24) on a risk-off flight-to-quality into the Thanksgiving holiday => bonds strongly regime-supported 2/0; the OPEN TLT long (11/24, entry 81.69, stop 80.17, target 84.83) is reinforced.",
+      "atr": 0.8,
+      "close": 82.24,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0252
+      }
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.06,
+      "stop": 91.05,
+      "target": 94.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "Same as TLT: 10Y easing 4.85% (FRED 11/25) supports the long leg; no open IEF position in the managed book.",
+      "atr": 0.51,
+      "close": 92.06,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0153
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 716.7,
+      "stop": 750.46,
+      "target": 649.18,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 7,182.78 on 11/25 close (Yahoo) \u2014 in the AI-led correction BUT +0.13% on the day and a Thanksgiving-holiday thin tape => mixed/broad neutral 1/1; the OPEN SPY short (11/18) is regime-neutral, not against it.",
+      "atr": 16.88,
+      "close": 716.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0185
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 633.93,
+      "stop": 680.58,
+      "target": 540.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT: Nasdaq -1.5% earlier in the week but +1.5% on 11/25 (AP 11/25) and XLK still deeply negative (1m -11.5% per composer.trade); the 10Y ease offsets one point vs the AI de-rating => mild short 0/1, no open QQQ position.",
+      "atr": 23.32,
+      "close": 633.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0388
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 155.79,
+      "stop": 171.08,
+      "target": 125.22,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 7.64,
+      "close": 155.79,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.049
+      }
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 43.61,
+      "stop": 42.63,
+      "target": 45.57,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "RISK-OFF ROTATION BID INTENSIFIED. A holiday-thinned tape plus a strong 3-session oil spike (Brent $95.61) and a safe-haven gold bid (gold ~$3,539/oz, USA Today 11/25) tilt capital into defensives (XLV/XLU/XLP); no clean short leg argues => defensive long 2/0.",
+      "atr": 0.6,
+      "close": 43.61,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0014
+      }
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 422.46,
+      "stop": 487.15,
+      "target": 293.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 32.34,
+      "close": 422.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0807
+      }
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 300.86,
+      "stop": 347.13,
+      "target": 208.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 23.14,
+      "close": 300.86,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1502
+      },
+      "earnings_unverified": false,
+      "flag": "EARNINGS BLACKOUT"
+    },
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 327.45,
+      "stop": 345.19,
+      "target": 291.97,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "FLIPPED TO LONG: gold ~$3,539.62/oz on 11/25 (USA Today 11/25) and silver $39.72/oz (Fortune 11/25) on a safe-haven Middle East bid + a fatiguing dollar; the 11/24 metals liquidation has rolled over so GLD is now regime-supported long 2/0 (no open GLD position in the managed book).",
+      "atr": 8.87,
+      "close": 327.45,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0403
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 37.1,
+      "stop": 40.76,
+      "target": 29.78,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Same as GLD \u2014 silver ~$39.72-40.27/oz (Fortune/USA Today 11/25) bounces on safe-haven + industrial bid, the 11/24 metals liquidation reversed => SLV regime-supported long 2/0; the 11/17 SLV short already hit its target 11/25 (exit 35.32, +2.45R, trades.jsonl).",
+      "atr": 1.83,
+      "close": 37.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0885
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 73.89,
+      "stop": 81.82,
+      "target": 58.02,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "FLIPPED TO LONG (reverses the 11/25 short-1). GOLD ~$3,539.62/oz on 11/25 (USA Today 11/25) and silver $39.72-40.27/oz (Fortune/USA Today 11/25) on a SAFE-HAVEN bid from the Middle East escalation and a dollar FATIGUING off its 2026 high (forex.com 'dollar fatigue opens the door to a squeeze', 11/25) => the intraday metals liquidation of 11/24 has rolled over; the long leg is regime-supported 2/0.",
+      "atr": 3.97,
+      "close": 73.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0124
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 29.6,
+      "stop": 29.33,
+      "target": 30.14,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DOWNGRADED to NEUTRAL: DXY peaked at the 2026 high ~103.98 region (TradingEconomics 11/25) but is now showing fatigue (forex.com 11/25) into a falling 10Y (4.85%) and safe-haven bid => UUP upside capped, net neutral; open UUP long (11/24-file/11/12) loses its 2-point regime edge.",
+      "atr": 0.14,
+      "close": 29.6,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0007
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 355.58,
+      "stop": 340.56,
+      "target": 385.62,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 8.03,
+      "close": 355.58,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0089
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "GOOGL",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 273.1,
+      "stop": 296.35,
+      "target": 226.6,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 11.63,
+      "close": 273.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0331
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 158.08,
+      "stop": 165.11,
+      "target": 144.02,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Same as XLE \u2014 oil spikes on Middle East tension (Brent $95.61, WTI $84.63, TradingEconomics 11/26); XOM's next report is Q3 FY26 (ended Sep 30, 2026) reported late Nov/early Dec (fullratio.com 11/26) \u2014 within ~10 trading days => EXCLUDED from DECISION via the regime exclude block; long 2/0 in the regime regardless.",
+      "atr": 3.51,
+      "close": 158.08,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0156
+      },
+      "earnings_unverified": false,
+      "flag": "EXCLUDED"
+    },
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 60.9,
+      "stop": 63.69,
+      "target": 55.31,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "FLIPPED HARD AGAINST THE OPEN SHORT: Brent $95.61 (+3rd session, TradingEconomics 11/26) and WTI $84.63 on Middle East escalation (Houthis vs Ras Tanura, Hormuz mines) + OPEC+ Nov 29 => energy reverses from its ~$90-bbl 11/24 shorts regime into a long 2/0. The OPEN XLE short (11/24, entry 60.31, stop 63.69, target 53.54) now sits on the wrong side of a live oil spike; this is the single most important regime change for the live book.",
+      "atr": 1.4,
+      "close": 60.9,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0064
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 489.93,
+      "stop": 524.04,
+      "target": 421.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 17.05,
+      "close": 489.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0361
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "JPM",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 316.74,
+      "stop": 332.2,
+      "target": 285.82,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "financials",
+      "regime_why": "NEUTRAL. The 10Y EASE to 4.85% (FRED 11/25) pressures net interest margin, but the absolute yield still ~4.85% supports NIM, and JPM's next report is far out (well beyond the 10-trading-day window) so no earnings exclusion => net neutral 1/1.",
+      "atr": 7.73,
+      "close": 316.74,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0227
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLB",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 51.21,
+      "stop": 48.98,
+      "target": 54.63,
+      "rr": 1.53,
+      "tier": "A",
+      "theme": "cyclicals",
+      "regime_why": "MIXED/NEUTRAL. The strong dollar earlier (DXY near 2026 high, forex.com 11/24) and risk-off equities headwind domestic cyclicals (XLI/XLB), but the oil spike is a direct cyclical/headwind offset and the 10Y ease supports growth => net neutral-to-mild; no strong leg => 1/0.",
+      "atr": 1.12,
+      "close": 51.21,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0149
+      }
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 2,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 183.68,
+      "stop": 176.71,
+      "target": 192.32,
+      "rr": 1.24,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "RISK-OFF ROTATION BID INTENSIFIED. A holiday-thinned tape plus a strong 3-session oil spike (Brent $95.61) and a safe-haven gold bid (gold ~$3,539/oz, USA Today 11/25) tilt capital into defensives (XLV/XLU/XLP); no clean short leg argues => defensive long 2/0.",
+      "atr": 3.62,
+      "close": 183.68,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0139
+      }
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 244.43,
+      "stop": 233.97,
+      "target": 275.34,
+      "rr": 2.95,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL/TWO-WAY. No in-window consumer catalyst and a Thanksgiving holiday suppresses volume; sticky Oct PCE (~3.1% y/y per BEA 11/25) pressures discretionary spend while the 10Y ease is a tailwind => net neutral 1/1.",
+      "atr": 10.46,
+      "close": 244.43,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0871
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLI",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 162.95,
+      "stop": 170.9,
+      "target": 147.04,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "cyclicals",
+      "regime_why": "MIXED/NEUTRAL. The strong dollar earlier (DXY near 2026 high, forex.com 11/24) and risk-off equities headwind domestic cyclicals (XLI/XLB), but the oil spike is a direct cyclical/headwind offset and the 10Y ease supports growth => net neutral-to-mild; no strong leg => 1/0.",
+      "atr": 3.98,
+      "close": 162.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0104
+      }
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 117.49,
+      "stop": 112.03,
+      "target": 128.42,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL/TWO-WAY. No in-window consumer catalyst and a Thanksgiving holiday suppresses volume; sticky Oct PCE (~3.1% y/y per BEA 11/25) pressures discretionary spend while the 10Y ease is a tailwind => net neutral 1/1.",
+      "atr": 2.9,
+      "close": 117.49,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0143
+      }
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 56.51,
+      "stop": 54.48,
+      "target": 60.04,
+      "rr": 1.74,
+      "tier": "B",
+      "theme": "financials",
+      "regime_why": "NEUTRAL. The 10Y EASE to 4.85% (FRED 11/25) pressures net interest margin, but the absolute yield still ~4.85% supports NIM, and JPM's next report is far out (well beyond the 10-trading-day window) so no earnings exclusion => net neutral 1/1.",
+      "atr": 1.02,
+      "close": 56.51,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0016
+      }
+    },
+    {
+      "symbol": "META",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 609.89,
+      "stop": 643.91,
+      "target": 558.68,
+      "rr": 1.51,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "MILD SHORT. Nasdaq/tech still in an AI-led de-rating (XLK 1m -11.5%, 3m -7.9% per composer.trade) and the tape risk-off, but 11/25 saw a +1.5% Nasdaq bounce (AP 11/25) and the 10Y ease to 4.85% (FRED 11/25) is a growth/duration tailwind holding one point against the short => mild short 0/1.",
+      "atr": 24.31,
+      "close": 609.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0105
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 149.3,
+      "stop": 171.5,
+      "target": 124.5,
+      "rr": 1.12,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "NVDA single-stock inside the AI tape (11/25 Nasdaq +1.5% bounce, AP 11/25) with a 10Y ease (4.85%) growth tailwind; next report far out (fiscal Q4, well beyond 10 trading days) => no earnings exclusion; mild long 1/0.",
+      "atr": 15.83,
+      "close": 149.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.011
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "USO",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 139.89,
+      "stop": 132.28,
+      "target": 162.73,
+      "rr": 3.0,
+      "tier": "B",
+      "theme": "energy",
+      "regime_why": "FLIPPED HARD AGAINST THE LONG (reverses the 11/25 short-2). BRENT $95.61 on 11/26 (+1.05% on the day, +3rd session, TradingEconomics 11/26) and WTI $84.63 (+1.13%, TradingEconomics 11/26) on ESCALATING Middle East tension \u2014 Iran-backed Houthis attacking Saudi Arabia including the Ras Tanura export terminal, tankers struck by mines in the Strait of Hormuz (TradingEconomics 11/26), plus the OPEC+ Nov 29 meeting on 2027 output (Iraq pushing higher capacity). Oil is reversing off its ~$90 lows on a fresh geopolitical spike => energy structurally strong now, strongly long-supportive; the open XLE short (11/24, at ~$90-bbl regime) is now the wrong side of this reversal.",
+      "atr": 4.76,
+      "close": 139.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0278
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 380.14,
+      "stop": 344.33,
+      "target": 451.76,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "NEUTRAL/TWO-WAY. No in-window consumer catalyst and a Thanksgiving holiday suppresses volume; sticky Oct PCE (~3.1% y/y per BEA 11/25) pressures discretionary spend while the 10Y ease is a tailwind => net neutral 1/1.",
+      "atr": 20.05,
+      "close": 380.14,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0093
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "DIA",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 501.27,
+      "stop": 482.14,
+      "target": 536.6,
+      "rr": 1.85,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "THANKSGIVING HALF-DAY, no tier-1 event today (BLS/Fed 11/26 holiday). Equity tape mixed/low-volume: S&P 500 7,182.78 (-0.25% on 11/25 close, Yahoo) still in the AI-led correction with broad/tech under pressure, but the 10Y EASED to 4.85% (FRED DGS10 / 247WallSt 11/25, -0.06pp off ~4.91% 11/24) is a rates tailwind and OPEC+ is in a Nov 29 production-policy meeting (TradingEconomics 11/26) overhanging the tape both ways => net neutral 1/1.",
+      "atr": 9.57,
+      "close": 501.27,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0009
+      }
+    },
+    {
+      "symbol": "IWM",
+      "direction": "short",
+      "score": 5,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 268.87,
+      "stop": 281.34,
+      "target": 256.32,
+      "rr": 1.01,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "THANKSGIVING HALF-DAY, no tier-1 event today (BLS/Fed 11/26 holiday). Equity tape mixed/low-volume: S&P 500 7,182.78 (-0.25% on 11/25 close, Yahoo) still in the AI-led correction with broad/tech under pressure, but the 10Y EASED to 4.85% (FRED DGS10 / 247WallSt 11/25, -0.06pp off ~4.91% 11/24) is a rates tailwind and OPEC+ is in a Nov 29 production-policy meeting (TradingEconomics 11/26) overhanging the tape both ways => net neutral 1/1.",
+      "atr": 6.23,
+      "close": 268.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0046
+      }
+    }
+  ]
+}
