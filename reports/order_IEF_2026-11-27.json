@@ -1,0 +1,8 @@
+{
+  "symbol": "IEF",
+  "p_target": 0.36,
+  "thesis": "IEF LONG on a full 10/10 Tier-A read: trend (2) + relative-strength vs SPY (2) inside the bond flight-to-quality bid, regime (2/0) supported by a 10Y back near 4.91% on a hawkish December-hike backdrop, a clean 2.0 R:R to the 60-day level, with 5d momentum and heavy volume confirming the duration leg.",
+  "invalidation": "A close below the 10-day swing stop 90.84 fails the trend leg and voids the flight-to-quality thesis.",
+  "dissent": "Fails if IEF closes below 90.84 as the duration bid rolls with the Black-Friday early-close thin tape; specifically voided if the 10Y re-anchors back above 4.95% intraday on a dovish surprise, proving the hike-hedge bid was a one-tape artifact.",
+  "earnings_checked": false
+}

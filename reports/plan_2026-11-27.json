@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-27",
+  "mode": "decision",
+  "rules_version": "v1.0",
+  "equity": 104681.14,
+  "spy_ret20": -0.072,
+  "regime_file": "reports/regime_2026-11-27.json",
+  "regime_sha": "f289277c90412819",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-11",
+  "exclusions": {},
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "trading_days_since_last_AB": 2,
+  "run": "decision",
+  "day_pnl_pct": -0.0037,
+  "halted": false,
+  "open_positions": 4,
+  "open_risk_dollars": 1604.2,
+  "plan": [
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 91.85,
+      "stop": 90.84,
+      "target": 93.88,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "Same as TLT \u2014 10Y 4.91% (TradingEconomics 11/27) on a flight-to-quality/hike-backed bid => bonds regime-long 2/0; no open IEF position in the managed book.",
+      "atr": 0.51,
+      "close": 92.06,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0153
+      },
+      "quota": false,
+      "shares": 227,
+      "risk_dollars": 229.27,
+      "action": "planned",
+      "block_reason": null,
+      "risk_pct": 0.005,
+      "equity_at_plan": 104681.14
+    }
+  ],
+  "blocked": [
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 81.55,
+      "stop": 79.96,
+      "target": 84.74,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y at 4.91% on 11/27 (TradingEconomics) on a flight-to-quality into the holiday and a December rate-hike backdrop => bonds regime-long 2/0; reinforces the OPEN TLT long (11/24, entry 81.69, stop 80.17, target 84.83).",
+      "atr": 0.8,
+      "close": 82.24,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0252
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 5: already have a position or order in this symbol"
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 640.96,
+      "stop": 687.61,
+      "target": 547.67,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq +4.1% on the week (CNBC 11/26) stabilizing off the AI de-rating but NVDA -2.68% shows fragility => two-way/neutral 1/1; no open QQQ position in the managed book.",
+      "atr": 23.32,
+      "close": 633.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0388
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 157.44,
+      "stop": 172.73,
+      "target": 126.87,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 7.64,
+      "close": 155.79,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.049
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.45,
+      "stop": 89.55,
+      "target": 98.24,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "NEUTRAL: the safe-haven bid intensified (gold recovered off 15-month lows, +2.34% to $3,650 on 11/27, TradingEconomics 11/27) and XLV is drifting (FXEmpire 'XLV tests key support after breaking a trendline'), but the equity V-recovery (CNBC 11/26) cuts both ways => net neutral 1/1.",
+      "atr": 1.45,
+      "close": 92.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0123
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 428.01,
+      "stop": 492.7,
+      "target": 298.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 32.34,
+      "close": 422.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0807
+      },
+      "quota": false,
+      "action": "blocked",
+      "block_reason": "risk rule 2: max 5 open positions"
+    }
+  ],
+  "shadow_top": [
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 251.97,
+      "stop": 235.96,
+      "target": 275.34,
+      "rr": 1.46,
+      "tier": "shadow",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 10.46,
+      "close": 244.43,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0871
+      },
+      "earnings_unverified": false,
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    },
+    {
+      "symbol": "XLI",
+      "direction": "long",
+      "score": 4,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 164.58,
+      "stop": 156.63,
+      "target": 175.78,
+      "rr": 1.41,
+      "tier": "shadow",
+      "theme": "cyclicals",
+      "regime_why": "NEUTRAL: ISM Manufacturing 55.5 (above 50, TradingEconomics 11/27) and XLI +2.63% 3-session (stockanalysis 11/27) support cyclicals, but the strong dollar (DXY ~103.8, a 2026 high) and ~4.91% 10Y cap domestic cyclicals => net neutral 1/0.",
+      "atr": 3.98,
+      "close": 162.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0104
+      },
+      "quota": false,
+      "action": "shadow",
+      "block_reason": null
+    }
+  ],
+  "controls_drawn": 5,
+  "controls_note": "5 drawn"
+}
