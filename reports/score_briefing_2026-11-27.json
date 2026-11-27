@@ -1,0 +1,966 @@
+{
+  "date": "2026-11-27",
+  "mode": "briefing",
+  "rules_version": "v1.0",
+  "equity": 104704.8,
+  "spy_ret20": -0.072,
+  "regime_file": "reports/regime_2026-11-27.json",
+  "regime_sha": "f289277c90412819",
+  "bars_feed": "sip",
+  "earnings_check": "checked 10/10 stocks through 2026-12-11",
+  "exclusions": {},
+  "warnings": [
+    "EARNINGS BLACKOUT (blocked automatically): AVGO"
+  ],
+  "top": [
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 82.24,
+      "stop": 80.65,
+      "target": 85.43,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y at 4.91% on 11/27 (TradingEconomics) on a flight-to-quality into the holiday and a December rate-hike backdrop => bonds regime-long 2/0; reinforces the OPEN TLT long (11/24, entry 81.69, stop 80.17, target 84.83).",
+      "atr": 0.8,
+      "close": 82.24,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0252
+      }
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.06,
+      "stop": 91.05,
+      "target": 94.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "Same as TLT \u2014 10Y 4.91% (TradingEconomics 11/27) on a flight-to-quality/hike-backed bid => bonds regime-long 2/0; no open IEF position in the managed book.",
+      "atr": 0.51,
+      "close": 92.06,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0153
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 716.7,
+      "stop": 750.46,
+      "target": 649.18,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 7,182.78 on 11/25 (CNBC/Yahoo) up 3.9% on the week in a V-shaped recovery off the 11/19 selloff => broad regime two-way/neutral 1/1; the OPEN SPY short (11/18, entry 732.28, stop 760.52, target 675.69) is on a tape that has rebounded into it.",
+      "atr": 16.88,
+      "close": 716.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0185
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 633.93,
+      "stop": 680.58,
+      "target": 540.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq +4.1% on the week (CNBC 11/26) stabilizing off the AI de-rating but NVDA -2.68% shows fragility => two-way/neutral 1/1; no open QQQ position in the managed book.",
+      "atr": 23.32,
+      "close": 633.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0388
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 155.79,
+      "stop": 171.08,
+      "target": 125.22,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 7.64,
+      "close": 155.79,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.049
+      }
+    }
+  ],
+  "all": [
+    {
+      "symbol": "TLT",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 82.24,
+      "stop": 80.65,
+      "target": 85.43,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "10Y at 4.91% on 11/27 (TradingEconomics) on a flight-to-quality into the holiday and a December rate-hike backdrop => bonds regime-long 2/0; reinforces the OPEN TLT long (11/24, entry 81.69, stop 80.17, target 84.83).",
+      "atr": 0.8,
+      "close": 82.24,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0252
+      }
+    },
+    {
+      "symbol": "IEF",
+      "direction": "long",
+      "score": 10,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.06,
+      "stop": 91.05,
+      "target": 94.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "bonds",
+      "regime_why": "Same as TLT \u2014 10Y 4.91% (TradingEconomics 11/27) on a flight-to-quality/hike-backed bid => bonds regime-long 2/0; no open IEF position in the managed book.",
+      "atr": 0.51,
+      "close": 92.06,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0153
+      }
+    },
+    {
+      "symbol": "SPY",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 716.7,
+      "stop": 750.46,
+      "target": 649.18,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "broad",
+      "regime_why": "S&P 500 7,182.78 on 11/25 (CNBC/Yahoo) up 3.9% on the week in a V-shaped recovery off the 11/19 selloff => broad regime two-way/neutral 1/1; the OPEN SPY short (11/18, entry 732.28, stop 760.52, target 675.69) is on a tape that has rebounded into it.",
+      "atr": 16.88,
+      "close": 716.7,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0185
+      }
+    },
+    {
+      "symbol": "QQQ",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 633.93,
+      "stop": 680.58,
+      "target": 540.64,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "Nasdaq +4.1% on the week (CNBC 11/26) stabilizing off the AI de-rating but NVDA -2.68% shows fragility => two-way/neutral 1/1; no open QQQ position in the managed book.",
+      "atr": 23.32,
+      "close": 633.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0388
+      }
+    },
+    {
+      "symbol": "XLK",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 155.79,
+      "stop": 171.08,
+      "target": 125.22,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 7.64,
+      "close": 155.79,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.049
+      }
+    },
+    {
+      "symbol": "XLP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 92.3,
+      "stop": 89.4,
+      "target": 98.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "NEUTRAL: the safe-haven bid intensified (gold recovered off 15-month lows, +2.34% to $3,650 on 11/27, TradingEconomics 11/27) and XLV is drifting (FXEmpire 'XLV tests key support after breaking a trendline'), but the equity V-recovery (CNBC 11/26) cuts both ways => net neutral 1/1.",
+      "atr": 1.45,
+      "close": 92.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0123
+      }
+    },
+    {
+      "symbol": "SMH",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 422.46,
+      "stop": 487.15,
+      "target": 293.09,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 32.34,
+      "close": 422.46,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0807
+      }
+    },
+    {
+      "symbol": "GLD",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 327.45,
+      "stop": 345.19,
+      "target": 291.97,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Whipsaw: gold +2.34% to $3,650 off 15-month lows on 11/27 (TradingEconomics) on Middle East safe-haven + hedge-against-a-hike, BUT -10% on the month and a 103.8 DXY cap => two-way 1/1; a GLD short hit target 11/20 and has since recovered, so whipsaw risk is the binding constraint.",
+      "atr": 8.87,
+      "close": 327.45,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0403
+      }
+    },
+    {
+      "symbol": "SLV",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 37.1,
+      "stop": 40.76,
+      "target": 29.78,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "Silver ~$43.5 (TradingEconomics 11/27) flat on the day on the safe-haven/industrial bid, but -19% on the month => two-way 1/1; SLV target already hit 11/25 (open book closed that leg).",
+      "atr": 1.83,
+      "close": 37.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0885
+      }
+    },
+    {
+      "symbol": "GDX",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 73.89,
+      "stop": 81.82,
+      "target": 58.02,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "metals",
+      "regime_why": "WHIPSAW/NEUTRAL: gold recovered +2.34% to $3,650 off 15-month lows and silver ~$43.5 (TradingEconomics 11/27) on the Middle East safe-haven bid + hedge-against-a-hike, BUT gold/PT/platinum are still DOWN sharply on the month (~-10% to -22%, TradingEconomics 11/27) and the strong DXY (103.8) caps them => two-way, no clean leg => 1/1 (note: a GLD short on 11/17 hit target 11/20 and gold has since recovered, so whipsaw risk is high).",
+      "atr": 3.97,
+      "close": 73.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0124
+      }
+    },
+    {
+      "symbol": "UUP",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 29.6,
+      "stop": 29.33,
+      "target": 30.14,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "dollar",
+      "regime_why": "DXY ~103.80 at a 2026 high on 11/27 (Yahoo/TradingEconomics) on the hawkish-Fed/December-hike backdrop and a 10Y at 4.91% => UUP regime-long 2/0; reinforces the OPEN UUP long (11/12).",
+      "atr": 0.14,
+      "close": 29.6,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0007
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "direction": "long",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 355.58,
+      "stop": 340.56,
+      "target": 385.62,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 8.03,
+      "close": 355.58,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0089
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AVGO",
+      "direction": "short",
+      "score": 9,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 300.86,
+      "stop": 347.13,
+      "target": 208.32,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 23.14,
+      "close": 300.86,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.1502
+      },
+      "earnings_unverified": false,
+      "flag": "EARNINGS BLACKOUT"
+    },
+    {
+      "symbol": "XLU",
+      "direction": "long",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 43.61,
+      "stop": 42.63,
+      "target": 45.57,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "defensive",
+      "regime_why": "NEUTRAL: the safe-haven bid intensified (gold recovered off 15-month lows, +2.34% to $3,650 on 11/27, TradingEconomics 11/27) and XLV is drifting (FXEmpire 'XLV tests key support after breaking a trendline'), but the equity V-recovery (CNBC 11/26) cuts both ways => net neutral 1/1.",
+      "atr": 0.6,
+      "close": 43.61,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0014
+      }
+    },
+    {
+      "symbol": "GOOGL",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 273.1,
+      "stop": 296.35,
+      "target": 226.6,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 11.63,
+      "close": 273.1,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0331
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XOM",
+      "direction": "short",
+      "score": 8,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 158.08,
+      "stop": 165.11,
+      "target": 144.02,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Same oil spike as XLE (Brent $96.01, WTI $84.48, TradingEconomics 11/27); XOM already reported Q3 2026 on 10/30/2026 (marketbeat) with the next report ~Jan 29/2027 (public.com) \u2014 well outside the 10-trading-day window, so NO earnings exclusion (yesterday's XOM exclude was stale and is dropped). Long-supportive 2/0.",
+      "atr": 3.51,
+      "close": 158.08,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0156
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLE",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 60.9,
+      "stop": 63.69,
+      "target": 55.31,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "energy",
+      "regime_why": "Brent $96.01 / WTI $84.48 on 11/27 (TradingEconomics) off ~$89 lows on Middle East escalation + OPEC+ Nov 29 => energy regime-LONG; the OPEN XLE short (11/24, entry 60.31, stop 63.69, target 53.54) is on the wrong side of the move \u2014 flagged as live-book risk, no new same-direction entry recommended.",
+      "atr": 1.4,
+      "close": 60.9,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0064
+      }
+    },
+    {
+      "symbol": "MSFT",
+      "direction": "short",
+      "score": 7,
+      "breakdown": {
+        "trend": 2,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 489.93,
+      "stop": 524.04,
+      "target": 421.72,
+      "rr": 2.0,
+      "tier": "A",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 17.05,
+      "close": 489.93,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0361
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLB",
+      "direction": "long",
+      "score": 7,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 51.21,
+      "stop": 48.98,
+      "target": 54.63,
+      "rr": 1.53,
+      "tier": "A",
+      "theme": "cyclicals",
+      "regime_why": "NEUTRAL: ISM Manufacturing 55.5 (above 50, TradingEconomics 11/27) and XLI +2.63% 3-session (stockanalysis 11/27) support cyclicals, but the strong dollar (DXY ~103.8, a 2026 high) and ~4.91% 10Y cap domestic cyclicals => net neutral 1/0.",
+      "atr": 1.12,
+      "close": 51.21,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0149
+      }
+    },
+    {
+      "symbol": "META",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 609.89,
+      "stop": 561.26,
+      "target": 755.78,
+      "rr": 3.0,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "TECH-STABILIZING/NEUTRAL: XLK led 2026 YTD (+33%) and the Nasdaq bounced +4.1% on the week off its October AI-de-rating (CNBC 11/26; etfdb.com 2026), but NVDA -2.68% on 11/25 (Yahoo) shows the de-rating leg is fragile => mixed regime 1/1; no open tech position in the managed book.",
+      "atr": 24.31,
+      "close": 609.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0105
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "AMZN",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 244.43,
+      "stop": 233.97,
+      "target": 275.34,
+      "rr": 2.95,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 10.46,
+      "close": 244.43,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0871
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLI",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 162.95,
+      "stop": 170.9,
+      "target": 147.04,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "cyclicals",
+      "regime_why": "NEUTRAL: ISM Manufacturing 55.5 (above 50, TradingEconomics 11/27) and XLI +2.63% 3-session (stockanalysis 11/27) support cyclicals, but the strong dollar (DXY ~103.8, a 2026 high) and ~4.91% 10Y cap domestic cyclicals => net neutral 1/0.",
+      "atr": 3.98,
+      "close": 162.95,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0104
+      }
+    },
+    {
+      "symbol": "XLY",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 117.49,
+      "stop": 112.03,
+      "target": 128.42,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 2.9,
+      "close": 117.49,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0143
+      }
+    },
+    {
+      "symbol": "JPM",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 0,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 316.74,
+      "stop": 332.2,
+      "target": 285.82,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "financials",
+      "regime_why": "MILD LONG: XLF +1.14% on the last completed session (Yahoo 11/27) and a hawkish Fed backdrop (a December rate HIKE is heavily implied \u2014 ~95% odds per AP/CME FedWatch 11/25; core PCE 3.3% y/y Oct, its highest since 2023, TradingEconomics 11/26) pressures NIM-supportive => net mild long 1/0; JPM next report is well outside the 10-trading-day window.",
+      "atr": 7.73,
+      "close": 316.74,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0227
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "XLF",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 56.51,
+      "stop": 54.48,
+      "target": 60.04,
+      "rr": 1.74,
+      "tier": "B",
+      "theme": "financials",
+      "regime_why": "MILD LONG: XLF +1.14% on the last completed session (Yahoo 11/27) and a hawkish Fed backdrop (a December rate HIKE is heavily implied \u2014 ~95% odds per AP/CME FedWatch 11/25; core PCE 3.3% y/y Oct, its highest since 2023, TradingEconomics 11/26) pressures NIM-supportive => net mild long 1/0; JPM next report is well outside the 10-trading-day window.",
+      "atr": 1.02,
+      "close": 56.51,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0016
+      }
+    },
+    {
+      "symbol": "XLV",
+      "direction": "long",
+      "score": 6,
+      "breakdown": {
+        "trend": 1,
+        "rs": 2,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 183.68,
+      "stop": 176.71,
+      "target": 192.32,
+      "rr": 1.24,
+      "tier": "B",
+      "theme": "defensive",
+      "regime_why": "NEUTRAL: the safe-haven bid intensified (gold recovered off 15-month lows, +2.34% to $3,650 on 11/27, TradingEconomics 11/27) and XLV is drifting (FXEmpire 'XLV tests key support after breaking a trendline'), but the equity V-recovery (CNBC 11/26) cuts both ways => net neutral 1/1.",
+      "atr": 3.62,
+      "close": 183.68,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0139
+      }
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "short",
+      "score": 6,
+      "breakdown": {
+        "trend": 2,
+        "rs": 2,
+        "regime": 0,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 149.3,
+      "stop": 171.5,
+      "target": 124.5,
+      "rr": 1.12,
+      "tier": "B",
+      "theme": "tech",
+      "regime_why": "NVDA -2.68% on 11/25 (Yahoo) inside the still-fragile AI tape but the sector is stabilizing (Nasdaq +4.1% on the week, CNBC 11/26) => mild long 1/0; next fiscal-Q4 print is in December and will carry an EARNINGS UNVERIFIED flag if the scorer surfaces it \u2014 checked at DECISION if it lands there.",
+      "atr": 15.83,
+      "close": 149.3,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.011
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "USO",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 0,
+        "rs": 0,
+        "regime": 2,
+        "rr": 2,
+        "momentum": 1,
+        "volume": 0
+      },
+      "entry": 139.89,
+      "stop": 132.28,
+      "target": 162.73,
+      "rr": 3.0,
+      "tier": "B",
+      "theme": "energy",
+      "regime_why": "REINFORCED LONG (dominant move of the week). Brent $96.01 / WTI $84.48 on 11/27 (TradingEconomics 11/27) \u2014 off ~$89 late-Nov lows (VantageMarkets 11/27) on Middle East escalation (Houthis struck Saudi Ras Tanura + Jazan; tankers hit by mines in the Strait of Hormuz, TradingEconomics 11/26) into the OPEC+ Nov 29 meeting (Iraq pushing higher 2027 capacity, TradingEconomics 11/27) => energy structurally long; NOTE the OPEN XLE short (11/24, entry 60.31) is now on the wrong side of this regime \u2014 a flagged live-book risk, not a veto.",
+      "atr": 4.76,
+      "close": 139.89,
+      "alt": {
+        "pullback": 0,
+        "ret5": 0.0278
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 1,
+        "rs": 1,
+        "regime": 1,
+        "rr": 2,
+        "momentum": 0,
+        "volume": 0
+      },
+      "entry": 380.14,
+      "stop": 344.33,
+      "target": 451.76,
+      "rr": 2.0,
+      "tier": "B",
+      "theme": "consumer",
+      "regime_why": "neutral (no regime entry)",
+      "atr": 20.05,
+      "close": 380.14,
+      "alt": {
+        "pullback": 1,
+        "ret5": -0.0093
+      },
+      "earnings_unverified": false
+    },
+    {
+      "symbol": "DIA",
+      "direction": "long",
+      "score": 5,
+      "breakdown": {
+        "trend": 0,
+        "rs": 2,
+        "regime": 1,
+        "rr": 1,
+        "momentum": 0,
+        "volume": 1
+      },
+      "entry": 501.27,
+      "stop": 482.14,
+      "target": 536.6,
+      "rr": 1.85,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "V-SHAPED EQUITY RECOVERY: S&P 500 7,182.78 on 11/25 (+3.9% on the week, Nasdaq +4.1% per CNBC 11/26) off the 11/19 AI-led selloff (S&P/Nasdaq in correction on 11/19, CNBC) \u2014 the tape just reversed off a 5-month-low leg, so the broad regime is two-way/neutral 1/1; the open SPY short (11/18, entry 732.28) is on a tape that has rebounded into it.",
+      "atr": 9.57,
+      "close": 501.27,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0009
+      }
+    },
+    {
+      "symbol": "IWM",
+      "direction": "short",
+      "score": 5,
+      "breakdown": {
+        "trend": 2,
+        "rs": 0,
+        "regime": 1,
+        "rr": 0,
+        "momentum": 1,
+        "volume": 1
+      },
+      "entry": 268.87,
+      "stop": 281.34,
+      "target": 256.32,
+      "rr": 1.01,
+      "tier": "B",
+      "theme": "broad",
+      "regime_why": "V-SHAPED EQUITY RECOVERY: S&P 500 7,182.78 on 11/25 (+3.9% on the week, Nasdaq +4.1% per CNBC 11/26) off the 11/19 AI-led selloff (S&P/Nasdaq in correction on 11/19, CNBC) \u2014 the tape just reversed off a 5-month-low leg, so the broad regime is two-way/neutral 1/1; the open SPY short (11/18, entry 732.28) is on a tape that has rebounded into it.",
+      "atr": 6.23,
+      "close": 268.87,
+      "alt": {
+        "pullback": 0,
+        "ret5": -0.0046
+      }
+    }
+  ]
+}
